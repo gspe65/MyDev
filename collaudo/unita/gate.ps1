@@ -12,7 +12,7 @@
 #
 # Le sigle dei passi sono le clausole del collaudo dell'unita': U12 nessun percorso assoluto dopo l'uso, U13 il kit da una
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
-# E9 le stesse sull'unita' estesa.
+# E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -192,6 +192,16 @@ try {
         Attendi-Editor
         AnnotaAscolti 'apertura 1'
         Chiudi-Tutto
+        # A7: l'editor aperto dal lanciatore ha caricato l'italiano. La cache delle traduzioni nasce solo se la lingua di
+        # argv.json ha un pacchetto installato (misurato: col pacchetto e senza la lingua non nasce), e tcf.json deve
+        # nominare questa radice: una cache rimasta da un'altra cartella lascerebbe in inglese le estensioni incorporate.
+        $Esc = (($Rad.Substring(0, 1).ToLower() + $Rad.Substring(1)).Replace('\', '\\') + '\\').ToLower()
+        $Clp = Join-Path $Rad 'vscodium\data\user-data\clp'
+        $Tcf = @()
+        if ([IO.Directory]::Exists($Clp)) { $Tcf = @(Get-ChildItem -LiteralPath $Clp -Directory -Filter '*.it' | ForEach-Object { Join-Path $_.FullName 'tcf.json' } | Where-Object { [IO.File]::Exists($_) }) }
+        $Nominano = @($Tcf | Where-Object { [IO.File]::ReadAllText($_, $Utf8).ToLower().Contains($Esc) }).Count
+        Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano"
+        Annota 'A7' 'editor in italiano dal lanciatore' $(if ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
         Scrivi '=== apertura 2, con una cartella e un file'
         # Lo stesso ambiente che da' il lanciatore, che non accetta una cartella da aprire: senza il PATH clangd sarebbe un altro.
         # Nell'estesa anche le sue variabili, come prepara_estesa di lancia.c: progetti contiene i progetti Rust, rust-analyzer si
@@ -358,7 +368,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 22 } else { 16 }
+    $Attesi = if ($Finestre) { 23 } else { 16 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }

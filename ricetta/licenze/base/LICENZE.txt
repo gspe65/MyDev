@@ -247,6 +247,10 @@ estensioni/eclipse-cdt.cdt-gdb-vscode 2.9.1
     testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/tslib/CopyrightNotice.txt [da16ddb65f8ca390] 0BSD, ISC
     testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/tslib/LICENSE.txt [210b19e543130388] 0BSD, ISC
     sorgente: https://github.com/eclipse-cdt-cloud/cdt-gdb-vscode/archive/refs/tags/v2.9.1.tar.gz [sha256 a19563993fa2d22c0489fc686db103b88d32f04834dbea05c334da79a19b5d31]
+estensioni/MS-CEINTL.vscode-language-pack-it 1.131.0
+    licenza: MIT
+    nota: il pacchetto non porta un testo: il manifesto dice SEE MIT LICENSE IN LICENSE.md, che sta nel repository vscode-loc; il testo e' quello del commit della versione 1.131.0
+    testo: licenze/estensioni-MS-CEINTL.vscode-language-pack-it/LICENSE.md [d8428ce0697ff754] MIT
 pip/Jinja2 3.1.6
     licenza: BSD-3-Clause
     testo: python/Lib/site-packages/jinja2-3.1.6.dist-info/licenses/LICENSE.txt [3b49dcee4105eb37] BSD
@@ -1134,6 +1138,7 @@ licenze/bzip2/LICENSE: MSYS, pacchetto sorgente bzip2-1.0.8-4: bzip2-1.0.8/LICEN
 licenze/ca-certificates/copyright: MSYS, pacchetto sorgente ca-certificates-20250419-1: ca-certificates/debian/copyright
 licenze/CC0-1.0.txt: MSYS, pacchetto sorgente gnupg-2.4.9-1: COPYING.CC0
 licenze/db/LICENSE: MSYS, pacchetto sorgente db-6.2.32-6: db-6.2.32/LICENSE
+licenze/estensioni-MS-CEINTL.vscode-language-pack-it/LICENSE.md: https://raw.githubusercontent.com/microsoft/vscode-loc/fa368b5a5774c74d7ee953934f1ea567c2c43cf6/LICENSE.md
 licenze/expat/COPYING: MSYS, pacchetto sorgente expat-2.8.1-1: expat-2.8.1/COPYING
 licenze/filesystem/LICENSE: https://raw.githubusercontent.com/msys2/MSYS2-packages/ff0b4c9120ed6742bafb784d5a71562074724b65/LICENSE
 licenze/gc/README.QUICK: MSYS, pacchetto sorgente gc-8.2.12-1: gc-8.2.12/README.QUICK

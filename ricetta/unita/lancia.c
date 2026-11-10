@@ -107,6 +107,23 @@ static void prepara_terminale(const wchar_t *titolo, const wchar_t *dopo) {
     componi(cartella, L"%ls\\progetti", radice);
 }
 
+#if STRUMENTO == VSCODIUM
+/* La lingua dell'editor: vscodium\lingua.py riscrive languagepacks.json per questa cartella e toglie la cache delle
+ * traduzioni che ne nomina un'altra; senza, dopo uno spostamento la prima apertura e' in inglese e i testi delle
+ * estensioni incorporate lo restano. Se non riesce, l'editor parte lo stesso: in inglese, non rotto. */
+static void prepara_lingua(void) {
+    componi(appoggio, L"\"%ls\\python\\python.exe\" -I -B \"%ls\\vscodium\\lingua.py\"", radice, radice);
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof si);
+    si.cb = sizeof si;
+    if (!CreateProcessW(NULL, appoggio, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, radice, &si, &pi)) return;
+    WaitForSingleObject(pi.hProcess, 10000);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+}
+#endif
+
 int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
     (void)a; (void)b; (void)c; (void)d;
     DWORD n = GetModuleFileNameW(NULL, radice, MASSIMO);
@@ -141,6 +158,7 @@ int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
     if (estesa) prepara_estesa(sistema);
 
 #if STRUMENTO == VSCODIUM
+    prepara_lingua();
     componi(comando, L"\"%ls\\vscodium\\VSCodium.exe\"", radice);
     componi(cartella, L"%ls\\progetti", radice);
 #elif STRUMENTO == ALGODESIGN
