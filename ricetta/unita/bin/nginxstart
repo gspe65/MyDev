@@ -1,0 +1,20 @@
+#!/bin/bash
+# $MYDEV si autodetermina dalla posizione dello script: cosi gli script
+# funzionano anche se il terminale non e stato aperto dal collegamento.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+NGX="$MYDEV/nginx"
+# La configurazione nasce qui a ogni avvio: porta il percorso dell'unita', che cambia con cartella e lettera.
+W="$(cygpath -m "$MYDEV")"
+sed "s|__MYDEV__|${W//&/\\&}|g" "$NGX/conf/nginx.conf.template" > "$NGX/conf/nginx.conf" || exit 1
+
+# Il certificato nasce sul posto e resta nell'unita': mkcert senza -install non tocca il PC.
+if [ ! -f "$NGX/ssl/mydev.crt" ] || [ ! -f "$NGX/ssl/mydev.key" ]; then
+    mkdir -p "$NGX/ssl/autorita"
+    CAROOT="$(cygpath -w "$NGX/ssl/autorita")" "$MYDEV/bin/mkcert.exe" \
+        -cert-file "$(cygpath -w "$NGX/ssl/mydev.crt")" \
+        -key-file "$(cygpath -w "$NGX/ssl/mydev.key")" localhost 127.0.0.1 || exit 1
+fi
+
+"$NGX/nginx.exe" -p "$NGX" &

@@ -1,0 +1,36 @@
+{
+  "name": "algo-codice",
+  "displayName": "Codice dai flowchart",
+  "description": "Mostra in sola lettura il codice generato da un file .algo.",
+  "version": "0.0.1",
+  "publisher": "prototipo",
+  "license": "MIT",
+  "private": true,
+  "icon": "icona.png",
+  "engines": { "vscode": "^1.75.0" },
+  "main": "./dist/extension.cjs",
+  "contributes": {
+    "languages": [{ "id": "algo", "aliases": ["Flowchart AlgoDesign"], "extensions": [".algo"], "icon": { "light": "./icona.png", "dark": "./icona.png" } }],
+    "commands": [{ "command": "algo.mostraCodice", "title": "Mostra il codice generato" }],
+    "menus": {
+      "commandPalette": [{ "command": "algo.mostraCodice", "when": "resourceExtname == .algo" }]
+    },
+    "configuration": {
+      "title": "Codice dai flowchart",
+      "properties": {
+        "algo.linguaggio": {
+          "type": "string",
+          "enum": ["pseudocodice", "python", "c", "accademico", "typescript"],
+          "default": "python",
+          "description": "Il linguaggio del codice generato."
+        },
+        "algo.lingua": {
+          "type": "string",
+          "enum": ["it", "en"],
+          "default": "it",
+          "description": "La lingua dei nomi e dei commenti del codice generato."
+        }
+      }
+    }
+  }
+}

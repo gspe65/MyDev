@@ -1,0 +1,13 @@
+MyDev: le licenze dei componenti della variante estesa
+=======================================================
+
+Questo file è generato da ricetta/licenze_unita.py del repository di MyDev: non si modifica a mano. Elenca solo i
+componenti che la variante estesa aggiunge alla base; quelli della base, la nota su chi dà una copia ad altri e il
+testo dell'offerta scritta stanno in LICENZE.txt, e valgono anche qui. Per i sorgenti della variante estesa il
+comando è ricetta\sorgenti.ps1 -Variante estesa.
+
+Questa nota riassume ciò che chiedono i testi delle licenze; non è un parere legale.
+
+
+I componenti
+------------

@@ -1,0 +1,6 @@
+/docs/*/
+/node_modules/
+/ricetta/nucleo/estratto/
+/ricetta/nucleo/scaricato/
+/extensions/libreria/dist/
+/extensions/algo/dist/

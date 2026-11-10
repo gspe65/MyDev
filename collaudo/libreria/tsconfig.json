@@ -1,0 +1,16 @@
+{
+  // La prova della libreria: gira sotto Bun, con i suoi tipi. Il file per Node è JavaScript e non entra qui.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["bun"]
+  },
+  "include": ["*.ts"]
+}

@@ -1,0 +1,27 @@
+#!/bin/bash
+# Il token di gh resta nell'unita': senza --insecure-storage finirebbe nelle credenziali di Windows, cioe' sul PC
+# e al posto di quello di un gh gia' installato. Gli altri comandi passano invariati.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+vero="$MYDEV/gh/bin/gh.exe"
+# gh scrive in .gitconfig il proprio percorso assoluto, che spostando l'unita' non vale piu': resta il solo nome.
+togli_percorso() {
+    if [ -f "$HOME/.gitconfig" ]; then
+        sed -i -E "s/helper = !'.*gh\.exe' auth git-credential/helper = !gh auth git-credential/" "$HOME/.gitconfig"
+    fi
+}
+hosts="${GH_CONFIG_DIR:-$HOME/.config/gh}/hosts.yml"
+# Se sul PC c'e' un gh con lo stesso account, gh attiva il token del PC e quello dell'unita' resta sotto users:
+# spostando l'unita' risulterebbe scollegata. Si rende attivo quello del file, che ha la precedenza.
+attiva_token() {
+    [ -f "$hosts" ] || return 0
+    grep -q '^    oauth_token:' "$hosts" && return 0
+    t=$(sed -nE 's/^ +oauth_token: *(.+)$/\1/p' "$hosts" | sed -n 1p)
+    if [ -n "$t" ]; then sed -i "/^github.com:/a\\    oauth_token: $t" "$hosts"; fi
+}
+case "$1 $2" in
+    "auth login" | "auth refresh") comando="$2"; shift 2; "$vero" auth "$comando" --insecure-storage "$@"; uscita=$?; attiva_token; togli_percorso; exit "$uscita" ;;
+    "auth setup-git") "$vero" "$@"; uscita=$?; attiva_token; togli_percorso; exit "$uscita" ;;
+    # Il logout di gh cancella anche il login di un gh installato sul PC: dell'unita' basta togliere il file.
+    "auth logout") rm -f "$hosts"; echo "Tolto il login dell'unita'. Quello di un gh installato sul PC resta."; exit 0 ;;
+    *) exec "$vero" "$@" ;;
+esac

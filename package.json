@@ -1,0 +1,27 @@
+{
+  "name": "mydev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "nucleo:chiusura": "bun ricetta/nucleo/chiusura.ts",
+    "nucleo:estrai": "bun ricetta/nucleo/estrai.ts",
+    "nucleo:prove": "bun ricetta/nucleo/prove.ts",
+    "nucleo:tipi": "tsc -p ricetta/nucleo/tsconfig.json",
+    "libreria:costruisci": "bun ricetta/nucleo/estrai.ts --verifica && bun ricetta/nucleo/pacchetto.ts",
+    "libreria:prova": "bun collaudo/libreria/prova.ts",
+    "libreria:tipi": "tsc -p extensions/libreria/tsconfig.json && tsc -p collaudo/libreria/tsconfig.json",
+    "conformita:prova": "bun collaudo/conformita/prova.ts",
+    "algo:costruisci": "bun run libreria:costruisci && bun build extensions/algo/src/extension.ts --target=node --format=cjs --minify-whitespace --external=vscode \"--external=*libreria.cjs\" --outfile=extensions/algo/dist/extension.cjs && cp extensions/libreria/dist/libreria.cjs extensions/algo/dist/libreria.cjs && cd extensions/algo && vsce package --no-dependencies --allow-missing-repository -o dist/algo-codice.vsix",
+    "algo:prova": "bun collaudo/algo/prova.ts",
+    "licenze:componi": "bun ricetta/licenze.ts",
+    "licenze:verifica": "bun ricetta/licenze.ts --verifica"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.2",
+    "@types/node": "26.6.6",
+    "@types/vscode": "1.75.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.1.0",
+    "typescript": "7.0.2"
+  }
+}

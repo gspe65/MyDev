@@ -1,0 +1,8 @@
+#!/bin/bash
+# $MYDEV si autodetermina dalla posizione dello script: cosi gli script
+# funzionano anche se il terminale non e stato aperto dal collegamento.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+tasklist.exe //fi "imagename eq nginx.exe" 2>/dev/null | grep -q "nginx.exe" \
+  && echo "Nginx e' in esecuzione." \
+  || echo "Nginx non e' in esecuzione."

@@ -1,0 +1,3 @@
+#!/bin/bash
+# Neovim e' l'editor modale dell'unita': vi e vim lo aprono.
+exec nvim "$@"

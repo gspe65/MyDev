@@ -1,0 +1,79 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compila con gcc",
+      "type": "process",
+      "command": "make",
+      "args": ["-B", "TARGET=programma-gcc.exe"],
+      "options": { "cwd": "${fileDirname}" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": {
+        "owner": "compilatore",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": { "regexp": "^(.*?):(\\d+):(\\d+):\\s+(warning|error|fatal error):\\s+(.*)$", "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5 }
+      }
+    },
+    {
+      "label": "Compila con clang",
+      "type": "process",
+      "command": "make",
+      "args": ["-B", "CC=clang", "TARGET=programma-clang.exe"],
+      "options": { "cwd": "${fileDirname}" },
+      "group": "build",
+      "problemMatcher": {
+        "owner": "compilatore",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": { "regexp": "^(.*?):(\\d+):(\\d+):\\s+(warning|error|fatal error):\\s+(.*)$", "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5 }
+      }
+    },
+    {
+      "label": "Esegui il programma gcc",
+      "type": "process",
+      "command": "${fileDirname}/programma-gcc.exe",
+      "options": { "cwd": "${fileDirname}" },
+      "dependsOn": "Compila con gcc",
+      "problemMatcher": []
+    },
+    {
+      "label": "Esegui il programma clang",
+      "type": "process",
+      "command": "${fileDirname}/programma-clang.exe",
+      "options": { "cwd": "${fileDirname}" },
+      "dependsOn": "Compila con clang",
+      "problemMatcher": []
+    },
+    {
+      "label": "ASan: compila senza",
+      "type": "process",
+      "command": "clang",
+      "args": ["-g", "${fileBasename}", "-o", "senza.exe"],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "ASan: compila con",
+      "type": "process",
+      "command": "clang",
+      "args": ["-g", "-fsanitize=address", "${fileBasename}", "-o", "con.exe"],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "ASan: esegui senza",
+      "type": "process",
+      "command": "${fileDirname}/senza.exe",
+      "options": { "cwd": "${fileDirname}" },
+      "dependsOn": "ASan: compila senza",
+      "problemMatcher": []
+    },
+    {
+      "label": "ASan: esegui con",
+      "type": "process",
+      "command": "${fileDirname}/con.exe",
+      "options": { "cwd": "${fileDirname}", "env": { "ASAN_OPTIONS": "log_path=rapporto" } },
+      "dependsOn": "ASan: compila con",
+      "problemMatcher": []
+    }
+  ]
+}

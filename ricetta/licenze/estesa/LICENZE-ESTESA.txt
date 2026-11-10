@@ -1,0 +1,356 @@
+MyDev: le licenze dei componenti della variante estesa
+=======================================================
+
+Questo file è generato da ricetta/licenze_unita.py del repository di MyDev: non si modifica a mano. Elenca solo i
+componenti che la variante estesa aggiunge alla base; quelli della base, la nota su chi dà una copia ad altri e il
+testo dell'offerta scritta stanno in LICENZE.txt, e valgono anche qui. Per i sorgenti della variante estesa il
+comando è ricetta\sorgenti.ps1 -Variante estesa.
+
+Questa nota riassume ciò che chiedono i testi delle licenze; non è un parere legale.
+
+
+I componenti
+------------
+
+msys/git 2.56.0-1
+    licenza: GPL-2.0-only
+    dichiarata dal pacchetto: spdx:GPL-2.0-only
+    testo: msys64/usr/share/git/subtree/COPYING [ab15fd526bd8dd18] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/git-2.56.0-1.src.tar.zst [sha256 354e523cabaf73f7e2e334217b926850447e4a72eb42a0909b43fa06fa4c2e20]
+msys/heimdal 7.8.0-8
+    licenza: LicenseRef-Heimdal
+    dichiarata dal pacchetto: spdx:LicenseRef-Heimdal
+    testo: msys64/usr/share/licenses/heimdal/LICENSE [0c4b07bf5b98f7a1] BSD
+msys/heimdal-libs 7.8.0-8
+    licenza: LicenseRef-Heimdal
+    dichiarata dal pacchetto: spdx:LicenseRef-Heimdal
+    nota: stessa sorgente di heimdal
+    testo: msys64/usr/share/licenses/heimdal/LICENSE [0c4b07bf5b98f7a1] BSD
+msys/libcbor 0.14.0-2
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: licenze/libcbor/LICENSE.md [6a5e182d758db66e] MIT
+msys/libedit 20240808_3.1-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/libedit/LICENSE [9da6c9c74987a36c] BSD
+msys/libfido2 1.17.0-1
+    licenza: BSD-2-Clause
+    testo: licenze/libfido2/LICENSE [4aad6cad5e570c10] BSD
+msys/libgit2 1.9.7-1
+    licenza: LicenseRef-libgit2-GPL-2.0-with-linking-exception
+    dichiarata dal pacchetto: spdx:LicenseRef-libgit2-GPL-2.0-with-linking-exception
+    testo: msys64/usr/share/licenses/libgit2/COPYING [e0938121c0554985] 0BSD, BSD, GPL-2.0, ISC, LGPL-2.1, MIT, Zlib
+    sorgente: https://repo.msys2.org/msys/sources/libgit2-1.9.7-1.src.tar.zst [sha256 4e395967b5ba729c8d0d19e8dd90359cc004b6124b345d554267fad22cfc043f]
+msys/llvm-libs 21.1.8-4
+    licenza: Apache-2.0 WITH LLVM-exception
+    dichiarata dal pacchetto: spdx:Apache-2.0 WITH LLVM-exception
+    testo: msys64/usr/share/licenses/llvm-libs/LICENSE [8d85c1057d742e59] Apache-2.0, LLVM-exception, MIT
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/openssh 10.6p2-1
+    licenza: LicenseRef-OpenSSH
+    dichiarata dal pacchetto: spdx:LicenseRef-OpenSSH
+    testo: msys64/usr/share/licenses/openssh/LICENCE [5bb5b160726ef575] BSD, ISC, MIT
+msys/perl-authen-sasl 2.2100-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-clone 0.51-1
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-1.0-or-later; spdx:Artistic-1.0-Perl
+    nota: il pacchetto elenca le due licenze; il modulo ha le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-convert-binhex 1.125-3
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-encode-locale 1.05-3
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-error 0.17031-1
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-file-listing 6.16-2
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-html-parser 3.86-2
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-html-tagset 3.24-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-http-cookiejar 0.014-2
+    licenza: Apache-2.0
+    dichiarata dal pacchetto: spdx:Apache-2.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/perl-http-cookies 6.12-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-http-daemon 6.17-2
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il LICENCE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-http-date 6.08-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-http-message 7.04-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-http-negotiate 6.01-4
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-io-html 1.004-3
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-io-socket-ssl 2.099-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-io-stringy 2.113-4
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-libwww 6.83-3
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-lwp-mediatypes 6.05-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-mailtools 2.22-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-mime-tools 5.518-2
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il pacchetto elenca le due licenze; il modulo ha le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-net-http 6.24-2
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-net-smtp-ssl 1.04-3
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-net-ssleay 1.96-3
+    licenza: Artistic-2.0
+    dichiarata dal pacchetto: spdx:Artistic-2.0
+    testo: msys64/usr/share/licenses/perl-net-ssleay/LICENSE [03f9cbbe14b1e258] Artistic-2.0
+msys/perl-termreadkey 2.38-9
+    licenza: LicenseRef-TermReadKey
+    dichiarata dal pacchetto: spdx:LicenseRef-TermReadKey
+    nota: TermReadKey ha condizioni sue, senza un identificatore SPDX: il testo e' quello del pacchetto
+    testo: msys64/usr/share/licenses/perl-termreadkey/LICENSE [7a53a057d4771ea2]
+msys/perl-timedate 2.35-2
+    licenza: Artistic-1.0-Perl
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+msys/perl-try-tiny 0.32-2
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/perl-try-tiny/LICENSE [f1864ede834871a1] MIT
+msys/perl-uri 5.40-1
+    licenza: (Artistic-1.0-Perl OR GPL-1.0-or-later)
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl OR GPL-1.0-or-later
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/perl-www-robotrules 6.03-2
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: spdx:Artistic-1.0-Perl; spdx:GPL-1.0-or-later
+    nota: il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/rust 1.99.1-2
+    licenza: Apache-2.0 AND MIT
+    dichiarata dal pacchetto: spdx:Apache-2.0 AND MIT
+    testo: licenze/rust/cargo-LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: licenze/rust/cargo-LICENSE-THIRD-PARTY [cbc759b1f17a2ac3] BSD, GPL-2.0, ISC, LGPL-2.1, MIT, Zlib
+    testo: licenze/rust/rustc-COPYRIGHT-library.html [e865f7bd50186343]
+    testo: licenze/rust/rustc-COPYRIGHT.html [17adecd32a3d7153]
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+rust/rust-src 1.99.1
+    licenza: MIT OR Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/backtrace/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/backtrace/LICENSE-MIT [378f5840b258e277] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/compiler-builtins/LICENSE.txt [ab6eec6caf0fa577] Apache-2.0, LLVM-exception, MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/compiler-builtins/libm/LICENSE.txt [3823dda7cf046602] Apache-2.0, MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/portable-simd/LICENSE-APACHE [cfc7749b96f63bd3] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/portable-simd/LICENSE-MIT [eb07d497d26e6d68] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/LICENSE-APACHE [cfc7749b96f63bd3] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/LICENSE-MIT [eb07d497d26e6d68] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/LICENSE-MIT [29662666b44dff84] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/crates/core_arch/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/crates/core_arch/LICENSE-MIT [29662666b44dff84] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/crates/intrinsic-test/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/stdarch/crates/intrinsic-test/LICENSE-MIT [8bc20184c0ddf300] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/addr2line-0.27.1/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/addr2line-0.27.1/LICENSE-MIT [e99d88d232bf57d7] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/adler2-2.0.1/LICENSE-0BSD [861399f8c21c042b] 0BSD, ISC
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/adler2-2.0.1/LICENSE-APACHE [8ada45cd9f843acf] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/adler2-2.0.1/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/cc-1.2.0/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/cc-1.2.0/LICENSE-MIT [378f5840b258e277] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/cfg-if-1.0.4/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/cfg-if-1.0.4/LICENSE-MIT [378f5840b258e277] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/dlmalloc-0.2.14/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/dlmalloc-0.2.14/LICENSE-MIT [378f5840b258e277] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/foldhash-0.2.0/LICENSE [b1181a40b2a7b25c] Zlib
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/getopts-0.2.24/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/getopts-0.2.24/LICENSE-MIT [6485b8ed310d3f03] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/gimli-0.34.0/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/gimli-0.34.0/LICENSE-MIT [7b63ecd5f1902af1] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/LICENSE-MIT [ff8f68cb076caf8c] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/hermit-abi-0.5.2/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/hermit-abi-0.5.2/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/libc-0.2.189/LICENSE-APACHE [62c7a1e35f564068] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/libc-0.2.189/LICENSE-MIT [123a331b5dbf04c3] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/memchr-2.8.3/COPYING [01c266bced4a434d]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/memchr-2.8.3/LICENSE-MIT [0f96a83840e146e4] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/memchr-2.8.3/UNLICENSE [7e12e5df4bae12cb]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/miniz_oxide-0.9.1/LICENSE [4108245a1f2df9d4] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/miniz_oxide-0.9.1/LICENSE-APACHE.md [0d542e0c8804e39a] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/miniz_oxide-0.9.1/LICENSE-MIT.md [799e9ca9d179295e] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/miniz_oxide-0.9.1/LICENSE-ZLIB.md [0a54e647fe541046] Zlib
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/moto-rt-0.16.4/LICENSE-APACHE [69fef7b0f322a655] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/moto-rt-0.16.4/LICENSE-MIT [a7c936ff1ed8fa34] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/object-0.39.1/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/object-0.39.1/LICENSE-MIT [0b74dfa0bcee5c42] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand-0.9.5/COPYRIGHT [90eb64f0279b0d94]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand-0.9.5/LICENSE-APACHE [35242e7a83f69875] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand-0.9.5/LICENSE-MIT [209fbbe0ad52d923] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_core-0.9.5/COPYRIGHT [90eb64f0279b0d94]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_core-0.9.5/LICENSE-APACHE [6df43f6f4b5d4587] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_core-0.9.5/LICENSE-MIT [209fbbe0ad52d923] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_xorshift-0.4.0/COPYRIGHT [90eb64f0279b0d94]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_xorshift-0.4.0/LICENSE-APACHE [35242e7a83f69875] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rand_xorshift-0.4.0/LICENSE-MIT [209fbbe0ad52d923] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rustc-demangle-0.1.28/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rustc-demangle-0.1.28/LICENSE-MIT [378f5840b258e277] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rustc-literal-escaper-0.0.8/LICENSE-APACHE [62c7a1e35f564068] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/rustc-literal-escaper-0.0.8/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/shlex-1.3.0/LICENSE-APACHE [553fffcd9b1cb158]
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/shlex-1.3.0/LICENSE-MIT [4455bf75a9115410] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/unwinding-0.2.10/LICENSE-APACHE [62c7a1e35f564068] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/unwinding-0.2.10/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip2-1.0.4+wasi-0.2.12/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip2-1.0.4+wasi-0.2.12/LICENSE-Apache-2.0_WITH_LLVM-exception [268872b9816f90fd] Apache-2.0, LLVM-exception
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip2-1.0.4+wasi-0.2.12/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip3-0.7.0+wasi-0.3.0/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip3-0.7.0+wasi-0.3.0/LICENSE-Apache-2.0_WITH_LLVM-exception [268872b9816f90fd] Apache-2.0, LLVM-exception
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wasip3-0.7.0+wasi-0.3.0/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wit-bindgen-0.57.1/LICENSE-APACHE [a60eea8175145316] Apache-2.0
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wit-bindgen-0.57.1/LICENSE-Apache-2.0_WITH_LLVM-exception [268872b9816f90fd] Apache-2.0, LLVM-exception
+    testo: msys64/usr/lib/rustlib/src/rust/library/vendor/wit-bindgen-0.57.1/LICENSE-MIT [23f18e03dc49df91] MIT
+    testo: msys64/usr/lib/rustlib/src/rust/src/llvm-project/libunwind/LICENSE.TXT [b5efebcaca808792] Apache-2.0, LLVM-exception, MIT
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+rust/rust-docs 1.99.1
+    licenza: (MIT OR Apache-2.0) AND OFL-1.1
+    dichiarata dal pacchetto: MIT OR Apache-2.0
+    nota: i manuali portano i caratteri Open Sans, sotto Apache 2.0, e Source Code Pro, sotto la SIL Open Font License, coi loro testi nelle cartelle fonts
+    testo: rust-docs/book/2018-edition/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/book/2018-edition/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/book/first-edition/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/book/first-edition/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/book/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/book/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/book/second-edition/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/book/second-edition/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/cargo/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/cargo/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/reference/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/reference/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/rust-by-example/es/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/rust-by-example/es/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/rust-by-example/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/rust-by-example/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/rust-by-example/ja/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/rust-by-example/ja/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/rust-by-example/ko/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/rust-by-example/ko/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: rust-docs/rust-by-example/zh/fonts/OPEN-SANS-LICENSE.txt [cfc7749b96f63bd3] Apache-2.0
+    testo: rust-docs/rust-by-example/zh/fonts/SOURCE-CODE-PRO-LICENSE.txt [d1e6d465a83ba1a3] OFL-1.1
+    testo: licenze/rust-rust-docs/COPYRIGHT [172020dbfd5b53a2]
+    testo: licenze/rust-rust-docs/LICENSE-MIT [b71bd43a069ca064] MIT
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+strumenti/gh 2.103.3
+    licenza: MIT
+    testo: gh/LICENSE [8999137010582da2] MIT
+estensioni/rust-lang.rust-analyzer 0.4.3112
+    licenza: MIT OR Apache-2.0
+    testo: vscodium/data/extensions/rust-lang.rust-analyzer-0.4.3112/LICENSE.txt [7b4f77d59f1f20f8] Apache-2.0, MIT
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+nostro/cargo-ponte
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/rustc-ponte
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/git-pannello
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/gh-comando
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/impostazioni-estesa
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/progetti-rust
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/licenze-estesa
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+
+Da dove vengono i testi della cartella licenze/
+-----------------------------------------------
+
+licenze/libcbor/LICENSE.md: MSYS, pacchetto sorgente libcbor-0.14.0-2: libcbor-0.14.0/LICENSE.md
+licenze/libfido2/LICENSE: MSYS, pacchetto sorgente libfido2-1.17.0-1: libfido2-1.17.0/LICENSE
+licenze/rust/cargo-LICENSE-MIT: deposito, rust-1.99.1-2: usr/share/doc/cargo/LICENSE-MIT
+licenze/rust/cargo-LICENSE-THIRD-PARTY: deposito, rust-1.99.1-2: usr/share/doc/cargo/LICENSE-THIRD-PARTY
+licenze/rust/rustc-COPYRIGHT-library.html: deposito, rust-1.99.1-2: usr/share/doc/rustc/COPYRIGHT-library.html
+licenze/rust/rustc-COPYRIGHT.html: deposito, rust-1.99.1-2: usr/share/doc/rustc/COPYRIGHT.html
+licenze/rust-rust-docs/COPYRIGHT: deposito, rust-docs-1.99.1: COPYRIGHT
+licenze/rust-rust-docs/LICENSE-MIT: deposito, rust-docs-1.99.1: LICENSE-MIT

@@ -1,0 +1,47 @@
+{
+  "update.mode": "none",
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": "off",
+  "telemetry.telemetryLevel": "off",
+  "chat.disableAIFeatures": true,
+  "workbench.welcomePage.extraAnnouncements": false,
+  "security.workspace.trust.enabled": false,
+  "basedpyright.analysis.typeCheckingMode": "standard",
+  "clangd.arguments": ["--pch-storage=memory"],
+  "terminal.integrated.defaultProfile.windows": "MSYS",
+  "terminal.integrated.profiles.windows": {
+    "MSYS": {
+      "path": "${env:MYDEV_MSYS}\\usr\\bin\\bash.exe",
+      "args": ["--login", "-i", "-c", "export PATH=\"$MYDEV/bin:$MYDEV/python:$MYDEV/python/Scripts:$PATH:$MYDEV/llvm/bin:$MYDEV/nvim/bin:.\" && exec bash"],
+      "env": {
+        "MSYSTEM": "MSYS",
+        "CHERE_INVOKING": "1",
+        "HOME": "${env:MYDEV_RADICE_POSIX}/home",
+        "XDG_CONFIG_HOME": "${env:MYDEV_RADICE_POSIX}/home/.config",
+        "XDG_DATA_HOME": "${env:MYDEV_RADICE_POSIX}/home/.local/share"
+      }
+    }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug con gcc",
+        "type": "gdb",
+        "request": "launch",
+        "gdb": "gdb-ponte",
+        "program": "${fileDirname}/programma-gcc.exe",
+        "cwd": "${fileDirname}",
+        "preLaunchTask": "Compila con gcc"
+      },
+      {
+        "name": "Debug con clang",
+        "type": "lldb-dap",
+        "request": "launch",
+        "program": "${fileDirname}/programma-clang.exe",
+        "cwd": "${fileDirname}",
+        "preLaunchTask": "Compila con clang"
+      }
+    ]
+  }
+}

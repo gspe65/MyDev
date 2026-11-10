@@ -1,0 +1,20 @@
+{
+  // La libreria: come il nucleo, senza DOM e senza i tipi di Node e di Bun.
+  // L'alias è l'unico punto in cui l'adattatore sa dove sta il nucleo.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": [],
+    "paths": {
+      "nucleo/*": ["../../ricetta/nucleo/estratto/app/*"]
+    }
+  },
+  "include": ["src"]
+}

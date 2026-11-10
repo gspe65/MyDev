@@ -1,0 +1,2752 @@
+{
+  "formato": 1,
+  "togli_da_gruppo": {
+    "msys": [
+      "usr/share/locale/",
+      "usr/share/doc/",
+      "usr/share/info/",
+      "usr/lib/ccache/"
+    ]
+  },
+  "svuota_da_gruppo": {
+    "msys": [
+      "etc/pacman.d/mirrorlist.msys",
+      "etc/pacman.d/mirrorlist.mingw"
+    ]
+  },
+  "crea_da_gruppo": {
+    "msys": [
+      "etc/pacman.d/gnupg/"
+    ]
+  },
+  "scaricati": [
+    {
+      "nome": "editor/vscodium",
+      "gruppo": "editor",
+      "fonte": "https://github.com/VSCodium/vscodium/releases/download/1.143.17232/VSCodium-win32-x64-1.143.17232.zip",
+      "file": "VSCodium-win32-x64-1.143.17232.zip",
+      "byte": 231406156,
+      "sha256": "a1090868af8ac0ac04c22d79fdd02246fa115a78daf38a741d8db06df1753c1d",
+      "versione": "1.143.17232",
+      "licenza": "MIT",
+      "modo": "zip",
+      "destinazioni": [
+        "vscodium"
+      ],
+      "motivo": "La versione su cui il blocco degli aggiornamenti, le estensioni e la portabilita' sono stati misurati; se ne esce una nuova si resta su questa fino alla prova.",
+      "togli": [
+        "d3dcompiler_47.dll",
+        "dxcompiler.dll",
+        "dxil.dll",
+        "bin/codium-tunnel.exe"
+      ],
+      "togli_chiavi": {
+        "file": "resources/app/product.json",
+        "chiavi": [
+          "updateUrl",
+          "extensionsGallery"
+        ]
+      }
+    },
+    {
+      "nome": "algodesign/algodesign",
+      "gruppo": "algodesign",
+      "fonte": "https://github.com/gilan65/AlgoDesign/releases/download/v1.0.0/AlgoDesign-1.0.0-windows-x64.zip",
+      "file": "AlgoDesign-1.0.0-windows-x64.zip",
+      "byte": 3556913,
+      "sha256": "36ca034dfd39f6f1f0957d75be9fc4d28487c3346aeb2dd4d936898b453b6c55",
+      "versione": "1.0.0",
+      "licenza": "MIT per il codice, CC per i documenti",
+      "modo": "zip",
+      "radice": "AlgoDesign-1.0.0/",
+      "destinazioni": [
+        "algodesign"
+      ],
+      "motivo": "La release su cui il nucleo e le prove sono fissati, con la sua impronta pubblicata."
+    },
+    {
+      "nome": "toolchain/llvm-mingw",
+      "gruppo": "toolchain",
+      "fonte": "https://github.com/mstorsjo/llvm-mingw/releases/download/20260826/llvm-mingw-20260826-ucrt-x86_64.zip",
+      "file": "llvm-mingw-20260826-ucrt-x86_64.zip",
+      "byte": 190721391,
+      "sha256": "ae601f4e0f72bbdf441ad2df8bb16f037e2e9251559ea6b37b4057aef39c06c3",
+      "versione": "20260826-ucrt (clang 23.1.0)",
+      "licenza": "Apache-2.0 WITH LLVM-exception, con i testi dei componenti nell'archivio",
+      "modo": "zip",
+      "radice": "llvm-mingw-20260826-ucrt-x86_64/",
+      "destinazioni": [
+        "llvm"
+      ],
+      "motivo": "Identificata per contenuto: 6956 file uguali su 6956 con la toolchain provata dalla radice con spazi doppi; una release piu' recente non e' provata. Le tre cartelle per altre architetture non sono usate.",
+      "togli": [
+        "aarch64-w64-mingw32/",
+        "armv7-w64-mingw32/",
+        "i686-w64-mingw32/"
+      ]
+    },
+    {
+      "nome": "toolchain/python",
+      "gruppo": "toolchain",
+      "fonte": "https://www.python.org/ftp/python/3.14.7/python-3.14.7-embed-amd64.zip",
+      "file": "python-3.14.7-embed-amd64.zip",
+      "byte": 12673227,
+      "sha256": "d297e5ff019966817ad8502465176139f2d3d840fa4ed84b13bed399a6ab1f15",
+      "versione": "3.14.7",
+      "licenza": "PSF-2.0",
+      "modo": "zip",
+      "destinazioni": [
+        "python"
+      ],
+      "motivo": "La distribuzione incorporabile su cui venv, Flask e FastAPI sono provati; 36 file uguali su 37, e il solo diverso e' python314._pth, dove si riattiva import site.",
+      "correggi": [
+        {
+          "file": "python314._pth",
+          "da": "#import site",
+          "a": "import site"
+        }
+      ]
+    },
+    {
+      "nome": "strumenti/neovim",
+      "gruppo": "strumenti",
+      "fonte": "https://github.com/neovim/neovim/releases/download/v0.12.5/nvim-win64.zip",
+      "file": "nvim-win64.zip",
+      "byte": 12623588,
+      "sha256": "de8625ba8cf65ebf40eb80a388ba1ec8e9c15b30218821e2c639119b05920de1",
+      "versione": "0.12.5",
+      "licenza": "Apache-2.0 e Vim",
+      "modo": "zip",
+      "radice": "nvim-win64/",
+      "destinazioni": [
+        "nvim"
+      ],
+      "motivo": "2133 file uguali su 2133 con quelli provati; la 0.12.6 esiste e non e' provata."
+    },
+    {
+      "nome": "strumenti/nginx",
+      "gruppo": "strumenti",
+      "fonte": "https://nginx.org/download/nginx-1.30.4.zip",
+      "file": "nginx-1.30.4.zip",
+      "byte": 2774788,
+      "sha256": "159294214d403f34f0bb4ae598801ab1f6a0d8c8da707f8f08748e294a222a01",
+      "versione": "1.30.4",
+      "licenza": "BSD-2-Clause",
+      "modo": "zip",
+      "radice": "nginx-1.30.4/",
+      "destinazioni": [
+        "nginx"
+      ],
+      "motivo": "L'eseguibile e' identico a quello provato solo su 127.0.0.1; la configurazione e la chiave si generano sul posto."
+    },
+    {
+      "nome": "strumenti/jq",
+      "gruppo": "strumenti",
+      "fonte": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-win64.exe",
+      "file": "jq-win64.exe",
+      "byte": 1035264,
+      "sha256": "a6fc67fedaf9128a3309a1e2ebb8b986aeccf70122ee46d2cb4849e423f0c627",
+      "versione": "1.8.2",
+      "licenza": "MIT",
+      "modo": "copia",
+      "destinazioni": [
+        "bin/jq.exe"
+      ],
+      "motivo": "Identico byte per byte a quello provato."
+    },
+    {
+      "nome": "strumenti/mkcert",
+      "gruppo": "strumenti",
+      "fonte": "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe",
+      "file": "mkcert-v1.4.4-windows-amd64.exe",
+      "byte": 4896256,
+      "sha256": "d2660b50a9ed59eada480750561c96abc2ed4c9a38c6a24d93e30e0977631398",
+      "versione": "1.4.4",
+      "licenza": "BSD-3-Clause",
+      "modo": "copia",
+      "destinazioni": [
+        "bin/mkcert.exe"
+      ],
+      "motivo": "Identico byte per byte a quello provato; il certificato si genera sul posto."
+    },
+    {
+      "nome": "strumenti/cppcheck-winlibs",
+      "gruppo": "strumenti",
+      "fonte": "https://github.com/brechtsanders/winlibs_mingw/releases/download/15.2.0posix-13.0.0-ucrt-r5/winlibs-x86_64-posix-seh-gcc-15.2.0-mingw-w64ucrt-13.0.0-r5.zip",
+      "file": "winlibs-x86_64-posix-seh-gcc-15.2.0-mingw-w64ucrt-13.0.0-r5.zip",
+      "byte": 265160987,
+      "sha256": "7c3fd442be612e6ad5f86c91cf33f336748500bc761e3112bfdba29434baa5f6",
+      "versione": "gcc 15.2.0 / mingw-w64 13.0.0 ucrt r5",
+      "licenza": "GPL-3.0-or-later per cppcheck; GCC Runtime Library Exception, BSD, MIT per le librerie",
+      "modo": "estrai",
+      "motivo": "Cppcheck non e' nel repository di MSYS; questa release ha 83 file uguali su 83 con quelli provati, fuori dal PATH e chiamati da un comando.",
+      "estrai": [
+        {
+          "da": "mingw64/bin/cppcheck.exe",
+          "a": "cppcheck/bin/cppcheck.exe"
+        },
+        {
+          "da": "mingw64/bin/libgcc_s_seh-1.dll",
+          "a": "cppcheck/bin/libgcc_s_seh-1.dll"
+        },
+        {
+          "da": "mingw64/bin/libpcre-1.dll",
+          "a": "cppcheck/bin/libpcre-1.dll"
+        },
+        {
+          "da": "mingw64/bin/libstdc++-6.dll",
+          "a": "cppcheck/bin/libstdc++-6.dll"
+        },
+        {
+          "da": "mingw64/bin/libwinpthread-1.dll",
+          "a": "cppcheck/bin/libwinpthread-1.dll"
+        },
+        {
+          "da": "mingw64/share/Cppcheck/",
+          "a": "cppcheck/share/Cppcheck/"
+        }
+      ],
+      "destinazioni": [
+        "cppcheck"
+      ]
+    },
+    {
+      "nome": "estensioni/ms-python.python",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/ms-python/python/2026.4.0/file/ms-python.python-2026.4.0.vsix",
+      "file": "ms-python.python-2026.4.0.vsix",
+      "byte": 6826731,
+      "sha256": "232aeafb01f069824fdd92d3e628c1c442bbcfa1d3cc945ff97076340bb2b4a6",
+      "versione": "2026.4.0",
+      "licenza": "MIT",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "L'estensione di Python senza Pylance: provata con zero contatti di rete."
+    },
+    {
+      "nome": "estensioni/ms-python.debugpy",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/ms-python/debugpy/win32-x64/2026.6.0/file/ms-python.debugpy-2026.6.0@win32-x64.vsix",
+      "file": "ms-python.debugpy-2026.6.0@win32-x64.vsix",
+      "byte": 4700834,
+      "sha256": "f4a8ba033acc9a1e14bf53f124d8d0848318702bbb161f2a5e47ae3d3d756a67",
+      "versione": "2026.6.0",
+      "licenza": "MIT",
+      "modo": "vsix",
+      "piattaforma": "win32-x64",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il debug di Python per Windows x64, provato fermo a un punto d'interruzione."
+    },
+    {
+      "nome": "estensioni/detachhead.basedpyright",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/detachhead/basedpyright/1.40.2/file/detachhead.basedpyright-1.40.2.vsix",
+      "file": "detachhead.basedpyright-1.40.2.vsix",
+      "byte": 6433623,
+      "sha256": "9c87b0b992714ca2f9298cb7e98bda621612f0ee96121a8e77ee7fcccce2f351",
+      "versione": "1.40.2",
+      "licenza": "MIT",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il completamento e i tipi di Python, aggiornata e MIT nel pacchetto, da impostare col rigore standard."
+    },
+    {
+      "nome": "estensioni/llvm-vs-code-extensions.vscode-clangd",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/llvm-vs-code-extensions/vscode-clangd/0.6.0/file/llvm-vs-code-extensions.vscode-clangd-0.6.0.vsix",
+      "file": "llvm-vs-code-extensions.vscode-clangd-0.6.0.vsix",
+      "byte": 638869,
+      "sha256": "32030694fa6c0ef438f4e4219f84677cd32f603c7faa4c71a283efc1f5b51751",
+      "versione": "0.6.0",
+      "licenza": "MIT",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il completamento del C, provato sui progetti coi thread e su quelli coi processi."
+    },
+    {
+      "nome": "estensioni/llvm-vs-code-extensions.lldb-dap",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/llvm-vs-code-extensions/lldb-dap/0.7.20261012/file/llvm-vs-code-extensions.lldb-dap-0.7.20261012.vsix",
+      "file": "llvm-vs-code-extensions.lldb-dap-0.7.20261012.vsix",
+      "byte": 819829,
+      "sha256": "f264239b109dd2fd8602b6eaa23f88f01d42d61168b10e6f2619a78ddbe54ace",
+      "versione": "0.7.20261012",
+      "licenza": "Apache 2.0 License with LLVM exceptions",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il debug dei programmi compilati con clang, provato per intero."
+    },
+    {
+      "nome": "estensioni/eclipse-cdt.cdt-gdb-vscode",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/eclipse-cdt/cdt-gdb-vscode/2.9.1/file/eclipse-cdt.cdt-gdb-vscode-2.9.1.vsix",
+      "file": "eclipse-cdt.cdt-gdb-vscode-2.9.1.vsix",
+      "byte": 3606058,
+      "sha256": "eec5185f13c96f19b908904b021e82858a68a6097125e9ea5e8d8181ee79da3e",
+      "versione": "2.9.1",
+      "licenza": "EPL-2.0",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il debug col gdb di MSYS, attraverso il traduttore di percorsi; l'unica delle due candidate che non dichiara agganciato un punto rifiutato."
+    },
+    {
+      "nome": "pip/Jinja2",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",
+      "file": "jinja2-3.1.6-py3-none-any.whl",
+      "byte": 134899,
+      "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67",
+      "versione": "3.1.6",
+      "licenza": "BSD-3-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/MarkupSafe",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/28/52/182836104b33b444e400b14f797212f720cbc9ed6ba34c800639d154e821/markupsafe-3.0.3-cp314-cp314-win_amd64.whl",
+      "file": "markupsafe-3.0.3-cp314-cp314-win_amd64.whl",
+      "byte": 15341,
+      "sha256": "bdc919ead48f234740ad807933cdf545180bfbe9342c2bb451556db2ed958581",
+      "versione": "3.0.3",
+      "licenza": "BSD-3-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/Pygments",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl",
+      "file": "pygments-2.21.0-py3-none-any.whl",
+      "byte": 1250147,
+      "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+      "versione": "2.21.0",
+      "licenza": "BSD-2-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/colorama",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl",
+      "file": "colorama-0.4.6-py2.py3-none-any.whl",
+      "byte": 25335,
+      "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6",
+      "versione": "0.4.6",
+      "licenza": "BSD-3-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/colorlog",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/d4/19/0b6647bf5e331521e55d2b63bfbdc210bd9cd605189273f03614a05f702d/colorlog-6.12.0-py3-none-any.whl",
+      "file": "colorlog-6.12.0-py3-none-any.whl",
+      "byte": 12239,
+      "sha256": "30d392604e9110045a2c2aeefc27d7a017abbab63f3a8aee594eac0801df784e",
+      "versione": "6.12.0",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages",
+        "msys64/usr/lib/python3.12/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati. Anche nel Python di MSYS, dove gcovr vede gli stessi percorsi di gcov."
+    },
+    {
+      "nome": "pip/distlib",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/02/08/9c41fb51ab5b43eb21674aff13df270e8ba6c4b29c8624e328dc7a9482af/distlib-0.4.3-py2.py3-none-any.whl",
+      "file": "distlib-0.4.3-py2.py3-none-any.whl",
+      "byte": 470628,
+      "sha256": "4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b",
+      "versione": "0.4.3",
+      "licenza": "PSF-2.0",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/filelock",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/36/d2/b70a31e13d04456d28493f31d2aa087e99eeb2767ef0293b2625727ccb8c/filelock-3.32.5-py3-none-any.whl",
+      "file": "filelock-3.32.5-py3-none-any.whl",
+      "byte": 100003,
+      "sha256": "142cd9fa77a872c5e78c62329a0d15278fadc686eb89e760017968961a4fd6b2",
+      "versione": "3.32.5",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/gcovr",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/92/be/f722c843e7875c7cf92cf0e0c1604cddda55a70278c768c6327a78fdba79/gcovr-8.6-py3-none-any.whl",
+      "file": "gcovr-8.6-py3-none-any.whl",
+      "byte": 254618,
+      "sha256": "dbf9d87c38042752ad6f530aa8210427e22b526611bb7b7bfed0e81977d1f1ef",
+      "versione": "8.6",
+      "licenza": "BSD-3-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages",
+        "msys64/usr/lib/python3.12/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati. Anche nel Python di MSYS, dove gcovr vede gli stessi percorsi di gcov."
+    },
+    {
+      "nome": "pip/lxml",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/0f/bc/5811cc73cac05e324e05ba9b0924e1a163a317a167ede8a9c748b11db30a/lxml-6.1.3-cp314-cp314-win_amd64.whl",
+      "file": "lxml-6.1.3-cp314-cp314-win_amd64.whl",
+      "byte": 4073951,
+      "sha256": "66299564c046bc7e0cc5de5106601eae907e9fa5904cd68a323380a8502f7861",
+      "versione": "6.1.3",
+      "licenza": "BSD-3-Clause",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/pip",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl",
+      "file": "pip-26.2.1-py3-none-any.whl",
+      "byte": 1816632,
+      "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "versione": "26.2.1",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/platformdirs",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/27/6e/80993e10a0482f630cef528635789233224f36b1ffd11592aa15d13ff9ce/platformdirs-4.11.7-py3-none-any.whl",
+      "file": "platformdirs-4.11.7-py3-none-any.whl",
+      "byte": 23938,
+      "sha256": "8a02cb259042c79d1cd0450facc2fe6dc9d303ae7901afbe33bf8ea0b188cef6",
+      "versione": "4.11.7",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/python-discovery",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/43/5e/21abf578182fb15006a57faf3711a1e659e29d600d19b6e557eae908c81d/python_discovery-1.6.0-py3-none-any.whl",
+      "file": "python_discovery-1.6.0-py3-none-any.whl",
+      "byte": 38451,
+      "sha256": "d4e244cf17b8b29819ed78003d55fbacf86eda23425b075454fff9271b79377a",
+      "versione": "1.6.0",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "pip/virtualenv",
+      "gruppo": "pip",
+      "fonte": "https://files.pythonhosted.org/packages/9f/34/88d507d4a4030fa559788de9c690a214f9a4053aa1d91cfb60e9b36127c2/virtualenv-21.7.8-py3-none-any.whl",
+      "file": "virtualenv-21.7.8-py3-none-any.whl",
+      "byte": 5324617,
+      "sha256": "3040eb3cbf5d32b10ffd57d167e6a162237ad82ba7d8cf1400a1efed593d85ac",
+      "versione": "21.7.8",
+      "licenza": "MIT",
+      "modo": "wheel",
+      "destinazioni": [
+        "python/Lib/site-packages"
+      ],
+      "motivo": "I file sono identici a quelli installati e provati."
+    },
+    {
+      "nome": "msys/base",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/base-2022.06-1-any.pkg.tar.zst",
+      "file": "base-2022.06-1-any.pkg.tar.zst",
+      "byte": 2540,
+      "sha256": "1501b0f9e8859c4cee080cf89ea07dc16bcc5cd490383484bbff861ed88c3f4f",
+      "versione": "2022.06-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/bash",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/bash-5.3.015-1-x86_64.pkg.tar.zst",
+      "file": "bash-5.3.015-1-x86_64.pkg.tar.zst",
+      "byte": 2582400,
+      "sha256": "ecd097c0b85938b3167abd7e839a6113b25c8b581b14954aad02e1f8ce556c8e",
+      "versione": "5.3.015-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/bash-completion",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/bash-completion-2.17.0-2-any.pkg.tar.zst",
+      "file": "bash-completion-2.17.0-2-any.pkg.tar.zst",
+      "byte": 229543,
+      "sha256": "d25d717395a1e9f169a71ba404f747527ea577fdee2eebe1c408d869a2d37a6d",
+      "versione": "2.17.0-2",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/binutils",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/binutils-2.47-1-x86_64.pkg.tar.zst",
+      "file": "binutils-2.47-1-x86_64.pkg.tar.zst",
+      "byte": 6241011,
+      "sha256": "b7ddaca6e8b63774cdb1f5ac2720963cd76f8f62ca7e2667b1b0f008ed7ecba2",
+      "versione": "2.47-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/brotli",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/brotli-1.2.0-1-x86_64.pkg.tar.zst",
+      "file": "brotli-1.2.0-1-x86_64.pkg.tar.zst",
+      "byte": 381349,
+      "sha256": "6642bd8fcb238119b167038614ad4eaf44a25b4978a34f74349e0359565ac671",
+      "versione": "1.2.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/bsdtar",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/bsdtar-3.8.7-1-x86_64.pkg.tar.zst",
+      "file": "bsdtar-3.8.7-1-x86_64.pkg.tar.zst",
+      "byte": 353570,
+      "sha256": "064de98cf4f445da86cdef689f8cb58fb44610cf7fd73fb98319a2a37b8f5686",
+      "versione": "3.8.7-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/bzip2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/bzip2-1.0.8-4-x86_64.pkg.tar.zst",
+      "file": "bzip2-1.0.8-4-x86_64.pkg.tar.zst",
+      "byte": 58549,
+      "sha256": "635c483775de60663bd38859bb4624e6aaa1086354acf8e36513b75c24f64b3c",
+      "versione": "1.0.8-4",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/ca-certificates",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/ca-certificates-20250419-1-any.pkg.tar.zst",
+      "file": "ca-certificates-20250419-1-any.pkg.tar.zst",
+      "byte": 396072,
+      "sha256": "7afc4754426fa1309be91d33037455f017704742f54b34fe071284a772875caa",
+      "versione": "20250419-1",
+      "licenza": "MPL; GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/ccache",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/ccache-4.14-1-x86_64.pkg.tar.zst",
+      "file": "ccache-4.14-1-x86_64.pkg.tar.zst",
+      "byte": 681062,
+      "sha256": "92fb83516069ac66442a58fe6be7ee2ec2ebf2ef5f57bb131f0f64bfd2d750ea",
+      "versione": "4.14-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/cmake",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/cmake-4.4.2-1-x86_64.pkg.tar.zst",
+      "file": "cmake-4.4.2-1-x86_64.pkg.tar.zst",
+      "byte": 9707308,
+      "sha256": "afad3f597f0129af703aa9385989bb85261e6bcc54b063b905044737eef7b459",
+      "versione": "4.4.2-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/coreutils",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/coreutils-8.32-5-x86_64.pkg.tar.zst",
+      "file": "coreutils-8.32-5-x86_64.pkg.tar.zst",
+      "byte": 2755209,
+      "sha256": "62dfee1c39fd15f99c39802b35e82643bc14fffc16d6c76d4001caa385ec77e3",
+      "versione": "8.32-5",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/cppdap",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/cppdap-1.58.0a-3-x86_64.pkg.tar.zst",
+      "file": "cppdap-1.58.0a-3-x86_64.pkg.tar.zst",
+      "byte": 469063,
+      "sha256": "93eec069231c8f831d910a502ab3caeb3c263fa0f64ffcc183c5be4931b018a6",
+      "versione": "1.58.0a-3",
+      "licenza": "Apache-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/ctags",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/ctags-6.2.1-3-x86_64.pkg.tar.zst",
+      "file": "ctags-6.2.1-3-x86_64.pkg.tar.zst",
+      "byte": 781716,
+      "sha256": "66b205f5898f991e74d98f79dc94e3b15e6d8498106dbeef08930373c3ae6a3b",
+      "versione": "6.2.1-3",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/curl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/curl-8.20.0-1-x86_64.pkg.tar.zst",
+      "file": "curl-8.20.0-1-x86_64.pkg.tar.zst",
+      "byte": 922889,
+      "sha256": "c94ab45ababd67dbb6b237e2f8e7e763ea0515ab1fed4b0ee4db357fedba40af",
+      "versione": "8.20.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/dash",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/dash-0.5.13.4-1-x86_64.pkg.tar.zst",
+      "file": "dash-0.5.13.4-1-x86_64.pkg.tar.zst",
+      "byte": 83158,
+      "sha256": "afe51a9fcd4bb92d675937e02c5511fddb3d0f564f75775c75cc874a0768702d",
+      "versione": "0.5.13.4-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/db",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/db-6.2.32-6-x86_64.pkg.tar.zst",
+      "file": "db-6.2.32-6-x86_64.pkg.tar.zst",
+      "byte": 49971,
+      "sha256": "41bc94acad3b53eaa92227ec34412305f648848ffbc963bcad88274517e13e8d",
+      "versione": "6.2.32-6",
+      "licenza": "AGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/diffutils",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst",
+      "file": "diffutils-3.12-1-x86_64.pkg.tar.zst",
+      "byte": 394515,
+      "sha256": "7902c8ce3d4dd69a0f5e98dc9d5c83c17b23314ba486169db57ef6e2835ce3b6",
+      "versione": "3.12-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/doctest",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/doctest-2.4.12-1-any.pkg.tar.zst",
+      "file": "doctest-2.4.12-1-any.pkg.tar.zst",
+      "byte": 65121,
+      "sha256": "984f616e4b580ae82cff754b7fa6db517bb2aa15c409d97d9a16d9276b7e3ed2",
+      "versione": "2.4.12-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/file",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/file-5.48-1-x86_64.pkg.tar.zst",
+      "file": "file-5.48-1-x86_64.pkg.tar.zst",
+      "byte": 468042,
+      "sha256": "f55026638fe4ed4b31ee3cf316843ac190d9332816bff8dcb0a99fd8c6350608",
+      "versione": "5.48-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/filesystem",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/filesystem-2026.03.06-1-x86_64.pkg.tar.zst",
+      "file": "filesystem-2026.03.06-1-x86_64.pkg.tar.zst",
+      "byte": 94696,
+      "sha256": "4506b2dbb496281b7645ee2b2d3700f6a2fab3d74a800733f3b3b44eeb8edc5c",
+      "versione": "2026.03.06-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/findutils",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/findutils-4.10.0-2-x86_64.pkg.tar.zst",
+      "file": "findutils-4.10.0-2-x86_64.pkg.tar.zst",
+      "byte": 563776,
+      "sha256": "ed3ce5a8684156dd90c98e50e34cb988867ad1462efc3c6f58170ca244d7c161",
+      "versione": "4.10.0-2",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/fmt",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/fmt-12.2.0-1-x86_64.pkg.tar.zst",
+      "file": "fmt-12.2.0-1-x86_64.pkg.tar.zst",
+      "byte": 204857,
+      "sha256": "bbabaf87764782f2482bb7a5e4ab575dcf52c74c01768e9ff2593e3e3da4f02a",
+      "versione": "12.2.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gawk",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gawk-5.4.0-1-x86_64.pkg.tar.zst",
+      "file": "gawk-5.4.0-1-x86_64.pkg.tar.zst",
+      "byte": 1509108,
+      "sha256": "618c817ac25bf81d7541d7284cff2ab6043fcf966a1ffa5638ac698a4d985076",
+      "versione": "5.4.0-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gcc",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gcc-15.3.0-1-x86_64.pkg.tar.zst",
+      "file": "gcc-15.3.0-1-x86_64.pkg.tar.zst",
+      "byte": 53961737,
+      "sha256": "f8e7e4bf21bb8f690058384fd6ee27bb3567edad49077e691d1f12f0a42119f1",
+      "versione": "15.3.0-1",
+      "licenza": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il gcc di MSYS collega da un percorso con spazi, il gcc di winlibs su mingw-w64 14.x no: non si cambia senza la prova dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gcc-libs",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gcc-libs-15.3.0-1-x86_64.pkg.tar.zst",
+      "file": "gcc-libs-15.3.0-1-x86_64.pkg.tar.zst",
+      "byte": 1082211,
+      "sha256": "0d99a122c453c05ae21ba3dcea910f2e0d93d38ae067c677a112a315b0f3cec5",
+      "versione": "15.3.0-1",
+      "licenza": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gdb",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gdb-17.1-3-x86_64.pkg.tar.zst",
+      "file": "gdb-17.1-3-x86_64.pkg.tar.zst",
+      "byte": 5273791,
+      "sha256": "7f0544634c937bbdfa709769817ac9fd54ad4c6feb9e52877aa7fbb25a028a78",
+      "versione": "17.1-3",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il debug dei programmi su processi passa da questo gdb, che capisce solo i percorsi /c/... e lavora col traduttore."
+    },
+    {
+      "nome": "msys/gdbm",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gdbm-1.26-1-x86_64.pkg.tar.zst",
+      "file": "gdbm-1.26-1-x86_64.pkg.tar.zst",
+      "byte": 212954,
+      "sha256": "1f8e949be2bbe488c5644132db78ecda288c9945922e7ed2447384734e2adba2",
+      "versione": "1.26-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/getent",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/getent-2.18.90-6-x86_64.pkg.tar.zst",
+      "file": "getent-2.18.90-6-x86_64.pkg.tar.zst",
+      "byte": 11791,
+      "sha256": "d6bcece7733d5080c6125aedf7996bbbfd33067f432dd659447f34d8136d97ca",
+      "versione": "2.18.90-6",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gettext",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gettext-0.22.5-1-x86_64.pkg.tar.zst",
+      "file": "gettext-0.22.5-1-x86_64.pkg.tar.zst",
+      "byte": 1885957,
+      "sha256": "b31ab065c3538ecb1fb6ab48ab2b3049243d6d9e585331c882f38326eefc1831",
+      "versione": "0.22.5-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gmp",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gmp-6.3.0-2-x86_64.pkg.tar.zst",
+      "file": "gmp-6.3.0-2-x86_64.pkg.tar.zst",
+      "byte": 396914,
+      "sha256": "f84536138e618d47a1df2da83916cfebbd449f159ffad52f994a71060a41cf34",
+      "versione": "6.3.0-2",
+      "licenza": "LGPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gnupg",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gnupg-2.4.9-1-x86_64.pkg.tar.zst",
+      "file": "gnupg-2.4.9-1-x86_64.pkg.tar.zst",
+      "byte": 2699820,
+      "sha256": "cd95fe16cc87700372549294a21f35b4adeed8bf57451cd2147e7f82f9e582eb",
+      "versione": "2.4.9-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/grep",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/grep-1~3.0-7-x86_64.pkg.tar.zst",
+      "file": "grep-1~3.0-7-x86_64.pkg.tar.zst",
+      "byte": 249241,
+      "sha256": "2909b3bbef8d33d66980339fb7bd2d3d9145bae0f04191e6671df39868aea427",
+      "versione": "1~3.0-7",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/groff",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/groff-1.23.0-3-x86_64.pkg.tar.zst",
+      "file": "groff-1.23.0-3-x86_64.pkg.tar.zst",
+      "byte": 2293453,
+      "sha256": "cfc496a64765e0028d25fc7b947c5b8c54583af9d454ecb7b07ed5fefb2408dd",
+      "versione": "1.23.0-3",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/gzip",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/gzip-1.14-2-x86_64.pkg.tar.zst",
+      "file": "gzip-1.14-2-x86_64.pkg.tar.zst",
+      "byte": 106297,
+      "sha256": "d63e8d98ff030c88663cc64cf8ebd04203fba17365807477efa06f717d7daedc",
+      "versione": "1.14-2",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/iconv",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/iconv-1.19-1-x86_64.pkg.tar.zst",
+      "file": "iconv-1.19-1-x86_64.pkg.tar.zst",
+      "byte": 13934,
+      "sha256": "f1916b4fa349612c7edde73c2f8f50b1371d5945e7503b29169f08310d033633",
+      "versione": "1.19-1",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/inetutils",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/inetutils-2.7-1-x86_64.pkg.tar.zst",
+      "file": "inetutils-2.7-1-x86_64.pkg.tar.zst",
+      "byte": 230302,
+      "sha256": "d03de50457f2f1c70d7344b3e360e2b353a890cb6aa9bfee5570f244fa40e38b",
+      "versione": "2.7-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/info",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/info-7.2-3-x86_64.pkg.tar.zst",
+      "file": "info-7.2-3-x86_64.pkg.tar.zst",
+      "byte": 189742,
+      "sha256": "69242603357aa7011356f7d15a2017ad086e5682c8577f13520943c94bd2b03e",
+      "versione": "7.2-3",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/isl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/isl-0.28-1-x86_64.pkg.tar.zst",
+      "file": "isl-0.28-1-x86_64.pkg.tar.zst",
+      "byte": 782904,
+      "sha256": "20c8d3a623fe948c9175b236236ae31b09e77e66dc514f8467d35e81a8514f95",
+      "versione": "0.28-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/jansson",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/jansson-2.15.1-1-x86_64.pkg.tar.zst",
+      "file": "jansson-2.15.1-1-x86_64.pkg.tar.zst",
+      "byte": 53184,
+      "sha256": "744e85071f1579d6610cddb441759b65f95717761e6ece98faf055a5dec9a411",
+      "versione": "2.15.1-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/jsoncpp",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/jsoncpp-1.9.8-1-x86_64.pkg.tar.zst",
+      "file": "jsoncpp-1.9.8-1-x86_64.pkg.tar.zst",
+      "byte": 84385,
+      "sha256": "8d342815c591268ceb1377549c284fecbe97aa23685b1538f3bb9086973408a8",
+      "versione": "1.9.8-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/less",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/less-704-1-x86_64.pkg.tar.zst",
+      "file": "less-704-1-x86_64.pkg.tar.zst",
+      "byte": 151338,
+      "sha256": "0fddcf47bb99487616a0044bd98cda8528952cf5097666436d34383ecffe7fd6",
+      "versione": "704-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libarchive",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libarchive-3.8.9-1-x86_64.pkg.tar.zst",
+      "file": "libarchive-3.8.9-1-x86_64.pkg.tar.zst",
+      "byte": 330645,
+      "sha256": "9762322902dae1044b4ffc4eb877be56f6aea51d1a0a89e4ad1ed860a0980011",
+      "versione": "3.8.9-1",
+      "licenza": "BSD-2-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libargp",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libargp-20260115-1-x86_64.pkg.tar.zst",
+      "file": "libargp-20260115-1-x86_64.pkg.tar.zst",
+      "byte": 40238,
+      "sha256": "34ff307975c269d552045bab47019551d0e643d5c129e6080d1e26140d35735d",
+      "versione": "20260115-1",
+      "licenza": "LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libasprintf",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libasprintf-0.22.5-1-x86_64.pkg.tar.zst",
+      "file": "libasprintf-0.22.5-1-x86_64.pkg.tar.zst",
+      "byte": 5553,
+      "sha256": "fdd59ae72d355ae1c5615f12429493611782f3e38bf1f7ca9ca83b61fcfb6c26",
+      "versione": "0.22.5-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libassuan",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libassuan-3.0.2-1-x86_64.pkg.tar.zst",
+      "file": "libassuan-3.0.2-1-x86_64.pkg.tar.zst",
+      "byte": 99262,
+      "sha256": "f6414e08f432e2fb130b23deb3c5c99f68c1f09768599f634c6138db50d1823f",
+      "versione": "3.0.2-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libblake3",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libblake3-1.8.7-1-x86_64.pkg.tar.zst",
+      "file": "libblake3-1.8.7-1-x86_64.pkg.tar.zst",
+      "byte": 28268,
+      "sha256": "050494e29754221e3c9602a59211e5a6faf97ba6f03c1fc752ccdf54ea078992",
+      "versione": "1.8.7-1",
+      "licenza": "CC0-1.0 OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libbz2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libbz2-1.0.8-4-x86_64.pkg.tar.zst",
+      "file": "libbz2-1.0.8-4-x86_64.pkg.tar.zst",
+      "byte": 30786,
+      "sha256": "89fb0e1478b22b80effda55ab4ae7549388d01245d3841a096d8a2d63236c2a1",
+      "versione": "1.0.8-4",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libcurl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libcurl-8.20.0-1-x86_64.pkg.tar.zst",
+      "file": "libcurl-8.20.0-1-x86_64.pkg.tar.zst",
+      "byte": 369523,
+      "sha256": "b199287430aac9558daad6fa77b107b4d506d89ef3b81f1235a371a9ba840099",
+      "versione": "8.20.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libdb",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libdb-6.2.32-6-x86_64.pkg.tar.zst",
+      "file": "libdb-6.2.32-6-x86_64.pkg.tar.zst",
+      "byte": 831918,
+      "sha256": "27a35786f3aab14e625c02df7bcd8a9dda0da782ce4f0549a427a21316b4d179",
+      "versione": "6.2.32-6",
+      "licenza": "AGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libevent",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libevent-2.1.13-1-x86_64.pkg.tar.zst",
+      "file": "libevent-2.1.13-1-x86_64.pkg.tar.zst",
+      "byte": 163618,
+      "sha256": "ce967e0bbeb4cf396a42e6cd7516b6bbcef23237bf0a55099adbdfe1e9b3fce3",
+      "versione": "2.1.13-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libexpat",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libexpat-2.8.1-1-x86_64.pkg.tar.zst",
+      "file": "libexpat-2.8.1-1-x86_64.pkg.tar.zst",
+      "byte": 62926,
+      "sha256": "60faab2e7fe96f7a7664235613b91c8e94fb40417ec8da658a703dce40be66e6",
+      "versione": "2.8.1-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libffi",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libffi-3.5.2-1-x86_64.pkg.tar.zst",
+      "file": "libffi-3.5.2-1-x86_64.pkg.tar.zst",
+      "byte": 31691,
+      "sha256": "ae0ad7e3c733c458e26cee30ee8d16f123ef99027d7ea5edda41c968fc0d91ba",
+      "versione": "3.5.2-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgc",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgc-8.2.12-1-x86_64.pkg.tar.zst",
+      "file": "libgc-8.2.12-1-x86_64.pkg.tar.zst",
+      "byte": 174783,
+      "sha256": "a6bd62a8473c57d3233ab5d4baaf090259fc3a44032d7f1938600c08d2cc2f88",
+      "versione": "8.2.12-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgcrypt",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgcrypt-1.12.2-1-x86_64.pkg.tar.zst",
+      "file": "libgcrypt-1.12.2-1-x86_64.pkg.tar.zst",
+      "byte": 564580,
+      "sha256": "d8928b81edd0d957e51b2019d4197359024bd48bb5a4c1ea3f01ded2141e2374",
+      "versione": "1.12.2-1",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgdbm",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgdbm-1.26-1-x86_64.pkg.tar.zst",
+      "file": "libgdbm-1.26-1-x86_64.pkg.tar.zst",
+      "byte": 32345,
+      "sha256": "bb4b08b720dd3194db010589812e9c63bec3d29b32545e7cbd07b6443e51c5ed",
+      "versione": "1.26-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgettextpo",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgettextpo-0.22.5-1-x86_64.pkg.tar.zst",
+      "file": "libgettextpo-0.22.5-1-x86_64.pkg.tar.zst",
+      "byte": 128573,
+      "sha256": "a9f3ef6b3712e20f0dc6eecaf8c2ec6aff5f259b2dbe87422a0aaca7b27c98d5",
+      "versione": "0.22.5-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgnutls",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgnutls-3.8.13-1-x86_64.pkg.tar.zst",
+      "file": "libgnutls-3.8.13-1-x86_64.pkg.tar.zst",
+      "byte": 1499934,
+      "sha256": "5dd5abb96e26f612212e1c930d4db4af550d8baee2d68cca20ea504bd7ed5d48",
+      "versione": "3.8.13-1",
+      "licenza": "GPL-3.0-or-later; LGPL-2.1-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libgpg-error",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgpg-error-1.61-1-x86_64.pkg.tar.zst",
+      "file": "libgpg-error-1.61-1-x86_64.pkg.tar.zst",
+      "byte": 203007,
+      "sha256": "4c760c81be9c3875837f9b3c2a61e2c6247cbc73903e2c8696fb58df0d683e43",
+      "versione": "1.61-1",
+      "licenza": "LGPL-2.1-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libguile",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libguile-3.0.11-1-x86_64.pkg.tar.zst",
+      "file": "libguile-3.0.11-1-x86_64.pkg.tar.zst",
+      "byte": 7912410,
+      "sha256": "455c95505ac126fe1d15edb3983c2ffcecbaa0f5b1775dca1d022190b776edc2",
+      "versione": "3.0.11-1",
+      "licenza": "LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libhogweed",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libhogweed-3.10.2-1-x86_64.pkg.tar.zst",
+      "file": "libhogweed-3.10.2-1-x86_64.pkg.tar.zst",
+      "byte": 186922,
+      "sha256": "649f461d6207e1c5372a136c9c8af27c8c308505264872b4deccb5c34bbead4d",
+      "versione": "3.10.2-1",
+      "licenza": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libiconv",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libiconv-1.19-1-x86_64.pkg.tar.zst",
+      "file": "libiconv-1.19-1-x86_64.pkg.tar.zst",
+      "byte": 718353,
+      "sha256": "0fa55ea2a6ccf97cf8c58b24b2615815e15e16e6e4e888091c263c2c83c5313d",
+      "versione": "1.19-1",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libidn2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libidn2-2.3.8-1-x86_64.pkg.tar.zst",
+      "file": "libidn2-2.3.8-1-x86_64.pkg.tar.zst",
+      "byte": 150443,
+      "sha256": "55e0de96b893e9f67f14a4283d411fc2a45d7b59333bc16e2a9b16e5bfc9282f",
+      "versione": "2.3.8-1",
+      "licenza": "GPL3; LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libintl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libintl-0.22.5-1-x86_64.pkg.tar.zst",
+      "file": "libintl-0.22.5-1-x86_64.pkg.tar.zst",
+      "byte": 50537,
+      "sha256": "336d66b9d95cf9c1804958f8e260762a3e83bf158ed5981f783bc772a31073cf",
+      "versione": "0.22.5-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libksba",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libksba-1.8.0-1-x86_64.pkg.tar.zst",
+      "file": "libksba-1.8.0-1-x86_64.pkg.tar.zst",
+      "byte": 138976,
+      "sha256": "77c6dbf0e09582189b06ff44b8ecbe94011358cbb271be712bd1f3c77287c116",
+      "versione": "1.8.0-1",
+      "licenza": "LGPL-3.0-or-later OR GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/liblz4",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/liblz4-1.10.0-1-x86_64.pkg.tar.zst",
+      "file": "liblz4-1.10.0-1-x86_64.pkg.tar.zst",
+      "byte": 65386,
+      "sha256": "1cbbe51ee91bf32691aabb15bdb7c8548e8b5ef8195122ef31f10edcca6e952f",
+      "versione": "1.10.0-1",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/liblzma",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/liblzma-5.8.3-1-x86_64.pkg.tar.zst",
+      "file": "liblzma-5.8.3-1-x86_64.pkg.tar.zst",
+      "byte": 90186,
+      "sha256": "63e778c1724dfa165394ca0c021ee399cffb7be7a1c8ff43ec2a1341aaf5d8fa",
+      "versione": "5.8.3-1",
+      "licenza": "GPL; LGPL; custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libnettle",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libnettle-3.10.2-1-x86_64.pkg.tar.zst",
+      "file": "libnettle-3.10.2-1-x86_64.pkg.tar.zst",
+      "byte": 144026,
+      "sha256": "e9a0943c3ecc2a0692c4fb5574add9fe41d379a2eb952c9ad12139e396295d62",
+      "versione": "3.10.2-1",
+      "licenza": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libnghttp2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libnghttp2-1.69.0-1-x86_64.pkg.tar.zst",
+      "file": "libnghttp2-1.69.0-1-x86_64.pkg.tar.zst",
+      "byte": 66112,
+      "sha256": "b0c5f3ac15346ec25f9dfc9bcdf2a78e5480b6d1e2b525ef0be07053409502b9",
+      "versione": "1.69.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libnghttp3",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libnghttp3-1.16.0-1-x86_64.pkg.tar.zst",
+      "file": "libnghttp3-1.16.0-1-x86_64.pkg.tar.zst",
+      "byte": 69407,
+      "sha256": "6545b66f91b8b3fb471295f52a5dbe2739d8a1b943f9c76f0cd185743291e0e0",
+      "versione": "1.16.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libngtcp2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libngtcp2-1.23.0-1-x86_64.pkg.tar.zst",
+      "file": "libngtcp2-1.23.0-1-x86_64.pkg.tar.zst",
+      "byte": 162712,
+      "sha256": "2a67f6e10f1715aa35648507fa9ddb56dd6a0c70cd571bc7036b92f6889157f4",
+      "versione": "1.23.0-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libnpth",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libnpth-1.8-1-x86_64.pkg.tar.zst",
+      "file": "libnpth-1.8-1-x86_64.pkg.tar.zst",
+      "byte": 7194,
+      "sha256": "29803ea796a2766396351d4c7786e33f7a64ebe2576968ec5dd55338eada08fb",
+      "versione": "1.8-1",
+      "licenza": "LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libopenssl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libopenssl-3.6.3-1-x86_64.pkg.tar.zst",
+      "file": "libopenssl-3.6.3-1-x86_64.pkg.tar.zst",
+      "byte": 2091819,
+      "sha256": "f85f28d46b09d02229bfe923c9cc323463810fc4dbea2e8275a2fdc40edb2c53",
+      "versione": "3.6.3-1",
+      "licenza": "Apache-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libp11-kit",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libp11-kit-0.26.2-1-x86_64.pkg.tar.zst",
+      "file": "libp11-kit-0.26.2-1-x86_64.pkg.tar.zst",
+      "byte": 261625,
+      "sha256": "6ac6f9089eb525ce70cbc0711706c4ad38d3344d6f4abecd1d4f7b506deb40fa",
+      "versione": "0.26.2-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libpcre",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libpcre-8.45-5-x86_64.pkg.tar.zst",
+      "file": "libpcre-8.45-5-x86_64.pkg.tar.zst",
+      "byte": 96135,
+      "sha256": "b4dc2eb7795cbacaa683101d720fa67f536262497a1d89934a58f5dab8d17d17",
+      "versione": "8.45-5",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libpcre2_8",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libpcre2_8-10.47-1-x86_64.pkg.tar.zst",
+      "file": "libpcre2_8-10.47-1-x86_64.pkg.tar.zst",
+      "byte": 151732,
+      "sha256": "550804c3fd7c802daf5edb54396ef164cb3c1b4329e250def440eb18a3285ec6",
+      "versione": "10.47-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libpipeline",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libpipeline-1.5.8-1-x86_64.pkg.tar.zst",
+      "file": "libpipeline-1.5.8-1-x86_64.pkg.tar.zst",
+      "byte": 36606,
+      "sha256": "3a872f7f37303409f1b546964ac146dffb9b33e92e42e0219b61157e69830e28",
+      "versione": "1.5.8-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libpsl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libpsl-0.21.5-2-x86_64.pkg.tar.zst",
+      "file": "libpsl-0.21.5-2-x86_64.pkg.tar.zst",
+      "byte": 71224,
+      "sha256": "26f9ba0969243231d2b9c0a7c181052b78494aaf6cc58cd59ee3064c72f80d6b",
+      "versione": "0.21.5-2",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libreadline",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libreadline-8.3.003-1-x86_64.pkg.tar.zst",
+      "file": "libreadline-8.3.003-1-x86_64.pkg.tar.zst",
+      "byte": 388315,
+      "sha256": "f78e11a496010305fb80b6804518d5c1257794fc87bc8caaf8c4a65d7a983dec",
+      "versione": "8.3.003-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/librhash",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/librhash-1.4.4-1-x86_64.pkg.tar.zst",
+      "file": "librhash-1.4.4-1-x86_64.pkg.tar.zst",
+      "byte": 123342,
+      "sha256": "8dff1d12b343c4ebcd1bf86f8b5754a8557ee3ae1b7dc110a77ab74b9d629508",
+      "versione": "1.4.4-1",
+      "licenza": "custom; MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libsqlite",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libsqlite-3.53.2-1-x86_64.pkg.tar.zst",
+      "file": "libsqlite-3.53.2-1-x86_64.pkg.tar.zst",
+      "byte": 758483,
+      "sha256": "1bf1da3b19d91f30d29ea05c89787ab7879a3f3b1be6f7c37f2c999331b7f579",
+      "versione": "3.53.2-1",
+      "licenza": "PublicDomain",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libssh2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libssh2-1.11.1-1-x86_64.pkg.tar.zst",
+      "file": "libssh2-1.11.1-1-x86_64.pkg.tar.zst",
+      "byte": 230653,
+      "sha256": "f79883af85a2bb4778e1352c0b7ea27737a05e4110ef14461f0a842a40ff893d",
+      "versione": "1.11.1-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libtasn1",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libtasn1-4.21.0-1-x86_64.pkg.tar.zst",
+      "file": "libtasn1-4.21.0-1-x86_64.pkg.tar.zst",
+      "byte": 100727,
+      "sha256": "14f15c4b2b6ebeb6bfcf060cab27a32cd8967f70b0e68cc14670062cce546f04",
+      "versione": "4.21.0-1",
+      "licenza": "GPL3; LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libunistring",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libunistring-1.4.2-1-x86_64.pkg.tar.zst",
+      "file": "libunistring-1.4.2-1-x86_64.pkg.tar.zst",
+      "byte": 772641,
+      "sha256": "bcd04706d95b5e7127d39834565bceed6b400192f5fb51599745aba28d5da018",
+      "versione": "1.4.2-1",
+      "licenza": "LGPL-3.0-or-later OR GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libutil-linux",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libutil-linux-2.40.2-2-x86_64.pkg.tar.zst",
+      "file": "libutil-linux-2.40.2-2-x86_64.pkg.tar.zst",
+      "byte": 308527,
+      "sha256": "148ec8e668cb0a30ea0c4e2687e16e0953d6628305598f4c3225bedf2564192d",
+      "versione": "2.40.2-2",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libuv",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libuv-1.52.1-1-x86_64.pkg.tar.zst",
+      "file": "libuv-1.52.1-1-x86_64.pkg.tar.zst",
+      "byte": 135737,
+      "sha256": "926a033942e9f6d532c86d9bc61700c5155b7f102733ba4648ee8be65ea33154",
+      "versione": "1.52.1-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libxcrypt",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libxcrypt-4.5.2-1-x86_64.pkg.tar.zst",
+      "file": "libxcrypt-4.5.2-1-x86_64.pkg.tar.zst",
+      "byte": 87371,
+      "sha256": "e63db0aa2b708359e25f61f506e2d2c92c315febf5f88cc9f386e4ec0bdf4fa5",
+      "versione": "4.5.2-1",
+      "licenza": "LGPL-2.1-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libxml2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libxml2-2.15.3-1-x86_64.pkg.tar.zst",
+      "file": "libxml2-2.15.3-1-x86_64.pkg.tar.zst",
+      "byte": 514759,
+      "sha256": "9d7158e6c41c93806435b2c170785da8067e675c010083805ba1de3260535b9a",
+      "versione": "2.15.3-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libxslt",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libxslt-1.1.45-1-x86_64.pkg.tar.zst",
+      "file": "libxslt-1.1.45-1-x86_64.pkg.tar.zst",
+      "byte": 139440,
+      "sha256": "6006ac779da13082b2cb18a6070780f3530649c9ad9143b4739cb440a6c42e45",
+      "versione": "1.1.45-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libxxhash",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libxxhash-0.8.3-1-x86_64.pkg.tar.zst",
+      "file": "libxxhash-0.8.3-1-x86_64.pkg.tar.zst",
+      "byte": 20121,
+      "sha256": "fbe21b886bb1e3895a081ce84122062eef88e8b39affcba3a6863cdff21c73b8",
+      "versione": "0.8.3-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libyaml",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libyaml-0.2.5-2-x86_64.pkg.tar.zst",
+      "file": "libyaml-0.2.5-2-x86_64.pkg.tar.zst",
+      "byte": 49068,
+      "sha256": "11509c6e3133b3fc63f99cc04e89a1cc5685aa746e96bd5f481e3424fbd4f6c1",
+      "versione": "0.2.5-2",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/libzstd",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libzstd-1.5.7-1-x86_64.pkg.tar.zst",
+      "file": "libzstd-1.5.7-1-x86_64.pkg.tar.zst",
+      "byte": 399681,
+      "sha256": "5e370b2e725a0a7e5ff58d84653c9a0cd5a10b9cfe930f2d949a28ad2a11c1f2",
+      "versione": "1.5.7-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/make",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/make-4.4.1-3-x86_64.pkg.tar.zst",
+      "file": "make-4.4.1-3-x86_64.pkg.tar.zst",
+      "byte": 514683,
+      "sha256": "af0bdba17f06fe037f0194069adaa31a8fe45f1a11381501896aea1fae37bd5d",
+      "versione": "4.4.1-3",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il make di MinGW rompe make clean con gli spazi, questo regge senza subst."
+    },
+    {
+      "nome": "msys/man-db",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/man-db-2.13.1-2-x86_64.pkg.tar.zst",
+      "file": "man-db-2.13.1-2-x86_64.pkg.tar.zst",
+      "byte": 631334,
+      "sha256": "c6c6f78004246ca4822c9070ed19a3364d6cbdc7e7e4c617309d647112e5e410",
+      "versione": "2.13.1-2",
+      "licenza": "GPL; LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/man-pages-posix",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/man-pages-posix-2017_a-1-any.pkg.tar.zst",
+      "file": "man-pages-posix-2017_a-1-any.pkg.tar.zst",
+      "byte": 2703384,
+      "sha256": "86a7907a79945ba0ce98a222d61858676c4f0a2f61629210b66f7d9c83127e1d",
+      "versione": "2017_a-1",
+      "licenza": "custom:posix",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/mintty",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/mintty-1~3.8.3-1-x86_64.pkg.tar.zst",
+      "file": "mintty-1~3.8.3-1-x86_64.pkg.tar.zst",
+      "byte": 1361640,
+      "sha256": "a6b74c4beb29e4298b4d253baebfc38b1c67811f2259ab980e17dbaa5a76ac6e",
+      "versione": "1~3.8.3-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/mpc",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/mpc-1.4.1-1-x86_64.pkg.tar.zst",
+      "file": "mpc-1.4.1-1-x86_64.pkg.tar.zst",
+      "byte": 87944,
+      "sha256": "0f5073ec2e8be265854ee3c7cb1079b5e8e02264d53e659d8414988c6c182f16",
+      "versione": "1.4.1-1",
+      "licenza": "LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/mpdecimal",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/mpdecimal-4.0.1-1-x86_64.pkg.tar.zst",
+      "file": "mpdecimal-4.0.1-1-x86_64.pkg.tar.zst",
+      "byte": 75334,
+      "sha256": "01ae3016641af4d499329c68e00a34664b7c7d9095dc6a859317441507132d41",
+      "versione": "4.0.1-1",
+      "licenza": "BSD-2-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/mpfr",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/mpfr-4.2.2-1-x86_64.pkg.tar.zst",
+      "file": "mpfr-4.2.2-1-x86_64.pkg.tar.zst",
+      "byte": 395839,
+      "sha256": "8f1b6c17c53e00494a488e03dfdf8fc742027ed03a5bd7b1b3a6a33f595a7498",
+      "versione": "4.2.2-1",
+      "licenza": "LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/msys2-keyring",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-keyring-1~20260214-1-any.pkg.tar.zst",
+      "file": "msys2-keyring-1~20260214-1-any.pkg.tar.zst",
+      "byte": 42159,
+      "sha256": "c93044188c49f6f75e6f75709017ffa9234c2bdd8fe7c6a4c47d62a9cd8bfb1f",
+      "versione": "1~20260214-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/msys2-launcher",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-launcher-1.5-3-x86_64.pkg.tar.zst",
+      "file": "msys2-launcher-1.5-3-x86_64.pkg.tar.zst",
+      "byte": 98694,
+      "sha256": "56b1170274fc33014e6d857e4e4d32a20975be0e23ed8385bb7372520118aa84",
+      "versione": "1.5-3",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/msys2-runtime",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-runtime-3.6.10-3-x86_64.pkg.tar.zst",
+      "file": "msys2-runtime-3.6.10-3-x86_64.pkg.tar.zst",
+      "byte": 2064942,
+      "sha256": "4dfcff2f7bde98f30dbd5d3773320e2ce2b06d9175a53fee6a18621637e3f3d1",
+      "versione": "3.6.10-3",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il runtime dei programmi su processi, thread e segnali: una versione diversa non e' provata."
+    },
+    {
+      "nome": "msys/msys2-runtime-devel",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-runtime-devel-3.6.10-3-x86_64.pkg.tar.zst",
+      "file": "msys2-runtime-devel-3.6.10-3-x86_64.pkg.tar.zst",
+      "byte": 5901132,
+      "sha256": "c49d315897978030bca84ef8d3a4876d0fe64b1e13ef5980d73345c0465fd1cc",
+      "versione": "3.6.10-3",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/msys2-w32api-headers",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1-x86_64.pkg.tar.zst",
+      "file": "msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1-x86_64.pkg.tar.zst",
+      "byte": 6203022,
+      "sha256": "fcadf735fb214d33c64e145f82490c8693aeb6cb6a20ee8479e9f408aa832613",
+      "versione": "14.0.0.r0.g9b3dd0125-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/msys2-w32api-runtime",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/msys2-w32api-runtime-14.0.0.r0.g9b3dd0125-1-x86_64.pkg.tar.zst",
+      "file": "msys2-w32api-runtime-14.0.0.r0.g9b3dd0125-1-x86_64.pkg.tar.zst",
+      "byte": 3042471,
+      "sha256": "a9c5c922f5191f7e73333ea2d5392811282387986b9cb7f94a7c9156f717d4b3",
+      "versione": "14.0.0.r0.g9b3dd0125-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/nano",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/nano-9.0-1-x86_64.pkg.tar.zst",
+      "file": "nano-9.0-1-x86_64.pkg.tar.zst",
+      "byte": 678463,
+      "sha256": "49ac28e7fb260416edc6209c7e3e3641ca2c1d1d7cfe485a9e92d63d586ed22b",
+      "versione": "9.0-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/ncurses",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/ncurses-6.6-2-x86_64.pkg.tar.zst",
+      "file": "ncurses-6.6-2-x86_64.pkg.tar.zst",
+      "byte": 1286284,
+      "sha256": "828c92f09b17f00d3b49362fcfa4affa58e5e50e238f290ea36eb7a690da3acb",
+      "versione": "6.6-2",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/nettle",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/nettle-3.10.2-1-x86_64.pkg.tar.zst",
+      "file": "nettle-3.10.2-1-x86_64.pkg.tar.zst",
+      "byte": 99324,
+      "sha256": "55122e75644e8742f412a58608528d9064ce1b638cb2dc176392e4a019b5109e",
+      "versione": "3.10.2-1",
+      "licenza": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/ninja",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/ninja-1.13.2-1-x86_64.pkg.tar.zst",
+      "file": "ninja-1.13.2-1-x86_64.pkg.tar.zst",
+      "byte": 184585,
+      "sha256": "f90a948749dfba4bb901c0cec9a28dc92c2c63a79346e9002b1ae4192ed92199",
+      "versione": "1.13.2-1",
+      "licenza": "Apache",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/openssl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/openssl-3.6.3-1-x86_64.pkg.tar.zst",
+      "file": "openssl-3.6.3-1-x86_64.pkg.tar.zst",
+      "byte": 685181,
+      "sha256": "26b53a063e95bd9295b796053ac34d0a4ec77dc49fb11fc135454ea676e7e9c5",
+      "versione": "3.6.3-1",
+      "licenza": "Apache-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/p11-kit",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/p11-kit-0.26.2-1-x86_64.pkg.tar.zst",
+      "file": "p11-kit-0.26.2-1-x86_64.pkg.tar.zst",
+      "byte": 509874,
+      "sha256": "408999a55a88402df53944107ce896d0ae662ad752c51b02b76a7f77e7c38638",
+      "versione": "0.26.2-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/pacman",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/pacman-6.1.0-25-x86_64.pkg.tar.zst",
+      "file": "pacman-6.1.0-25-x86_64.pkg.tar.zst",
+      "byte": 5735552,
+      "sha256": "cb375279a44b37f646dbe834b440c233fddbacb97d6173e5c7d91362717c970f",
+      "versione": "6.1.0-25",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/pacman-contrib",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/pacman-contrib-1.10.6-1-x86_64.pkg.tar.zst",
+      "file": "pacman-contrib-1.10.6-1-x86_64.pkg.tar.zst",
+      "byte": 4895067,
+      "sha256": "d6748b1a2eca5a9e94c0d9a5357b092eb484f5e9db33ace45732ec8e5c3fb1c9",
+      "versione": "1.10.6-1",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/pacman-mirrors",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/pacman-mirrors-20260129-1-any.pkg.tar.zst",
+      "file": "pacman-mirrors-20260129-1-any.pkg.tar.zst",
+      "byte": 2556,
+      "sha256": "e7f8aa620cd29c7449e5a8177d83799f7ea2a5fc7afad0ec9c11b07fa46670b6",
+      "versione": "20260129-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/patch",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst",
+      "file": "patch-2.7.6-3-x86_64.pkg.tar.zst",
+      "byte": 98395,
+      "sha256": "dd75ca0f715dd9c71a43af6a0ff3d068faeee1d768e02282d319671201cd5d45",
+      "versione": "2.7.6-3",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/perl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-5.42.2-1-x86_64.pkg.tar.zst",
+      "file": "perl-5.42.2-1-x86_64.pkg.tar.zst",
+      "byte": 7529211,
+      "sha256": "7c96ef91b7395c12cfbd967ebf7daa8d3f950d1c0be23bb1dc2a635c95a07c01",
+      "versione": "5.42.2-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/pinentry",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/pinentry-1.3.2-1-x86_64.pkg.tar.zst",
+      "file": "pinentry-1.3.2-1-x86_64.pkg.tar.zst",
+      "byte": 49080,
+      "sha256": "8e77bdc1aa652964e34fa4f79324fae8595a9aa674350f8de041d3e238517956",
+      "versione": "1.3.2-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/pkgconf",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/pkgconf-3.0.5-1-x86_64.pkg.tar.zst",
+      "file": "pkgconf-3.0.5-1-x86_64.pkg.tar.zst",
+      "byte": 120137,
+      "sha256": "40dfc37c4fed31b7bf2fe55f11299884e3120025d27f61255ad1a1c8b890aece",
+      "versione": "3.0.5-1",
+      "licenza": "ISC",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/procps-ng",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/procps-ng-4.0.5-1-x86_64.pkg.tar.zst",
+      "file": "procps-ng-4.0.5-1-x86_64.pkg.tar.zst",
+      "byte": 907702,
+      "sha256": "ce092fd0a2cc952a29f80b6eee207e6391891f4eefbfd737cc1b912b5bc49fe3",
+      "versione": "4.0.5-1",
+      "licenza": "GPL; LGPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/python",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-3.12.14-1-x86_64.pkg.tar.zst",
+      "file": "python-3.12.14-1-x86_64.pkg.tar.zst",
+      "byte": 24012231,
+      "sha256": "9c384fe2fe7f5a6b2134c8bba6b143ee2bc9f9afabed6b2c927c1572e9bd11b9",
+      "versione": "3.12.14-1",
+      "licenza": "Python-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il Python di MSYS serve a gdb e a gcovr, che con quello di Windows dava un report vuoto senza errori."
+    },
+    {
+      "nome": "msys/python-jinja",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-jinja-3.1.6-1-x86_64.pkg.tar.zst",
+      "file": "python-jinja-3.1.6-1-x86_64.pkg.tar.zst",
+      "byte": 303497,
+      "sha256": "b389d4e9158a853c0c26c6f04bcae1ea4d0fa4a3ae7453524e0f7c7e74e39671",
+      "versione": "3.1.6-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/python-lxml",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-lxml-6.1.1-1-x86_64.pkg.tar.zst",
+      "file": "python-lxml-6.1.1-1-x86_64.pkg.tar.zst",
+      "byte": 1498128,
+      "sha256": "5799e8fd917dda8161ae7853b1a31935b8952148be1b7cc2c053811f9b21e977",
+      "versione": "6.1.1-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/python-markupsafe",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-markupsafe-3.0.3-1-x86_64.pkg.tar.zst",
+      "file": "python-markupsafe-3.0.3-1-x86_64.pkg.tar.zst",
+      "byte": 20503,
+      "sha256": "cdc6f3c7039ca77e24e3ea1856aee4af89e4698edab38263711573eda2b8e963",
+      "versione": "3.0.3-1",
+      "licenza": "BSD-3-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/python-pip",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-pip-26.2.1-1-any.pkg.tar.zst",
+      "file": "python-pip-26.2.1-1-any.pkg.tar.zst",
+      "byte": 2466989,
+      "sha256": "e4ae12fc5bbda28f5d3e35ade7fa1743d64da41a1d38c8e9df419d3979efafa6",
+      "versione": "26.2.1-1",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/python-pygments",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/python-pygments-2.20.0-1-x86_64.pkg.tar.zst",
+      "file": "python-pygments-2.20.0-1-x86_64.pkg.tar.zst",
+      "byte": 1973803,
+      "sha256": "19aa7fa79da9cd989788716b62f862e46ae7a156a30e98a7fb3ac0277a16d7c9",
+      "versione": "2.20.0-1",
+      "licenza": "BSD-2-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/rebase",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/rebase-4.5.0-5-x86_64.pkg.tar.zst",
+      "file": "rebase-4.5.0-5-x86_64.pkg.tar.zst",
+      "byte": 279218,
+      "sha256": "d67e710f40b36fe2154fc32e63fdc4e2da7b7615a2e59ec996ce9b292ba85430",
+      "versione": "4.5.0-5",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/sed",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/sed-4.9-1-x86_64.pkg.tar.zst",
+      "file": "sed-4.9-1-x86_64.pkg.tar.zst",
+      "byte": 249918,
+      "sha256": "3748af28f69e946ec5a42e6670c9bbf6da7352dc93baaa537f69e99c5483b9fc",
+      "versione": "4.9-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/tar",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/tar-1.35-3-x86_64.pkg.tar.zst",
+      "file": "tar-1.35-3-x86_64.pkg.tar.zst",
+      "byte": 815230,
+      "sha256": "71983bed200c4026cdec157837d989728d3de65e8cf644e03876df41a0f1b7c4",
+      "versione": "1.35-3",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/time",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/time-1.10-1-x86_64.pkg.tar.zst",
+      "file": "time-1.10-1-x86_64.pkg.tar.zst",
+      "byte": 25855,
+      "sha256": "53bd332145effa8afec1209c105fe9b5264a5692ff35e0d03d96d2058ea7ae61",
+      "versione": "1.10-1",
+      "licenza": "GPL-3.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/tmux",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/tmux-3.7.c-1-x86_64.pkg.tar.zst",
+      "file": "tmux-3.7.c-1-x86_64.pkg.tar.zst",
+      "byte": 466764,
+      "sha256": "d8294c959d340ded4c5edcfd597a1ab30e345633031f8ed07a6cfe3600113158",
+      "versione": "3.7.c-1",
+      "licenza": "ISC",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/tree",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/tree-2.3.2-1-x86_64.pkg.tar.zst",
+      "file": "tree-2.3.2-1-x86_64.pkg.tar.zst",
+      "byte": 42497,
+      "sha256": "edc3011c0f0d6e42f0c5fb2769990c80318289148e720b142fd8884aa893f333",
+      "versione": "2.3.2-1",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/tzcode",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/tzcode-2026b-1-x86_64.pkg.tar.zst",
+      "file": "tzcode-2026b-1-x86_64.pkg.tar.zst",
+      "byte": 269202,
+      "sha256": "5302b318138c4d6dbdbdd061e52ef290d9ee030ab607fd1df87e709e45d5ba06",
+      "versione": "2026b-1",
+      "licenza": "GPL",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/util-linux",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/util-linux-2.40.2-2-x86_64.pkg.tar.zst",
+      "file": "util-linux-2.40.2-2-x86_64.pkg.tar.zst",
+      "byte": 2265288,
+      "sha256": "969edb185d37986e6feddb3c54807598e3cc6774b736fec3a27d5d27731f7fdd",
+      "versione": "2.40.2-2",
+      "licenza": "GPL-2.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/wget",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/wget-1.25.0-1-x86_64.pkg.tar.zst",
+      "file": "wget-1.25.0-1-x86_64.pkg.tar.zst",
+      "byte": 790885,
+      "sha256": "dd75ba6f4f8fd0da4cc0729b7ff5ee959034fd2652e181cca0f31dcddb811151",
+      "versione": "1.25.0-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/which",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/which-2.25-1-x86_64.pkg.tar.zst",
+      "file": "which-2.25-1-x86_64.pkg.tar.zst",
+      "byte": 19913,
+      "sha256": "a299e7b9076e5d9381e59fd67538aa39346eb36bb16a93834fb99cccc3f2055b",
+      "versione": "2.25-1",
+      "licenza": "GPL3",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/windows-default-manifest",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/windows-default-manifest-6.4-2-x86_64.pkg.tar.zst",
+      "file": "windows-default-manifest-6.4-2-x86_64.pkg.tar.zst",
+      "byte": 3073,
+      "sha256": "865a33d80d4e88f9aee66a755c51fa4bb0d4241063fcf72e6d0738b7c90b6a33",
+      "versione": "6.4-2",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/xxhash",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/xxhash-0.8.3-1-x86_64.pkg.tar.zst",
+      "file": "xxhash-0.8.3-1-x86_64.pkg.tar.zst",
+      "byte": 21411,
+      "sha256": "4699ede05cbcb67376e46bd1c042537d16c035fcdde33ab0f301645b8ede45c8",
+      "versione": "0.8.3-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/xz",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/xz-5.8.3-1-x86_64.pkg.tar.zst",
+      "file": "xz-5.8.3-1-x86_64.pkg.tar.zst",
+      "byte": 778752,
+      "sha256": "05a0cba55b1d302861e8152c7aa08fb35819af625d79c75bd8502b5e105cd657",
+      "versione": "5.8.3-1",
+      "licenza": "GPL; LGPL; custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/zlib",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/zlib-1.3.2-1-x86_64.pkg.tar.zst",
+      "file": "zlib-1.3.2-1-x86_64.pkg.tar.zst",
+      "byte": 52245,
+      "sha256": "a04aa79996c57f0db936be66cf94326d7e67e9cd8dbffe4cf6e97693d0a1d9ef",
+      "versione": "1.3.2-1",
+      "licenza": "custom",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/zstd",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/zstd-1.5.7-1-x86_64.pkg.tar.zst",
+      "file": "zstd-1.5.7-1-x86_64.pkg.tar.zst",
+      "byte": 91266,
+      "sha256": "7b8ab77828c5a1efe53ebc53e3ea9d719bfbd609bf4c810eaa88d626188ed407",
+      "versione": "1.5.7-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Manifesto identico a quello del pacchetto installato: contenuto identico all'ambiente provato coi progetti C dalla radice con spazi doppi."
+    }
+  ],
+  "nostri": [
+    {
+      "nome": "gdb-ponte",
+      "percorso": "ricetta/unita/gdb-ponte.c",
+      "destinazioni": [
+        "bin/gdb-ponte.exe"
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "Traduce fra i percorsi Windows dell'estensione e quelli /c/... del gdb di MSYS: senza, un punto messo dall'editor non si aggancia."
+    },
+    {
+      "nome": "lanciatore",
+      "percorso": "ricetta/unita/lancia.c",
+      "eseguibili": [
+        "VSCodium",
+        "AlgoDesign",
+        "Terminale",
+        "Neovim",
+        "Progetti"
+      ],
+      "destinazioni": [
+        "."
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "Avvia gli strumenti con le variabili d'ambiente e dalla copia in cui si trova; un collegamento .lnk avvierebbe l'originale."
+    },
+    {
+      "nome": "icona",
+      "percorso": "ricetta/unita/mydev.ico",
+      "destinazioni": [
+        "mydev.ico"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "L'icona dell'unita', per i lanciatori che non hanno un programma con la propria e per la chiavetta."
+    },
+    {
+      "nome": "autorun",
+      "percorso": "ricetta/unita/autorun.inf",
+      "destinazioni": [
+        "autorun.inf"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Dice a Windows quale icona mostrare per la chiavetta, se l'unita' sta nella sua radice; non avvia nulla."
+    },
+    {
+      "nome": "fallback",
+      "percorso": "ricetta/unita/fallback/",
+      "destinazioni": [
+        "fallback"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Gli stessi collegamenti in forma di .bat, se un antivirus ferma gli eseguibili."
+    },
+    {
+      "nome": "comandi",
+      "percorso": "ricetta/unita/bin/",
+      "destinazioni": [
+        "bin"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "I comandi del terminale per Nginx, Flask, FastAPI, pip, gcovr e cppcheck, piu' vi e vim che aprono Neovim."
+    },
+    {
+      "nome": "progetti",
+      "percorso": "ricetta/unita/progetti/",
+      "destinazioni": [
+        "progetti"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "I progetti C e web dell'unita', file normali del repository."
+    },
+    {
+      "nome": "nginx-modello",
+      "percorso": "ricetta/unita/nginx.conf.template",
+      "destinazioni": [
+        "nginx/conf/nginx.conf.template"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Ascolto solo su 127.0.0.1; la configurazione e il certificato nascono sul posto."
+    },
+    {
+      "nome": "pagina",
+      "percorso": "ricetta/unita/www/",
+      "destinazioni": [
+        "www"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "La pagina servita da Nginx."
+    },
+    {
+      "nome": "guida",
+      "percorso": "ricetta/unita/README.md",
+      "destinazioni": [
+        "README.md"
+      ],
+      "stato": "presente",
+      "licenza": "CC",
+      "motivo": "La guida di chi usa l'unita'."
+    },
+    {
+      "nome": "configurazione-editor",
+      "percorso": "ricetta/unita/vscodium/",
+      "destinazioni": [
+        "vscodium"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Le impostazioni misurate dell'editor; product.json perde le sue chiavi dalla voce dell'editor."
+    },
+    {
+      "nome": "estensione-algo",
+      "percorso": "extensions/algo/",
+      "vsix": "extensions/algo/dist/algo-codice.vsix",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "stato": "prototipo",
+      "licenza": "MIT",
+      "motivo": "Il prototipo per i file .algo, col nucleo descritto da ricetta/nucleo/pacchetto.json."
+    },
+    {
+      "nome": "licenze",
+      "percorso": "ricetta/licenze/base/",
+      "destinazioni": [
+        "."
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "L'indice LICENZE.txt, generato da ricetta/licenze_unita.py, e in licenze/ i testi che i pacchetti non portano."
+    },
+    {
+      "nome": "licenza-mydev",
+      "percorso": "LICENSE",
+      "destinazioni": [
+        "licenze/MYDEV-LICENSE.txt"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "La licenza dei file nostri, uguale a quella del repository."
+    },
+    {
+      "nome": "licenza-mydev-documenti",
+      "percorso": "LICENSE-DOCS",
+      "destinazioni": [
+        "licenze/MYDEV-LICENSE-DOCS.txt"
+      ],
+      "stato": "presente",
+      "licenza": "CC-BY-4.0",
+      "motivo": "La licenza dei documenti nostri, uguale a quella del repository."
+    }
+  ]
+}

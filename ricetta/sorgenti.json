@@ -1,0 +1,680 @@
+{
+ "formato": 1,
+ "sorgenti": [
+  {
+   "file": "base-2022.06-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/base-2022.06-1.src.tar.zst",
+   "byte": 966,
+   "sha256": "ae8db568ec9b22a634d52bd0d3d03c8058631d42418cd040976f5c2b3e586d7f",
+   "componenti": [
+    "msys/base"
+   ]
+  },
+  {
+   "file": "bash-5.3.015-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/bash-5.3.015-1.src.tar.zst",
+   "byte": 11341001,
+   "sha256": "513f485881c94d0bab3ebcb2d1d3b98c19078d4abe26796bc52220db3e65b7af",
+   "componenti": [
+    "msys/bash"
+   ]
+  },
+  {
+   "file": "bash-completion-2.17.0-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/bash-completion-2.17.0-2.src.tar.zst",
+   "byte": 484101,
+   "sha256": "772625c7b4dbb28b1910662cf1667e0468f041e63d931b4635452514f7c4e6aa",
+   "componenti": [
+    "msys/bash-completion"
+   ]
+  },
+  {
+   "file": "binutils-2.47-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/binutils-2.47-1.src.tar.zst",
+   "byte": 29041002,
+   "sha256": "2cf54a4208a6683ca2793fb14eb6ca4b3ddec9474e60738c90050bb2ee359276",
+   "componenti": [
+    "msys/binutils"
+   ]
+  },
+  {
+   "file": "busybox-w32-1f493261d16b.tar.gz",
+   "fonte": "https://github.com/rmyorston/busybox-w32/archive/1f493261d16be3d984fe8a689f5113dafb6eaaa7.tar.gz",
+   "byte": 3615380,
+   "sha256": "84124d4c9f4439f254f4b74a44397a7e354277fe1f9677591377a5143da3d248",
+   "componenti": [
+    "toolchain/llvm-mingw"
+   ]
+  },
+  {
+   "file": "ca-certificates-20250419-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/ca-certificates-20250419-1.src.tar.zst",
+   "byte": 288303,
+   "sha256": "0e96cbfe9d0ec342c92d0e6ae6e6227c8ada298583eab0958cb3321614e15de9",
+   "componenti": [
+    "msys/ca-certificates"
+   ]
+  },
+  {
+   "file": "ccache-4.14-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/ccache-4.14-1.src.tar.zst",
+   "byte": 553326,
+   "sha256": "ea6a7d220ce9101b9be8f377611e45823ffcd2cff2b99d28d480ad437ee4ce9d",
+   "componenti": [
+    "msys/ccache"
+   ]
+  },
+  {
+   "file": "cdt-gdb-vscode-2.9.1.tar.gz",
+   "fonte": "https://github.com/eclipse-cdt-cloud/cdt-gdb-vscode/archive/refs/tags/v2.9.1.tar.gz",
+   "byte": 154306,
+   "sha256": "a19563993fa2d22c0489fc686db103b88d32f04834dbea05c334da79a19b5d31",
+   "componenti": [
+    "estensioni/eclipse-cdt.cdt-gdb-vscode"
+   ]
+  },
+  {
+   "file": "coreutils-8.32-5.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/coreutils-8.32-5.src.tar.zst",
+   "byte": 5561991,
+   "sha256": "2b8689413bc50367a9995adf50ea84cd3caaff0ec68a8f32d8328842c3f83835",
+   "componenti": [
+    "msys/coreutils"
+   ]
+  },
+  {
+   "file": "cppcheck-2.19.0.tar.gz",
+   "fonte": "https://github.com/danmar/cppcheck/archive/refs/tags/2.19.0.tar.gz",
+   "byte": 3985155,
+   "sha256": "c6cff9d3bbcb3da941bf7f525ae974b6c7af3d610c4c5519fcd1be3f21f5ae09",
+   "componenti": [
+    "strumenti/cppcheck-winlibs"
+   ]
+  },
+  {
+   "file": "ctags-6.2.1-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/ctags-6.2.1-3.src.tar.zst",
+   "byte": 31171547,
+   "sha256": "3df1cae8b2fe49fa08f57e10bb5b3a884c7ce1c6180388cfac8e9a764c82fee4",
+   "componenti": [
+    "msys/ctags"
+   ]
+  },
+  {
+   "file": "db-6.2.32-6.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/db-6.2.32-6.src.tar.zst",
+   "byte": 44421183,
+   "sha256": "ca33d813847b2a544faa23cc732fdef5fcb84b6a4b73f1c22eefadb7dbcb7f17",
+   "componenti": [
+    "msys/db",
+    "msys/libdb"
+   ]
+  },
+  {
+   "file": "diffutils-3.12-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/diffutils-3.12-1.src.tar.zst",
+   "byte": 1941123,
+   "sha256": "474c4a3528a2afbb8d9608c65ad1bdbbd81ff42c143a438d7d56272a61b1bfac",
+   "componenti": [
+    "msys/diffutils"
+   ]
+  },
+  {
+   "file": "ffmpeg-chromium-ad41607c6189.tar.gz",
+   "fonte": "https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/ad41607c61898cf7150e0fb20fe4bbabd44922a3.tar.gz",
+   "componenti": [
+    "editor/vscodium"
+   ]
+  },
+  {
+   "file": "findutils-4.10.0-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/findutils-4.10.0-2.src.tar.zst",
+   "byte": 2242859,
+   "sha256": "e19640714a3c1f43c250aaebc6a2e94aec43a67a031c31ff675edbc166d333d3",
+   "componenti": [
+    "msys/findutils"
+   ]
+  },
+  {
+   "file": "gawk-5.4.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gawk-5.4.0-1.src.tar.zst",
+   "byte": 6624619,
+   "sha256": "77537012eab6b7074413221cff57ebea3d632785ead2f259dfefb1c027ef86c7",
+   "componenti": [
+    "msys/gawk"
+   ]
+  },
+  {
+   "file": "gcc-15.2.0.tar.xz",
+   "fonte": "https://ftp.gnu.org/gnu/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz",
+   "byte": 101056276,
+   "sha256": "438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e",
+   "componenti": [
+    "strumenti/cppcheck-winlibs"
+   ]
+  },
+  {
+   "file": "gcc-15.3.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gcc-15.3.0-1.src.tar.zst",
+   "byte": 101292942,
+   "sha256": "110eaa240aaced2ec2d05b1ce1c7d7273b9549c60ac17cb571bd28781766522d",
+   "componenti": [
+    "msys/gcc",
+    "msys/gcc-libs"
+   ]
+  },
+  {
+   "file": "gdb-17.1-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gdb-17.1-3.src.tar.zst",
+   "byte": 24670822,
+   "sha256": "aba6c6dd45a085225652809a31055e2cbe2f4eb7a44d7d95487e55a9efeed615",
+   "componenti": [
+    "msys/gdb"
+   ]
+  },
+  {
+   "file": "gdbm-1.26-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gdbm-1.26-1.src.tar.zst",
+   "byte": 1229478,
+   "sha256": "955ecefcd32bee0ec40e3aa768b8ed068a2a1f2310f9777dcc77c02fdfa54271",
+   "componenti": [
+    "msys/gdbm",
+    "msys/libgdbm"
+   ]
+  },
+  {
+   "file": "getent-2.18.90-6.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/getent-2.18.90-6.src.tar.zst",
+   "byte": 89464,
+   "sha256": "636e270274f7714aef82e6b17bc6c2f9fc63f5dc780d71adb26585ee3822f0a8",
+   "componenti": [
+    "msys/getent"
+   ]
+  },
+  {
+   "file": "gettext-0.22.5-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gettext-0.22.5-1.src.tar.zst",
+   "byte": 21732949,
+   "sha256": "e07a0b3e6716aae86dc0edd2dcdc8864731d56051345592b53659a3840ccfbd8",
+   "componenti": [
+    "msys/gettext",
+    "msys/libasprintf",
+    "msys/libgettextpo",
+    "msys/libintl"
+   ]
+  },
+  {
+   "file": "git-2.56.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/git-2.56.0-1.src.tar.zst",
+   "byte": 12795299,
+   "sha256": "354e523cabaf73f7e2e334217b926850447e4a72eb42a0909b43fa06fa4c2e20",
+   "componenti": [
+    "msys/git"
+   ]
+  },
+  {
+   "file": "gmp-6.3.0-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gmp-6.3.0-2.src.tar.zst",
+   "byte": 2096699,
+   "sha256": "02356ca25ce362edb883ce7c060050de2cec5f2b1227a1c56ef7c0a0f99ff667",
+   "componenti": [
+    "msys/gmp"
+   ]
+  },
+  {
+   "file": "gnupg-2.4.9-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gnupg-2.4.9-1.src.tar.zst",
+   "byte": 8105817,
+   "sha256": "93a74766e56dbe2b542bd4898feb9b215d51297b51335743a1e37df254c367eb",
+   "componenti": [
+    "msys/gnupg"
+   ]
+  },
+  {
+   "file": "gnutls-3.8.13-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gnutls-3.8.13-1.src.tar.zst",
+   "byte": 7279385,
+   "sha256": "d1f45e5ea101714c097ef19f056ebb190adec405b1550abfc86b263e3cc9209f",
+   "componenti": [
+    "msys/libgnutls"
+   ]
+  },
+  {
+   "file": "grep-1~3.0-7.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/grep-1~3.0-7.src.tar.zst",
+   "byte": 1378706,
+   "sha256": "acba43b9b2c3eb393f9a75d02a1eca34fa23d959541150a7ac4ffbafce3cae4e",
+   "componenti": [
+    "msys/grep"
+   ]
+  },
+  {
+   "file": "groff-1.23.0-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/groff-1.23.0-3.src.tar.zst",
+   "byte": 7405840,
+   "sha256": "f6ae17ef50a50d6b5b3c15efbb4d4a54838b3c662b5fcf763bdfab809fbc291f",
+   "componenti": [
+    "msys/groff"
+   ]
+  },
+  {
+   "file": "guile-3.0.11-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/guile-3.0.11-1.src.tar.zst",
+   "byte": 5885657,
+   "sha256": "2f8f01b4de740a04893dcea303b0e6910be07226b85a75618cfbba68cdfae99a",
+   "componenti": [
+    "msys/libguile"
+   ]
+  },
+  {
+   "file": "gzip-1.14-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/gzip-1.14-2.src.tar.zst",
+   "byte": 889394,
+   "sha256": "aea2fc89713e314d6dc3c929b63cf8e949a9a6cbae82c3fd0c32005d3e044ae9",
+   "componenti": [
+    "msys/gzip"
+   ]
+  },
+  {
+   "file": "inetutils-2.7-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/inetutils-2.7-1.src.tar.zst",
+   "byte": 2972554,
+   "sha256": "05ff7b38891c7fc5e5cc9a31fac8c974d11b0811a32b793eb8b89ec22419524d",
+   "componenti": [
+    "msys/inetutils"
+   ]
+  },
+  {
+   "file": "less-704-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/less-704-1.src.tar.zst",
+   "byte": 1140293,
+   "sha256": "58f970f43d51ec1c51317e39a7c299f2617985ffa2b60c5065d36b1d6f7a8dff",
+   "componenti": [
+    "msys/less"
+   ]
+  },
+  {
+   "file": "libargp-20260115-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libargp-20260115-1.src.tar.zst",
+   "byte": 86654410,
+   "sha256": "3d1128f73af8861a68d76d3517d7ec2a778c2d921437cbda2cb9424a9f5fa63d",
+   "componenti": [
+    "msys/libargp"
+   ]
+  },
+  {
+   "file": "libassuan-3.0.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libassuan-3.0.2-1.src.tar.zst",
+   "byte": 1192778,
+   "sha256": "723778dd8d9205919c374cbbf694e5cc7e3c568a13d594e4032533f801e33933",
+   "componenti": [
+    "msys/libassuan"
+   ]
+  },
+  {
+   "file": "libgcrypt-1.12.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libgcrypt-1.12.2-1.src.tar.zst",
+   "byte": 4443198,
+   "sha256": "33bb839f2134efe13f0c8aa43256fb6a3ddb340c6089f197b6089a4cbe2358e9",
+   "componenti": [
+    "msys/libgcrypt"
+   ]
+  },
+  {
+   "file": "libgpg-error-1.61-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libgpg-error-1.61-1.src.tar.zst",
+   "byte": 1127088,
+   "sha256": "760da07c2407b8da443f7b8df3d11ae35ae8f48eebee57cce6ab958b114f2a11",
+   "componenti": [
+    "msys/libgpg-error"
+   ]
+  },
+  {
+   "file": "libgit2-1.9.7-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libgit2-1.9.7-1.src.tar.zst",
+   "byte": 7237824,
+   "sha256": "4e395967b5ba729c8d0d19e8dd90359cc004b6124b345d554267fad22cfc043f",
+   "componenti": [
+    "msys/libgit2"
+   ]
+  },
+  {
+   "file": "libiconv-1.19-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libiconv-1.19-1.src.tar.zst",
+   "byte": 5133707,
+   "sha256": "5a8bcd3242e2be94fffd9f03fadcda8d9fd64047430050c5cbd214cd3bf7f0a7",
+   "componenti": [
+    "msys/iconv",
+    "msys/libiconv"
+   ]
+  },
+  {
+   "file": "libidn2-2.3.8-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libidn2-2.3.8-1.src.tar.zst",
+   "byte": 2147323,
+   "sha256": "c77c550e8cc2f595ed10b4a3996085cc6e6a3f5f650916a14701bd48d5d9fd7d",
+   "componenti": [
+    "msys/libidn2"
+   ]
+  },
+  {
+   "file": "libksba-1.8.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libksba-1.8.0-1.src.tar.zst",
+   "byte": 723920,
+   "sha256": "a34233714689d0a316c3e0462cc0c018814d0e5f539eb569ac33f5b21041a4d8",
+   "componenti": [
+    "msys/libksba"
+   ]
+  },
+  {
+   "file": "libpipeline-1.5.8-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libpipeline-1.5.8-1.src.tar.zst",
+   "byte": 1071278,
+   "sha256": "9de6b9bd6b2868f7da6745d93187aaf4b67875025fdcc191d8d6ad8dbea02bdd",
+   "componenti": [
+    "msys/libpipeline"
+   ]
+  },
+  {
+   "file": "libtasn1-4.21.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libtasn1-4.21.0-1.src.tar.zst",
+   "byte": 1732145,
+   "sha256": "3b3f93112cd0b7c626483b1aa95a2b63f36a682f47f13f5c416547602c4602e8",
+   "componenti": [
+    "msys/libtasn1"
+   ]
+  },
+  {
+   "file": "libunistring-1.4.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libunistring-1.4.2-1.src.tar.zst",
+   "byte": 2788948,
+   "sha256": "9a397e2ffa803f1c18abc119207186ae86ab173f30123e77bf2830afe40befc8",
+   "componenti": [
+    "msys/libunistring"
+   ]
+  },
+  {
+   "file": "libxcrypt-4.5.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/libxcrypt-4.5.2-1.src.tar.zst",
+   "byte": 672527,
+   "sha256": "dc3e44cea067417ff61c25c981d7d58bb0f343b824ba10fd2a0a3b8badc55746",
+   "componenti": [
+    "msys/libxcrypt"
+   ]
+  },
+  {
+   "file": "llvm-mingw-20260826.tar.gz",
+   "fonte": "https://github.com/mstorsjo/llvm-mingw/archive/refs/tags/20260826.tar.gz",
+   "byte": 71051,
+   "sha256": "23534c538fa4bdcea4426e4bca329641170c58f853b6e204ca34f8f20e2df3c9",
+   "componenti": [
+    "toolchain/llvm-mingw"
+   ]
+  },
+  {
+   "file": "make-4.4.1-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/make-4.4.1-3.src.tar.zst",
+   "byte": 2348028,
+   "sha256": "b4ca441780273aba4ac44437ea1606dc058a6c0924e16296783c2b3107d32de1",
+   "componenti": [
+    "msys/make"
+   ]
+  },
+  {
+   "file": "make-4.4.1.tar.gz",
+   "fonte": "https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz",
+   "byte": 2348200,
+   "sha256": "dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3",
+   "componenti": [
+    "toolchain/llvm-mingw"
+   ]
+  },
+  {
+   "file": "man-db-2.13.1-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/man-db-2.13.1-2.src.tar.zst",
+   "byte": 2115258,
+   "sha256": "f212c1faf4da121546234aaa6018deff30b9c0c59f91410df4b5c1ac6471e8a2",
+   "componenti": [
+    "msys/man-db"
+   ]
+  },
+  {
+   "file": "mingw-w64-a3d708261d5b.tar.gz",
+   "fonte": "https://github.com/mingw-w64/mingw-w64/archive/a3d708261d5ba659205067cb82cae36e7ae8bbb0.tar.gz",
+   "byte": 15812862,
+   "sha256": "948444d5c7aa9638fc24343bb78985c799e4d15643ce6500aba37f04f81a69ed",
+   "componenti": [
+    "toolchain/llvm-mingw"
+   ]
+  },
+  {
+   "file": "mintty-1~3.8.3-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/mintty-1~3.8.3-1.src.tar.zst",
+   "byte": 3851112,
+   "sha256": "b0366ca141b4d9e25682dd3a41ca1fd444134c0882a27afb8927ee222265a4d4",
+   "componenti": [
+    "msys/mintty"
+   ]
+  },
+  {
+   "file": "mpc-1.4.1-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/mpc-1.4.1-1.src.tar.zst",
+   "byte": 533637,
+   "sha256": "7a294f54fb2f5873a7d482381f521c884e1d29b0b1f648c3b7f8b4b9f69f45e2",
+   "componenti": [
+    "msys/mpc"
+   ]
+  },
+  {
+   "file": "mpfr-4.2.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/mpfr-4.2.2-1.src.tar.zst",
+   "byte": 1507563,
+   "sha256": "e0c56e3af3819471e74dd37e32660e4eb8f58761c4d214dabd2d62f57c548869",
+   "componenti": [
+    "msys/mpfr"
+   ]
+  },
+  {
+   "file": "msys2-keyring-1~20260214-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/msys2-keyring-1~20260214-1.src.tar.zst",
+   "byte": 42259,
+   "sha256": "348c8ab7eb983cd8f8159d52efaa4136564012a3727ede631bd3603ecd9b4eff",
+   "componenti": [
+    "msys/msys2-keyring"
+   ]
+  },
+  {
+   "file": "msys2-runtime-3.6.10-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/msys2-runtime-3.6.10-3.src.tar.zst",
+   "byte": 128712315,
+   "sha256": "fc74cc9e1f57b5db4d43117b83dce87fe45681aa9fee460e4f94e8ceb8f1a455",
+   "componenti": [
+    "msys/msys2-runtime",
+    "msys/msys2-runtime-devel"
+   ]
+  },
+  {
+   "file": "nano-9.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/nano-9.0-1.src.tar.zst",
+   "byte": 1745517,
+   "sha256": "8538716a0b8c381853acabea59b7b62d0a73ac5d6b533df52fc3a3b4d82dcff2",
+   "componenti": [
+    "msys/nano"
+   ]
+  },
+  {
+   "file": "nettle-3.10.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/nettle-3.10.2-1.src.tar.zst",
+   "byte": 2645409,
+   "sha256": "8a76d26462c689b4d5223199e5ded562eb88ff261619f291318f1bcdf30110fe",
+   "componenti": [
+    "msys/libhogweed",
+    "msys/libnettle",
+    "msys/nettle"
+   ]
+  },
+  {
+   "file": "npth-1.8-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/npth-1.8-1.src.tar.zst",
+   "byte": 319723,
+   "sha256": "632b95011ea51c7a883388e97171618b43d5056f653c1c26c5eeae23a07a398a",
+   "componenti": [
+    "msys/libnpth"
+   ]
+  },
+  {
+   "file": "pacman-6.1.0-25.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/pacman-6.1.0-25.src.tar.zst",
+   "byte": 32666158,
+   "sha256": "aeb2fe8b77613d1938f92967249e21bf26b60fc9f1046a612f661056270d8c66",
+   "componenti": [
+    "msys/pacman"
+   ]
+  },
+  {
+   "file": "pacman-contrib-1.10.6-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/pacman-contrib-1.10.6-1.src.tar.zst",
+   "byte": 61911,
+   "sha256": "b657a1e0ceb410810fe830448a08d048a147d5e570bbca466ce586dc3888f63c",
+   "componenti": [
+    "msys/pacman-contrib"
+   ]
+  },
+  {
+   "file": "pacman-mirrors-20260129-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/pacman-mirrors-20260129-1.src.tar.zst",
+   "byte": 1260,
+   "sha256": "ac5627ec539746d5b7430599132cab7e223574b1c3c74e3840d0113f1e984a89",
+   "componenti": [
+    "msys/pacman-mirrors"
+   ]
+  },
+  {
+   "file": "patch-2.7.6-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/patch-2.7.6-3.src.tar.zst",
+   "byte": 787891,
+   "sha256": "df9a99ee825845b761911f2d1f29024468cb7a7811d1717fe8fa8d08348314e1",
+   "componenti": [
+    "msys/patch"
+   ]
+  },
+  {
+   "file": "pinentry-1.3.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/pinentry-1.3.2-1.src.tar.zst",
+   "byte": 615437,
+   "sha256": "53ca524e953f6d15fd057f21975a30c322036cd8bb3574daea64d5385aecc349",
+   "componenti": [
+    "msys/pinentry"
+   ]
+  },
+  {
+   "file": "procps-ng-4.0.5-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/procps-ng-4.0.5-1.src.tar.zst",
+   "byte": 1521592,
+   "sha256": "82b0c3ce9bb083f0a38ed9837902b50d88ba0fb0db18390297d936d12babfb27",
+   "componenti": [
+    "msys/procps-ng"
+   ]
+  },
+  {
+   "file": "readline-8.3.003-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/readline-8.3.003-1.src.tar.zst",
+   "byte": 3355502,
+   "sha256": "8b9e2370bf80d30cdb1bfeb00be1e2be2c9ec8b92838ffcb5ddc4805ac0a899e",
+   "componenti": [
+    "msys/libreadline"
+   ]
+  },
+  {
+   "file": "rebase-4.5.0-5.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/rebase-4.5.0-5.src.tar.zst",
+   "byte": 341196,
+   "sha256": "5e9c24c35a881888c045aa04b676f79d238e870a7391f595665e9bd9d26b09c9",
+   "componenti": [
+    "msys/rebase"
+   ]
+  },
+  {
+   "file": "sed-4.9-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/sed-4.9-1.src.tar.zst",
+   "byte": 1399712,
+   "sha256": "a9686da7c1f3cb2ba7ae5f20f30d9ef38f7bba993f9c777b43bd13c7fbd7cc58",
+   "componenti": [
+    "msys/sed"
+   ]
+  },
+  {
+   "file": "tar-1.35-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/tar-1.35-3.src.tar.zst",
+   "byte": 2322225,
+   "sha256": "eeef1210f2f3db98bdf301ab72e0e8886b8348938e58dfc58897639143eebf0b",
+   "componenti": [
+    "msys/tar"
+   ]
+  },
+  {
+   "file": "texinfo-7.2-3.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/texinfo-7.2-3.src.tar.zst",
+   "byte": 6412985,
+   "sha256": "2d185d46ab2b04f1c259909cf7092e1fb1cf9cb50488de7c613fc8eb4f72d934",
+   "componenti": [
+    "msys/info"
+   ]
+  },
+  {
+   "file": "time-1.10-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/time-1.10-1.src.tar.zst",
+   "byte": 851492,
+   "sha256": "3070f7f6db57042ab04e34838503570464da26f6ba701244b0c167b3dcc2d1b6",
+   "componenti": [
+    "msys/time"
+   ]
+  },
+  {
+   "file": "tree-2.3.2-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/tree-2.3.2-1.src.tar.zst",
+   "byte": 72124,
+   "sha256": "0ae3d9a9acf485a2c81a9813aaf43316d40b2c4ca5f99f5ce9b909bdde0c988d",
+   "componenti": [
+    "msys/tree"
+   ]
+  },
+  {
+   "file": "util-linux-2.40.2-2.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/util-linux-2.40.2-2.src.tar.zst",
+   "byte": 8864602,
+   "sha256": "ea018e116866c0e2d9a3d6cee3f0d09801e6725789b6f99fd1979dfc7a68b703",
+   "componenti": [
+    "msys/libutil-linux",
+    "msys/util-linux"
+   ]
+  },
+  {
+   "file": "wget-1.25.0-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/wget-1.25.0-1.src.tar.zst",
+   "byte": 2584627,
+   "sha256": "4d78e26f77ae5e4c0fa891f1f310e37b03baf7a137676cec8fc82b4e2226c8ef",
+   "componenti": [
+    "msys/wget"
+   ]
+  },
+  {
+   "file": "which-2.25-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/which-2.25-1.src.tar.zst",
+   "byte": 204710,
+   "sha256": "374eb8f909ee69c57bdf9b4f4baf696459eb6e47e96e3e7f396661614d8628b0",
+   "componenti": [
+    "msys/which"
+   ]
+  },
+  {
+   "file": "xz-5.8.3-1.src.tar.zst",
+   "fonte": "https://repo.msys2.org/msys/sources/xz-5.8.3-1.src.tar.zst",
+   "byte": 1663486,
+   "sha256": "3f6e933808bd34918fd98eda3442483901ec123c8272733b960932e541d7b770",
+   "componenti": [
+    "msys/xz"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+{
+  "etichetta": "v1.0.0",
+  "indirizzo": "https://github.com/gilan65/AlgoDesign/releases/download/v1.0.0/AlgoDesign-Core-1.0.0.zip",
+  "zip": {
+    "nome": "AlgoDesign-Core-1.0.0.zip",
+    "sha256": "465c0485bcdf524cb4ca2a0135a7d075a7276a93945e332337a0073b400249eb"
+  },
+  "file": {
+    "percorso": "AlgoDesign-Core-1.0.0/algodesign-core.cjs",
+    "sha256": "7f0f098214494ec44d3ae93a8c9ab6e0e113d2e9823f6d1ca069b5dd3ffb7c84"
+  }
+}

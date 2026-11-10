@@ -1,0 +1,13 @@
+#!/bin/bash
+# $MYDEV si autodetermina dalla posizione dello script: cosi gli script
+# funzionano anche se il terminale non e' stato aperto dal collegamento.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+# Perche' questo wrapper esiste.
+# Gli shim .exe in python/Scripts (pip.exe, virtualenv.exe) incorporano il
+# percorso ASSOLUTO dell'interprete cosi' come era al momento del pip install.
+# Appena l'unita' cambia cartella o PC, quel percorso non esiste piu' e il
+# lanciatore fallisce IN SILENZIO: exit 1, nessun messaggio, nessun errore
+# leggibile. "python -m pip" non ha shim e non ha percorsi incorporati.
+exec "$MYDEV/python/python.exe" -m pip "$@"

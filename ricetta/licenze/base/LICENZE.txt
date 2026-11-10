@@ -1,0 +1,1162 @@
+MyDev: le licenze dei componenti dell'unità
+============================================
+
+Questo file è generato da ricetta/licenze_unita.py del repository di MyDev: non si modifica a mano. Per ogni
+componente dell'unità ci sono la versione, la licenza come espressione SPDX, i testi interi che stanno nell'unità
+(percorso, prime sedici cifre dell'impronta sha256 e licenze riconosciute nel testo) e, per chi ha una licenza che
+chiede di dare i sorgenti, il sorgente alla stessa versione con la sua impronta. I testi che i pacchetti non portano
+stanno nella cartella licenze/, e in fondo c'è da dove viene ciascuno. Se l'unità è la variante estesa, i componenti
+che aggiunge stanno in LICENZE-ESTESA.txt.
+
+I file di MyDev (lanciatore, comandi, configurazioni, progetti) hanno la licenza MIT, licenze/MYDEV-LICENSE.txt; i
+documenti la CC BY 4.0, licenze/MYDEV-LICENSE-DOCS.txt.
+
+
+Chi dà una copia di questa unità ad altri
+-----------------------------------------
+
+Molti componenti hanno la licenza GPL, LGPL, AGPL, MPL o EPL: chi riceve il programma ha diritto ai suoi sorgenti.
+Chi dà una copia di questa unità a un'altra persona, su una chiavetta o in un altro modo, per esempio a una classe,
+deve fare una di queste due cose (GPL 2, sezione 3; GPL 3, sezione 6):
+
+1. mettere i sorgenti accanto alla copia: il comando ricetta\sorgenti.ps1 del repository di MyDev li scarica tutti,
+   alla versione esatta e con l'impronta confrontata, in una cartella da copiare sulla stessa chiavetta;
+2. oppure dare insieme alla copia un'offerta scritta, valida almeno tre anni, di fornire i sorgenti a chiunque possieda
+   la copia, al solo costo della copia; chi la firma conserva per quei tre anni la cartella dei sorgenti.
+
+Il server di MSYS2 pubblica i sorgenti dei suoi pacchetti, ma questo vale per chi distribuisce da quel server: chi dà
+una chiavetta non può limitarsi a rimandare lì, e alcuni componenti non vengono da MSYS2.
+
+Il testo dell'offerta, da completare e firmare:
+
+    Offerta scritta dei sorgenti
+    Questa copia di MyDev (numero e variante in unita.json) contiene programmi distribuiti con le licenze GPL,
+    LGPL, AGPL, MPL ed EPL, elencati in LICENZE.txt con i loro sorgenti. Per almeno tre anni dalla data qui sotto,
+    a chiunque possieda questa copia, ........................................ (nome e recapito di chi la
+    distribuisce) fornisce su richiesta i sorgenti completi corrispondenti, su un supporto usato per lo scambio di
+    programmi, al solo costo della copia.
+    Data ....................        Firma ....................
+
+Questa nota riassume ciò che chiedono i testi delle licenze; non è un parere legale.
+
+
+I componenti
+------------
+
+editor/vscodium 1.143.17232
+    licenza: MIT AND LGPL-2.1-or-later
+    dichiarata dal pacchetto: MIT
+    nota: ffmpeg.dll e' la FFmpeg di Chromium, LGPL, con i decodificatori H.264 e AAC, coperti da brevetti (contati nella DLL; l'editor riproduce anche H.265, ma quel decodificatore puo' venire da Windows): VSCodium 1.143.17232 viene da VSCode 1.143.1, che usa Electron 43.7.7, su Chromium 150.0.7871.250. Sei file nominano Microsoft: i tre di PSReadLine sono BSD-2-Clause, col testo in ThirdPartyNotices.txt; conpty.dll e OpenConsole.exe del terminale integrato sono ConPTY 1.25.260303002-preview, dal pacchetto Microsoft.Windows.Console.ConPTY, che dichiara la licenza MIT; Microsoft.PowerShell.Pager.dll, per l'integrazione con PowerShell, non ha termini nel pacchetto
+    testo: vscodium/LICENSES.chromium.html [c971fa90cb787337] 0BSD, Apache-2.0, Artistic-2.0, BSD, CC-BY-4.0, CC0-1.0, GPL-2.0, GPL-3.0, ISC, LGPL-2.0, LGPL-2.1, LGPL-3.0, LLVM-exception, MPL-1.1, MPL-2.0, OFL-1.1
+    testo: vscodium/resources/app/LICENSE.txt [2fa3f8948a0a17ea] MIT
+    testo: vscodium/resources/app/ThirdPartyNotices.txt [51b3fd6b279f33c3] 0BSD, Apache-2.0, BSD, CC-BY-4.0, ISC, MIT, PSF-2.0
+    testo: vscodium/resources/app/extensions/latex/cpp-bailout-license.txt [c2afa6f34fc95391] MIT
+    testo: vscodium/resources/app/extensions/latex/markdown-latex-combined-license.txt [33a9101fc56a2a9f] MIT
+    testo: vscodium/resources/app/extensions/mermaid-markdown-features/ThirdPartyNotices.txt [a42d48519a03963f] EPL-2.0
+    testo: vscodium/resources/app/extensions/ms-vscode.js-debug-companion/LICENSE.txt [c2cfccb812fe4821] MIT
+    testo: vscodium/resources/app/extensions/ms-vscode.js-debug-companion/ThirdPartyNotices.txt [2272ec0471f00ab3] 0BSD, Apache-2.0, BSD, ISC, MIT
+    testo: vscodium/resources/app/extensions/ms-vscode.js-debug/LICENSE.txt [dea9265341829002] MIT
+    testo: vscodium/resources/app/extensions/ms-vscode.js-debug/ThirdPartyNotices.txt [6ed175b28a1b3ce9] 0BSD, Apache-2.0, BSD, CC0-1.0, ISC, MIT
+    testo: vscodium/resources/app/extensions/ms-vscode.vscode-js-profile-table/ThirdPartyNotices.txt [23d0d85fc1353135] 0BSD, Apache-2.0, BSD, CC-BY-4.0, CC0-1.0, EPL-2.0, ISC, MIT, MPL-2.0, PSF-2.0
+    testo: vscodium/resources/app/extensions/terminal-suggest/ThirdPartyNotices.txt [875fb70e4eb54f1f] MIT
+    testo: vscodium/resources/app/extensions/theme-modern-icons/fileicons/images/license.svg [092d038ae88da697]
+    testo: vscodium/resources/app/extensions/theme-seti/ThirdPartyNotices.txt [be25a8e2c617f721] MIT
+    testo: vscodium/resources/app/node_modules.asar.unpacked/@devcontainers/cli/LICENSE.txt [9dc5a42b169ffdf7] MIT
+    testo: vscodium/resources/app/node_modules.asar.unpacked/@devcontainers/cli/ThirdPartyNotices.txt [6a083f9cb627586a] 0BSD, BSD, ISC, MIT, PSF-2.0
+    testo: vscodium/resources/app/node_modules/@pondwader/socks5-server/LICENSE [8378f3b9fa37d952] MIT
+    testo: vscodium/resources/app/node_modules/@vscode/sandbox-runtime/LICENSE [1210bc93eb85dd78] Apache-2.0
+    testo: vscodium/resources/app/node_modules/@vscode/sandbox-runtime/node_modules/commander/LICENSE [04512a63dce4d2d5] MIT
+    testo: vscodium/resources/app/node_modules/@vscode/sandbox-runtime/node_modules/zod/LICENSE [3f1189b28e3866e0] MIT
+    testo: vscodium/resources/app/node_modules/semver/LICENSE [4ec3d4c66cd87f5c] 0BSD, ISC
+    testo: vscodium/resources/app/node_modules/shell-quote/LICENSE [8bb16db1b047019e] MIT
+    testo: vscodium/resources/app/node_modules/zod/LICENSE [3f1189b28e3866e0] MIT
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/ad41607c61898cf7150e0fb20fe4bbabd44922a3.tar.gz [senza impronta: il server genera l archivio al volo]
+algodesign/algodesign 1.0.0
+    licenza: MIT AND CC-BY-4.0
+    dichiarata dal pacchetto: MIT per il codice, CC per i documenti
+    testo: algodesign/LICENSE [89da8d56baab98cb] MIT
+    testo: algodesign/LICENSE-DOCS [9ba9550ad48438d0] CC-BY-4.0
+    testo: algodesign/LICENZE-DI-TERZE-PARTI.txt [e7704a6b6030bfbe] 0BSD, Apache-2.0, BSD, CC0-1.0, ISC, LLVM-exception, MIT, MPL-2.0, Zlib
+    testo: licenze/MYDEV-LICENSE-DOCS.txt [9ba9550ad48438d0] CC-BY-4.0
+toolchain/llvm-mingw 20260826-ucrt (clang 23.1.0)
+    licenza: Apache-2.0 WITH LLVM-exception AND GPL-2.0-only AND GPL-3.0-or-later AND LGPL-2.1-or-later AND ZPL-2.1 AND PSF-2.0 AND MIT
+    dichiarata dal pacchetto: Apache-2.0 WITH LLVM-exception, con i testi dei componenti nell'archivio
+    nota: busybox GPL 2, make e gendef GPL 3, widl LGPL 2.1 (da Wine), le librerie di mingw-w64 ZPL, Python e libffi; versioni dagli script di llvm-mingw all'etichetta 20260826
+    testo: llvm/LICENSE.TXT [8d85c1057d742e59] Apache-2.0, LLVM-exception, MIT
+    testo: llvm/busybox/LICENSE.txt [bbfc9843646d483c] GPL-2.0
+    testo: llvm/busybox/share/make/COPYING.txt [e79e9c8a0c85d735] GPL-3.0
+    testo: llvm/python/LICENSE.txt [b0e25a78cffb43f4] 0BSD, ISC, PSF-2.0
+    testo: llvm/python/lib/python3.14/LICENSE.txt [b0e25a78cffb43f4] 0BSD, ISC, PSF-2.0
+    testo: llvm/python/share/libffi/LICENSE.txt [67894089811f93fc] MIT
+    testo: llvm/share/gendef/COPYING.txt [8ceb4b9ee5adedde] GPL-3.0
+    testo: llvm/share/make/COPYING.txt [e79e9c8a0c85d735] GPL-3.0
+    testo: llvm/share/widl/COPYING.txt [99a69660981156c2] BSD
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING [99a69660981156c2] BSD
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING.MinGW-w64-runtime.txt [1db8da07b436c688] BSD, ISC, MIT
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING.MinGW-w64.txt [f38e6194bd3bfa1b] BSD, MIT
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt [63263614cdd29f2f] BSD, MIT
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING.winstorecompat.txt [fa7368d1f93d890c] MIT
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://github.com/rmyorston/busybox-w32/archive/1f493261d16be3d984fe8a689f5113dafb6eaaa7.tar.gz [sha256 84124d4c9f4439f254f4b74a44397a7e354277fe1f9677591377a5143da3d248]
+    sorgente: https://github.com/mstorsjo/llvm-mingw/archive/refs/tags/20260826.tar.gz [sha256 23534c538fa4bdcea4426e4bca329641170c58f853b6e204ca34f8f20e2df3c9]
+    sorgente: https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz [sha256 dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3]
+    sorgente: https://github.com/mingw-w64/mingw-w64/archive/a3d708261d5ba659205067cb82cae36e7ae8bbb0.tar.gz [sha256 948444d5c7aa9638fc24343bb78985c799e4d15643ce6500aba37f04f81a69ed]
+toolchain/python 3.14.7
+    licenza: PSF-2.0
+    nota: vcruntime140.dll e vcruntime140_1.dll sono il runtime di Visual C++ di Microsoft: le condizioni per ridistribuirli stanno nel LICENSE.txt di Python, alla sezione «Additional Conditions for this Windows binary build»
+    testo: python/LICENSE.txt [935cf13e19f8c31b] 0BSD, Apache-2.0, BSD, ISC, MIT, PSF-2.0
+strumenti/neovim 0.12.5
+    licenza: Apache-2.0 AND Vim
+    dichiarata dal pacchetto: Apache-2.0 e Vim
+    nota: il LICENSE.txt dell'etichetta v0.12.5 porta l'avviso Apache e la licenza di Vim; il pacchetto non ha un testo. nvim/bin/DbgHelp.dll e' una libreria di Windows di Microsoft (10.0.26100.4202) che il pacchetto di Neovim porta con se', senza i suoi termini
+    testo: nvim/share/nvim/runtime/pack/dist/opt/netrw/LICENSE.txt [0dac5aa0e9035a96] 0BSD, ISC
+    testo: licenze/strumenti-neovim/LICENSE.txt [de23202ef9a51f5e] Apache-2.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+strumenti/nginx 1.30.4
+    licenza: BSD-2-Clause AND Apache-2.0 AND BSD-3-Clause AND Zlib
+    dichiarata dal pacchetto: BSD-2-Clause
+    nota: il programma per Windows incorpora OpenSSL (Apache 2.0), PCRE2 (BSD 3 con l'eccezione di PCRE2) e zlib: i loro testi stanno in nginx/docs accanto a quello di nginx
+    testo: nginx/docs/LICENSE [08845fe39e06b51d] BSD
+    testo: nginx/docs/OpenSSL.LICENSE [7d5450cb2d142651] Apache-2.0
+    testo: nginx/docs/PCRE.LICENCE [197d8a73ffee0d6b] BSD
+    testo: nginx/docs/zlib.LICENSE [67e85660da6e7802] Zlib
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+strumenti/jq 1.8.2
+    licenza: MIT
+    nota: il COPYING dell'etichetta jq-1.8.2 nomina anche le parti incorporate
+    testo: licenze/strumenti-jq/COPYING [ad2b4a266b226893] BSD, ISC, MIT
+strumenti/mkcert 1.4.4
+    licenza: BSD-3-Clause
+    testo: licenze/strumenti-mkcert/LICENSE [26c2246f9f611783] BSD
+strumenti/cppcheck-winlibs gcc 15.2.0 / mingw-w64 13.0.0 ucrt r5
+    licenza: GPL-3.0-or-later AND GPL-3.0-or-later WITH GCC-exception-3.1 AND BSD-3-Clause AND MIT
+    dichiarata dal pacchetto: GPL-3.0-or-later per cppcheck; GCC Runtime Library Exception, BSD, MIT per le librerie
+    nota: cppcheck 2.19.0 GPL 3; libgcc e libstdc++ di GCC 15.2.0 con l'eccezione; libpcre 8.45, l'ultima della serie 1, BSD; winpthreads di mingw-w64, testo dello stesso progetto preso da llvm-mingw. L'archivio di winlibs non porta testi
+    testo: licenze/pcre/LICENCE [51b3dea44f63338b] BSD
+    testo: llvm/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt [63263614cdd29f2f] BSD, MIT
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/gcc/RUNTIME.LIBRARY.EXCEPTION [9d6b43ce4d8de0c8] GCC-exception-3.1
+    sorgente: https://github.com/danmar/cppcheck/archive/refs/tags/2.19.0.tar.gz [sha256 c6cff9d3bbcb3da941bf7f525ae974b6c7af3d610c4c5519fcd1be3f21f5ae09]
+    sorgente: https://ftp.gnu.org/gnu/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz [sha256 438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e]
+estensioni/ms-python.python 2026.4.0
+    licenza: MIT
+    nota: fra i testi c'e' anche la LGPL 2.1 di docstring_to_markdown, una libreria in Python che l'estensione porta in sorgente
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/LICENSE.txt [b3e677dfc054c000] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/ThirdPartyNotices-Repository.txt [657cc719a8eb5391] Apache-2.0, BSD, MIT, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/dist/extension.browser.js.LICENSE.txt [035d0aa4162cd837]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/out/client/extension.js.LICENSE.txt [1667d7a918dd1c6f]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/out/client/node_modules/node-stream-zip.js.LICENSE.txt [72ea468a37778a38]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/out/client/node_modules/xml2js.js.LICENSE.txt [e262a5b87d68f7b5]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/out/client/plainExec.worker.js.LICENSE.txt [04b9b69c2d3e9737]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/out/client/shellExec.worker.js.LICENSE.txt [04b9b69c2d3e9737]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/attrs-25.3.0.dist-info/licenses/LICENSE [882115c95dfc2af1] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/cattrs-25.2.0.dist-info/licenses/LICENSE [f5fb9d1ede37a88c] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/docstring_to_markdown-0.17.dist-info/licenses/LICENSE [20c17d8b8c48a600] LGPL-2.1
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/exceptiongroup-1.3.0.dist-info/licenses/LICENSE [6e5070d765031e0a] MIT, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/importlib_metadata-8.7.0.dist-info/licenses/LICENSE [cfc7749b96f63bd3] Apache-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/jedi-0.19.2.dist-info/LICENSE.txt [78e60cd0b8f28694] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/jedi/third_party/django-stubs/LICENSE.txt [235e993965d399a2] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/jedi/third_party/typeshed/LICENSE [b41b78f562a2e65b] Apache-2.0, MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/jedi_language_server-0.45.1.dist-info/LICENSE [e3f790f5bd904e91] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/lsprotocol-2023.0.1.dist-info/LICENSE [c2cfccb812fe4821] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/parso-0.8.5.dist-info/licenses/LICENSE.txt [fa67973073753d17] MIT, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/pygls-1.3.1.dist-info/LICENSE.txt [6f4915c6bf1a75bc] Apache-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/typing_extensions-4.15.0.dist-info/licenses/LICENSE [3b2f81fe21d181c4] 0BSD, ISC, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/jedilsp/zipp-3.23.0.dist-info/licenses/LICENSE [5a57cb4db85e2a2d] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/importlib_metadata-8.7.1.dist-info/licenses/LICENSE [458502e12d97bbf6] Apache-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/microvenv-2025.0.dist-info/licenses/LICENSE [8339dd633c6236e6] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/packaging-26.0.dist-info/licenses/LICENSE [cad1ef5bd340d73e]
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/packaging-26.0.dist-info/licenses/LICENSE.APACHE [0d542e0c8804e39a] Apache-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/packaging-26.0.dist-info/licenses/LICENSE.BSD [b70e7e9b742f1cc6] BSD
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/tomli-2.4.0.dist-info/licenses/LICENSE [b80816b0d530b8ac] MIT
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/typing_extensions-4.15.0.dist-info/licenses/LICENSE [3b2f81fe21d181c4] 0BSD, ISC, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.python-2026.4.0/python_files/lib/python/zipp-3.21.0.dist-info/LICENSE [86da0f01aeae4634] MIT
+estensioni/ms-python.debugpy 2026.6.0
+    licenza: MIT
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/LICENSE.txt [c2cfccb812fe4821] MIT
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/bundled/libs/debugpy-1.8.20.dist-info/licenses/LICENSE [83c3ed394e600067] MIT
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/bundled/libs/debugpy/ThirdPartyNotices.txt [5b3993f39dc19473] BSD, MIT, PSF-2.0
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/bundled/libs/packaging-24.2.dist-info/LICENSE [cad1ef5bd340d73e]
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/bundled/libs/packaging-24.2.dist-info/LICENSE.APACHE [0d542e0c8804e39a] Apache-2.0
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/bundled/libs/packaging-24.2.dist-info/LICENSE.BSD [b70e7e9b742f1cc6] BSD
+    testo: vscodium/data/extensions/ms-python.debugpy-2026.6.0/dist/extension.js.LICENSE.txt [0ba39ecf1c020211]
+estensioni/detachhead.basedpyright 1.40.2
+    licenza: MIT
+    testo: vscodium/data/extensions/detachhead.basedpyright-1.40.2/LICENSE.txt [f7c936bc43f132b0] MIT
+    testo: vscodium/data/extensions/detachhead.basedpyright-1.40.2/dist/typeshed-fallback/LICENSE [295f8538c94ae5c3] Apache-2.0, MIT
+estensioni/llvm-vs-code-extensions.vscode-clangd 0.6.0
+    licenza: MIT
+    testo: vscodium/data/extensions/llvm-vs-code-extensions.vscode-clangd-0.6.0/LICENSE.txt [77c119a8c62405ad] MIT
+estensioni/llvm-vs-code-extensions.lldb-dap 0.7.20261012
+    licenza: Apache-2.0 WITH LLVM-exception
+    dichiarata dal pacchetto: Apache 2.0 License with LLVM exceptions
+    testo: vscodium/data/extensions/llvm-vs-code-extensions.lldb-dap-0.7.20261012/LICENSE.TXT [94b301bb652ae351] Apache-2.0, LLVM-exception
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+estensioni/eclipse-cdt.cdt-gdb-vscode 2.9.1
+    licenza: EPL-2.0
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/LICENSE.txt [721c2da257578bac] EPL-2.0
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/NOTICE [1789a2a3e4163e86]
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/binding-mock/LICENSE [043e85e0a83eca4b] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/binding-mock/node_modules/debug/LICENSE [3a61c6c96caf5c1d] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/binding-mock/node_modules/ms/license.md [6652830c2607c722] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-cpp/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-cpp/node_modules/@serialport/parser-delimiter/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-cpp/node_modules/@serialport/parser-readline/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-cpp/node_modules/debug/LICENSE [3a61c6c96caf5c1d] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-cpp/node_modules/node-addon-api/LICENSE.md [89024017b88a9f2b] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/bindings-interface/LICENSE [043e85e0a83eca4b] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-byte-length/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-cctalk/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-delimiter/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-inter-byte-timeout/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-packet-length/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-readline/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-ready/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-regex/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-slip-encoder/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/parser-spacepacket/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/stream/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@serialport/stream/node_modules/debug/LICENSE [3a61c6c96caf5c1d] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugadapter-testsupport/LICENSE.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugadapter-testsupport/thirdpartynotices.txt [628a92e587cfcf84] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugadapter/License.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugadapter/node_modules/@vscode/debugprotocol/License.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugadapter/thirdpartynotices.txt [628a92e587cfcf84] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/@vscode/debugprotocol/License.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/async-mutex/LICENSE [afdf40d8e1d2478a] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-amalgamator/LICENSE [721c2da257578bac] EPL-2.0
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-amalgamator/NOTICE [1789a2a3e4163e86]
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-amalgamator/node_modules/@vscode/debugadapter/License.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-amalgamator/node_modules/@vscode/debugadapter/thirdpartynotices.txt [628a92e587cfcf84] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-gdb-adapter/LICENSE [721c2da257578bac] EPL-2.0
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-gdb-adapter/NOTICE [1789a2a3e4163e86]
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/cdt-gdb-adapter/node_modules/@vscode/debugprotocol/License.txt [3ead76b8e8e547ef] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/debug/LICENSE [3a61c6c96caf5c1d] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/ms/license.md [1662fae9b5314d11] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/node-addon-api/LICENSE.md [89024017b88a9f2b] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/node-gyp-build/LICENSE [7b3638496004b2da] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/react-dom/LICENSE [da6d3703ed11cbe4] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/react/LICENSE [da6d3703ed11cbe4] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/scheduler/LICENSE [da6d3703ed11cbe4] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/serialport/LICENSE [12b8f57dbef74249] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/serialport/node_modules/debug/LICENSE [3a61c6c96caf5c1d] MIT
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/tslib/CopyrightNotice.txt [da16ddb65f8ca390] 0BSD, ISC
+    testo: vscodium/data/extensions/eclipse-cdt.cdt-gdb-vscode-2.9.1/node_modules/tslib/LICENSE.txt [210b19e543130388] 0BSD, ISC
+    sorgente: https://github.com/eclipse-cdt-cloud/cdt-gdb-vscode/archive/refs/tags/v2.9.1.tar.gz [sha256 a19563993fa2d22c0489fc686db103b88d32f04834dbea05c334da79a19b5d31]
+pip/Jinja2 3.1.6
+    licenza: BSD-3-Clause
+    testo: python/Lib/site-packages/jinja2-3.1.6.dist-info/licenses/LICENSE.txt [3b49dcee4105eb37] BSD
+pip/MarkupSafe 3.0.3
+    licenza: BSD-3-Clause
+    testo: python/Lib/site-packages/markupsafe-3.0.3.dist-info/licenses/LICENSE.txt [4631ec0db5fd90a5] BSD
+pip/Pygments 2.21.0
+    licenza: BSD-2-Clause
+    testo: python/Lib/site-packages/pygments-2.21.0.dist-info/licenses/LICENSE [a9d66f1d526df02e] BSD
+pip/colorama 0.4.6
+    licenza: BSD-3-Clause
+    testo: python/Lib/site-packages/colorama-0.4.6.dist-info/licenses/LICENSE.txt [cac35c02686e5d04] BSD
+pip/colorlog 6.12.0
+    licenza: MIT
+    testo: msys64/usr/lib/python3.12/site-packages/colorlog-6.12.0.dist-info/licenses/LICENSE [b1d9082bc483623f] MIT
+    testo: python/Lib/site-packages/colorlog-6.12.0.dist-info/licenses/LICENSE [b1d9082bc483623f] MIT
+pip/distlib 0.4.3
+    licenza: PSF-2.0
+    testo: python/Lib/site-packages/distlib-0.4.3.dist-info/licenses/LICENSE.txt [808e10c8a6ab8deb] PSF-2.0
+pip/filelock 3.32.5
+    licenza: MIT
+    testo: python/Lib/site-packages/filelock-3.32.5.dist-info/licenses/LICENSE [608c89d5060ae992] MIT
+pip/gcovr 8.6
+    licenza: BSD-3-Clause
+    testo: msys64/usr/lib/python3.12/site-packages/gcovr-8.6.dist-info/licenses/LICENSE.txt [c647f75745adfe78] BSD
+    testo: python/Lib/site-packages/gcovr-8.6.dist-info/licenses/LICENSE.txt [c647f75745adfe78] BSD
+pip/lxml 6.1.3
+    licenza: BSD-3-Clause
+    testo: python/Lib/site-packages/lxml-6.1.3.dist-info/licenses/LICENSE.txt [e7c3ce8d76331b01] BSD
+    testo: python/Lib/site-packages/lxml-6.1.3.dist-info/licenses/LICENSES.txt [df682c668de65321] MIT
+pip/pip 26.2.1
+    licenza: MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/LICENSE.txt [634300a669d49aea] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt [86eeee87be2a43f3]
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/certifi/LICENSE [e93716da6b9c0d5a]
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt [808e10c8a6ab8deb] PSF-2.0
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/distro/LICENSE [cb5e8e7e5f4a3988] Apache-2.0
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md [1a9a4f0e3d479a27] BSD
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/msgpack/COPYING [492dedba85da5872]
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE [cad1ef5bd340d73e]
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.APACHE [0d542e0c8804e39a] Apache-2.0
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.BSD [b70e7e9b742f1cc6] BSD
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pkg_resources/LICENSE [86da0f01aeae4634] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/platformdirs/LICENSE [29e0fd62e929850e] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pygments/LICENSE [a9d66f1d526df02e] BSD
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pyproject_hooks/LICENSE [1b22b049b5267d6d] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/requests/LICENSE [09e8a9bcec806710] Apache-2.0
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/resolvelib/LICENSE [f388fd38cad13112] ISC
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/rich/LICENSE [deed7c17a4318158] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/tomli/LICENSE [b80816b0d530b8ac] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/tomli_w/LICENSE [b80816b0d530b8ac] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/truststore/LICENSE [33be7b7e8fa4fd19] MIT
+    testo: python/Lib/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt [130e3a64d5fdd5d0] MIT
+pip/platformdirs 4.11.7
+    licenza: MIT
+    testo: python/Lib/site-packages/platformdirs-4.11.7.dist-info/licenses/LICENSE [29e0fd62e929850e] MIT
+pip/python-discovery 1.6.0
+    licenza: MIT
+    testo: python/Lib/site-packages/python_discovery-1.6.0.dist-info/licenses/LICENSE [90e25e1faf2a4aae] MIT
+pip/virtualenv 21.7.8
+    licenza: MIT
+    testo: python/Lib/site-packages/virtualenv-21.7.8.dist-info/licenses/LICENSE [5c15919378c5b2aa] MIT
+msys/base 2022.06-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: metapacchetto senza file; «GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/base-2022.06-1.src.tar.zst [sha256 ae8db568ec9b22a634d52bd0d3d03c8058631d42418cd040976f5c2b3e586d7f]
+msys/bash 5.3.015-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/bash-5.3.015-1.src.tar.zst [sha256 513f485881c94d0bab3ebcb2d1d3b98c19078d4abe26796bc52220db3e65b7af]
+msys/bash-completion 2.17.0-2
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 2
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/bash-completion-2.17.0-2.src.tar.zst [sha256 772625c7b4dbb28b1910662cf1667e0468f041e63d931b4635452514f7c4e6aa]
+msys/binutils 2.47-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/binutils-2.47-1.src.tar.zst [sha256 2cf54a4208a6683ca2793fb14eb6ca4b3ddec9474e60738c90050bb2ee359276]
+msys/brotli 1.2.0-1
+    licenza: MIT
+    testo: msys64/usr/share/licenses/brotli/LICENSE [3d180008e36922a4] MIT
+msys/bsdtar 3.8.7-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: BSD
+    nota: stessa sorgente di libarchive
+    testo: msys64/usr/share/licenses/libarchive/COPYING [30e556b3959e3985] BSD, CC0-1.0
+msys/bzip2 1.0.8-4
+    licenza: bzip2-1.0.6
+    dichiarata dal pacchetto: custom
+    testo: licenze/bzip2/LICENSE [c6dbbf828498be84] BSD
+msys/ca-certificates 20250419-1
+    licenza: MPL-2.0 AND GPL-2.0-or-later
+    dichiarata dal pacchetto: MPL; GPL
+    nota: debian/copyright della sorgente: MPL 2.0 per i certificati, GPL per gli script
+    testo: licenze/ca-certificates/copyright [e85e1bcad3a915dc] MPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/ca-certificates-20250419-1.src.tar.zst [sha256 0e96cbfe9d0ec342c92d0e6ae6e6227c8ada298583eab0958cb3321614e15de9]
+msys/ccache 4.14-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/ccache/GPL-3.0.txt [80b5112739a423df] GPL-3.0
+    testo: msys64/usr/share/licenses/ccache/LGPL-3.0.txt [e3a994d82e644b03] LGPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/ccache-4.14-1.src.tar.zst [sha256 ea6a7d220ce9101b9be8f377611e45823ffcd2cff2b99d28d480ad437ee4ce9d]
+msys/cmake 4.4.2-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: msys64/usr/share/licenses/cmake/LICENSE [4382e7c1879ac90e] BSD
+msys/coreutils 8.32-5
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/coreutils-8.32-5.src.tar.zst [sha256 2b8689413bc50367a9995adf50ea84cd3caaff0ec68a8f32d8328842c3f83835]
+msys/cppdap 1.58.0a-3
+    licenza: Apache-2.0
+    dichiarata dal pacchetto: spdx:Apache-2.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/ctags 6.2.1-3
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/ctags/LICENSE [dcc100d4161cc0b7] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/ctags-6.2.1-3.src.tar.zst [sha256 3df1cae8b2fe49fa08f57e10bb5b3a884c7ce1c6180388cfac8e9a764c82fee4]
+msys/curl 8.20.0-1
+    licenza: curl
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/curl/COPYING [82f2f4427d6545ee] ISC
+msys/dash 0.5.13.4-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/dash/COPYING [254a7894923ff62e] BSD
+msys/db 6.2.32-6
+    licenza: AGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:AGPL-3.0-or-later
+    testo: licenze/db/LICENSE [733de00e355f9a86] AGPL-3.0, BSD
+    sorgente: https://repo.msys2.org/msys/sources/db-6.2.32-6.src.tar.zst [sha256 ca33d813847b2a544faa23cc732fdef5fcb84b6a4b73f1c22eefadb7dbcb7f17]
+msys/diffutils 3.12-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/diffutils-3.12-1.src.tar.zst [sha256 474c4a3528a2afbb8d9608c65ad1bdbbd81ff42c143a438d7d56272a61b1bfac]
+msys/doctest 2.4.12-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/doctest/LICENSE [0fe0b331fa1513dc] MIT
+msys/file 5.48-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: custom
+    testo: msys64/usr/share/licenses/file/COPYING [0bfa856a9930bdda] BSD
+msys/filesystem 2026.03.06-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: licenze/filesystem/LICENSE [e08ac31ef517ea44] BSD
+msys/findutils 4.10.0-2
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/findutils-4.10.0-2.src.tar.zst [sha256 e19640714a3c1f43c250aaebc6a2e94aec43a67a031c31ff675edbc166d333d3]
+msys/fmt 12.2.0-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/fmt/LICENSE [a65fcc5a1095fc33] MIT
+msys/gawk 5.4.0-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gawk-5.4.0-1.src.tar.zst [sha256 77537012eab6b7074413221cff57ebea3d632785ead2f259dfefb1c027ef86c7]
+msys/gcc 15.3.0-1
+    licenza: GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later
+    testo: msys64/usr/share/licenses/gcc/RUNTIME.LIBRARY.EXCEPTION [9d6b43ce4d8de0c8] GCC-exception-3.1
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    testo: licenze/GFDL-1.3.txt [110535522396708c] GFDL-1.3
+    sorgente: https://repo.msys2.org/msys/sources/gcc-15.3.0-1.src.tar.zst [sha256 110eaa240aaced2ec2d05b1ce1c7d7273b9549c60ac17cb571bd28781766522d]
+msys/gcc-libs 15.3.0-1
+    licenza: GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-2.1-or-later AND LGPL-3.0-or-later AND GCC-exception-3.1 AND GFDL-1.3-or-later
+    testo: msys64/usr/share/licenses/gcc-libs/RUNTIME.LIBRARY.EXCEPTION [9d6b43ce4d8de0c8] GCC-exception-3.1
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    testo: msys64/usr/share/licenses/gcc/RUNTIME.LIBRARY.EXCEPTION [9d6b43ce4d8de0c8] GCC-exception-3.1
+    testo: licenze/GFDL-1.3.txt [110535522396708c] GFDL-1.3
+    sorgente: https://repo.msys2.org/msys/sources/gcc-15.3.0-1.src.tar.zst [sha256 110eaa240aaced2ec2d05b1ce1c7d7273b9549c60ac17cb571bd28781766522d]
+msys/gdb 17.1-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING.LIB [56bdea73b6145ef6] LGPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING3 [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING3.LIB [56bdea73b6145ef6] LGPL-2.0
+    testo: msys64/usr/share/licenses/gdb/README [aad2d392225f2e40]
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gdb-17.1-3.src.tar.zst [sha256 aba6c6dd45a085225652809a31055e2cbe2f4eb7a44d7d95487e55a9efeed615]
+msys/gdbm 1.26-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gdbm-1.26-1.src.tar.zst [sha256 955ecefcd32bee0ec40e3aa768b8ed068a2a1f2310f9777dcc77c02fdfa54271]
+msys/getent 2.18.90-6
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: LGPL
+    nota: il COPYING.LIB della sorgente e' la LGPL 2.1
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/getent-2.18.90-6.src.tar.zst [sha256 636e270274f7714aef82e6b17bc6c2f9fc63f5dc780d71adb26585ee3822f0a8]
+msys/gettext 0.22.5-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gettext-0.22.5-1.src.tar.zst [sha256 e07a0b3e6716aae86dc0edd2dcdc8864731d56051345592b53659a3840ccfbd8]
+msys/gmp 6.3.0-2
+    licenza: LGPL-3.0-or-later
+    dichiarata dal pacchetto: LGPL3
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gmp-6.3.0-2.src.tar.zst [sha256 02356ca25ce362edb883ce7c060050de2cec5f2b1227a1c56ef7c0a0f99ff667]
+msys/gnupg 2.4.9-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gnupg-2.4.9-1.src.tar.zst [sha256 93a74766e56dbe2b542bd4898feb9b215d51297b51335743a1e37df254c367eb]
+msys/grep 1~3.0-7
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/grep-1~3.0-7.src.tar.zst [sha256 acba43b9b2c3eb393f9a75d02a1eca34fa23d959541150a7ac4ffbafce3cae4e]
+msys/groff 1.23.0-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/groff-1.23.0-3.src.tar.zst [sha256 f6ae17ef50a50d6b5b3c15efbb4d4a54838b3c662b5fcf763bdfab809fbc291f]
+msys/gzip 1.14-2
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gzip-1.14-2.src.tar.zst [sha256 aea2fc89713e314d6dc3c929b63cf8e949a9a6cbae82c3fd0c32005d3e044ae9]
+msys/iconv 1.19-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: LGPL
+    nota: il programma iconv; la libreria e' LGPL
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libiconv-1.19-1.src.tar.zst [sha256 5a8bcd3242e2be94fffd9f03fadcda8d9fd64047430050c5cbd214cd3bf7f0a7]
+msys/inetutils 2.7-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/inetutils-2.7-1.src.tar.zst [sha256 05ff7b38891c7fc5e5cc9a31fac8c974d11b0811a32b793eb8b89ec22419524d]
+msys/info 7.2-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/texinfo-7.2-3.src.tar.zst [sha256 2d185d46ab2b04f1c259909cf7092e1fb1cf9cb50488de7c613fc8eb4f72d934]
+msys/isl 0.28-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/isl/LICENSE [3a2c398103f6bca0] MIT
+msys/jansson 2.15.1-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/jansson/LICENSE [150d90904cd8de73] ISC, MIT
+msys/jsoncpp 1.9.8-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: licenze/jsoncpp/LICENSE [cec0db5f6d7ed6b3] MIT
+msys/less 704-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/less-704-1.src.tar.zst [sha256 58f970f43d51ec1c51317e39a7c299f2617985ffa2b60c5065d36b1d6f7a8dff]
+msys/libarchive 3.8.9-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: spdx:BSD-2-Clause
+    testo: msys64/usr/share/licenses/libarchive/COPYING [30e556b3959e3985] BSD, CC0-1.0
+msys/libargp 20260115-1
+    licenza: LGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/libargp/COPYING.LESSERv3 [e3a994d82e644b03] LGPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libargp-20260115-1.src.tar.zst [sha256 3d1128f73af8861a68d76d3517d7ec2a778c2d921437cbda2cb9424a9f5fa63d]
+msys/libasprintf 0.22.5-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: GPL
+    nota: gettext-runtime/libasprintf/COPYING.LIB della sorgente
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/gettext-0.22.5-1.src.tar.zst [sha256 e07a0b3e6716aae86dc0edd2dcdc8864731d56051345592b53659a3840ccfbd8]
+msys/libassuan 3.0.2-1
+    licenza: LGPL-2.1-or-later AND GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: COPYING.LIB e COPYING della sorgente
+    testo: msys64/usr/share/licenses/libassuan/COPYING [fc82ca8b6fdb18d4] GPL-3.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libassuan-3.0.2-1.src.tar.zst [sha256 723778dd8d9205919c374cbbf694e5cc7e3c568a13d594e4032533f801e33933]
+msys/libblake3 1.8.7-1
+    licenza: (CC0-1.0 OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception)
+    dichiarata dal pacchetto: spdx:CC0-1.0 OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception
+    testo: licenze/CC0-1.0.txt [ec4a7d97de212428] CC0-1.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/libbz2 1.0.8-4
+    licenza: bzip2-1.0.6
+    dichiarata dal pacchetto: custom
+    testo: licenze/bzip2/LICENSE [c6dbbf828498be84] BSD
+msys/libcurl 8.20.0-1
+    licenza: curl
+    dichiarata dal pacchetto: spdx:MIT
+    nota: stessa sorgente di curl
+    testo: msys64/usr/share/licenses/curl/COPYING [82f2f4427d6545ee] ISC
+msys/libdb 6.2.32-6
+    licenza: AGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:AGPL-3.0-or-later
+    testo: licenze/db/LICENSE [733de00e355f9a86] AGPL-3.0, BSD
+    sorgente: https://repo.msys2.org/msys/sources/db-6.2.32-6.src.tar.zst [sha256 ca33d813847b2a544faa23cc732fdef5fcb84b6a4b73f1c22eefadb7dbcb7f17]
+msys/libevent 2.1.13-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: msys64/usr/share/licenses/libevent/LICENSE [ff02effc9b331edc] BSD, ISC, MIT
+msys/libexpat 2.8.1-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: licenze/expat/COPYING [31b15de82aa19a84] MIT
+msys/libffi 3.5.2-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libffi/LICENSE [d5699fa516968e3a] MIT
+msys/libgc 8.2.12-1
+    licenza: Boehm-GC
+    dichiarata dal pacchetto: MIT
+    nota: il pacchetto dichiara MIT, ma il testo in README.QUICK della sorgente e' la licenza propria di bdwgc
+    testo: licenze/gc/README.QUICK [46cf78d79f08ec72]
+msys/libgcrypt 1.12.2-1
+    licenza: LGPL-2.1-or-later AND GPL-2.0-or-later
+    dichiarata dal pacchetto: LGPL
+    nota: COPYING.LIB e COPYING della sorgente
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/libgcrypt-1.12.2-1.src.tar.zst [sha256 33bb839f2134efe13f0c8aa43256fb6a3ddb340c6089f197b6089a4cbe2358e9]
+msys/libgdbm 1.26-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gdbm-1.26-1.src.tar.zst [sha256 955ecefcd32bee0ec40e3aa768b8ed068a2a1f2310f9777dcc77c02fdfa54271]
+msys/libgettextpo 0.22.5-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/gettext-0.22.5-1.src.tar.zst [sha256 e07a0b3e6716aae86dc0edd2dcdc8864731d56051345592b53659a3840ccfbd8]
+msys/libgnutls 3.8.13-1
+    licenza: GPL-3.0-or-later AND LGPL-2.1-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later; spdx:LGPL-2.1-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/gnutls-3.8.13-1.src.tar.zst [sha256 d1f45e5ea101714c097ef19f056ebb190adec405b1550abfc86b263e3cc9209f]
+msys/libgpg-error 1.61-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: spdx:LGPL-2.1-or-later
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/libgpg-error-1.61-1.src.tar.zst [sha256 760da07c2407b8da443f7b8df3d11ae35ae8f48eebee57cce6ab958b114f2a11]
+msys/libguile 3.0.11-1
+    licenza: LGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    testo: msys64/usr/share/licenses/guile/LICENSE [b51c6f20e6d029cb]
+    sorgente: https://repo.msys2.org/msys/sources/guile-3.0.11-1.src.tar.zst [sha256 2f8f01b4de740a04893dcea303b0e6910be07226b85a75618cfbba68cdfae99a]
+msys/libhogweed 3.10.2-1
+    licenza: (GPL-2.0-or-later OR LGPL-3.0-or-later)
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later OR LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/nettle-3.10.2-1.src.tar.zst [sha256 8a76d26462c689b4d5223199e5ded562eb88ff261619f291318f1bcdf30110fe]
+msys/libiconv 1.19-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: LGPL
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/libiconv-1.19-1.src.tar.zst [sha256 5a8bcd3242e2be94fffd9f03fadcda8d9fd64047430050c5cbd214cd3bf7f0a7]
+msys/libidn2 2.3.8-1
+    licenza: GPL-3.0-or-later AND LGPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3; LGPL
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libidn2-2.3.8-1.src.tar.zst [sha256 c77c550e8cc2f595ed10b4a3996085cc6e6a3f5f650916a14701bd48d5d9fd7d]
+msys/libintl 0.22.5-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: GPL
+    nota: gettext-runtime/intl/COPYING.LIB della sorgente
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/gettext-0.22.5-1.src.tar.zst [sha256 e07a0b3e6716aae86dc0edd2dcdc8864731d56051345592b53659a3840ccfbd8]
+msys/libksba 1.8.0-1
+    licenza: (LGPL-3.0-or-later OR GPL-2.0-or-later)
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later OR GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/libksba/COPYING [6197b98c6bf69838]
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/libksba-1.8.0-1.src.tar.zst [sha256 a34233714689d0a316c3e0462cc0c018814d0e5f539eb569ac33f5b21041a4d8]
+msys/liblz4 1.10.0-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: LGPL
+    nota: il pacchetto dichiara LGPL, ma la libreria della sorgente ha lib/LICENSE BSD 2; i programmi, GPL 2, non sono in questo pacchetto
+    testo: licenze/lz4/LICENSE [8b58c446121a109c] BSD
+msys/liblzma 5.8.3-1
+    licenza: 0BSD
+    dichiarata dal pacchetto: GPL; LGPL; custom
+    nota: COPYING della sorgente: liblzma e' 0BSD dalla 5.6
+    testo: licenze/xz/COPYING [616a3ad264ce29b8]
+    testo: licenze/xz/COPYING.0BSD [0b01625d853911cd] 0BSD, ISC
+msys/libnettle 3.10.2-1
+    licenza: (GPL-2.0-or-later OR LGPL-3.0-or-later)
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later OR LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/nettle-3.10.2-1.src.tar.zst [sha256 8a76d26462c689b4d5223199e5ded562eb88ff261619f291318f1bcdf30110fe]
+msys/libnghttp2 1.69.0-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libnghttp2/COPYING [6b94f3abc1aabd0c] MIT
+msys/libnghttp3 1.16.0-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libnghttp3/COPYING [58cc3fc8c6d6cb24] MIT
+msys/libngtcp2 1.23.0-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libngtcp2/COPYING [542dd526d2ea2356] MIT
+msys/libnpth 1.8-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: LGPL
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/npth-1.8-1.src.tar.zst [sha256 632b95011ea51c7a883388e97171618b43d5056f653c1c26c5eeae23a07a398a]
+msys/libopenssl 3.6.3-1
+    licenza: Apache-2.0
+    dichiarata dal pacchetto: spdx:Apache-2.0
+    testo: msys64/usr/share/licenses/libopenssl/LICENSE.txt [7d5450cb2d142651] Apache-2.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/libp11-kit 0.26.2-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    nota: stessa sorgente di p11-kit
+    testo: msys64/usr/share/licenses/p11-kit/COPYING [2e1ba993904df807] BSD
+msys/libpcre 8.45-5
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: licenze/pcre/LICENCE [51b3dea44f63338b] BSD
+msys/libpcre2_8 10.47-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: licenze/pcre2/LICENCE.md [197d8a73ffee0d6b] BSD
+msys/libpipeline 1.5.8-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: BSD
+    nota: il pacchetto dichiara BSD, ma il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libpipeline-1.5.8-1.src.tar.zst [sha256 9de6b9bd6b2868f7da6745d93187aaf4b67875025fdcc191d8d6ad8dbea02bdd]
+msys/libpsl 0.21.5-2
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libpsl/COPYING [322392e6001b2b3b] MIT
+msys/libreadline 8.3.003-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/readline-8.3.003-1.src.tar.zst [sha256 8b9e2370bf80d30cdb1bfeb00be1e2be2c9ec8b92838ffcb5ddc4805ac0a899e]
+msys/librhash 1.4.4-1
+    licenza: 0BSD
+    dichiarata dal pacchetto: custom; MIT
+    testo: msys64/usr/share/licenses/rhash/LICENSE [953e558383533351] 0BSD, ISC
+msys/libsqlite 3.53.2-1
+    licenza: LicenseRef-PublicDomain
+    dichiarata dal pacchetto: PublicDomain
+    testo: msys64/usr/share/licenses/libsqlite/LICENSE [0b76663a90e034f3]
+msys/libssh2 1.11.1-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/libssh2/LICENSE [f7f9633cf9ff2f13] BSD
+msys/libtasn1 4.21.0-1
+    licenza: LGPL-2.1-or-later AND GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3; LGPL
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/libtasn1-4.21.0-1.src.tar.zst [sha256 3b3f93112cd0b7c626483b1aa95a2b63f36a682f47f13f5c416547602c4602e8]
+msys/libunistring 1.4.2-1
+    licenza: (LGPL-3.0-or-later OR GPL-2.0-or-later)
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later OR GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/libunistring-1.4.2-1.src.tar.zst [sha256 9a397e2ffa803f1c18abc119207186ae86ab173f30123e77bf2830afe40befc8]
+msys/libutil-linux 2.40.2-2
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/util-linux-2.40.2-2.src.tar.zst [sha256 ea018e116866c0e2d9a3d6cee3f0d09801e6725789b6f99fd1979dfc7a68b703]
+msys/libuv 1.52.1-1
+    licenza: MIT AND CC-BY-4.0
+    dichiarata dal pacchetto: custom
+    testo: msys64/usr/share/licenses/libuv/LICENSE [16de0c32b265cb7d] MIT
+    testo: licenze/MYDEV-LICENSE-DOCS.txt [9ba9550ad48438d0] CC-BY-4.0
+msys/libxcrypt 4.5.2-1
+    licenza: LGPL-2.1-or-later
+    dichiarata dal pacchetto: spdx:LGPL-2.1-or-later
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/libxcrypt-4.5.2-1.src.tar.zst [sha256 dc3e44cea067417ff61c25c981d7d58bb0f343b824ba10fd2a0a3b8badc55746]
+msys/libxml2 2.15.3-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libxml2/Copyright [5d4873884a890122] MIT
+msys/libxslt 1.1.45-1
+    licenza: MIT
+    dichiarata dal pacchetto: custom
+    testo: msys64/usr/share/licenses/libxslt/Copyright [7e48e290b6bfccc2] MIT
+msys/libxxhash 0.8.3-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/libxxhash/LICENSE [6ffedbc0f7878612] BSD
+msys/libyaml 0.2.5-2
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/libyaml/LICENSE [c40112449f254b97] MIT
+msys/libzstd 1.5.7-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    nota: stessa sorgente di zstd
+    testo: msys64/usr/share/licenses/zstd/LICENSE [7055266497633c90] BSD
+msys/make 4.4.1-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/make-4.4.1-3.src.tar.zst [sha256 b4ca441780273aba4ac44437ea1606dc058a6c0924e16296783c2b3107d32de1]
+msys/man-db 2.13.1-2
+    licenza: GPL-3.0-or-later AND LGPL-2.1-or-later
+    dichiarata dal pacchetto: GPL; LGPL
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    sorgente: https://repo.msys2.org/msys/sources/man-db-2.13.1-2.src.tar.zst [sha256 f212c1faf4da121546234aaa6018deff30b9c0c59f91410df4b5c1ac6471e8a2]
+msys/man-pages-posix 2017_a-1
+    licenza: LicenseRef-POSIX-man-pages
+    dichiarata dal pacchetto: custom:posix
+    testo: licenze/man-pages-posix/POSIX-COPYRIGHT [bdb5ccf2f08e9e2e]
+msys/mintty 1~3.8.3-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/mintty/LICENSE [f0e51f2e813834d6]
+    testo: msys64/usr/share/licenses/mintty/LICENSE.GPL [3972dc9744f6499f] GPL-3.0
+    testo: msys64/usr/share/licenses/mintty/LICENSE.Oxygen [3eb788f81e3b40f6]
+    testo: msys64/usr/share/licenses/mintty/LICENSE.PuTTY [867b1e03a9a1bd01] MIT
+    testo: msys64/usr/share/licenses/mintty/LICENSE.bundling [50571950d79d9a84]
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/mintty-1~3.8.3-1.src.tar.zst [sha256 b0366ca141b4d9e25682dd3a41ca1fd444134c0882a27afb8927ee222265a4d4]
+msys/mpc 1.4.1-1
+    licenza: LGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/mpc-1.4.1-1.src.tar.zst [sha256 7a294f54fb2f5873a7d482381f521c884e1d29b0b1f648c3b7f8b4b9f69f45e2]
+msys/mpdecimal 4.0.1-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: spdx:BSD-2-Clause
+    testo: msys64/usr/share/licenses/mpdecimal/COPYRIGHT.txt [dba079e24a028605] BSD
+msys/mpfr 4.2.2-1
+    licenza: LGPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/mpfr-4.2.2-1.src.tar.zst [sha256 e0c56e3af3819471e74dd37e32660e4eb8f58761c4d214dabd2d62f57c548869]
+msys/msys2-keyring 1~20260214-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: «GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/msys2-keyring-1~20260214-1.src.tar.zst [sha256 348c8ab7eb983cd8f8159d52efaa4136564012a3727ede631bd3603ecd9b4eff]
+msys/msys2-launcher 1.5-3
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: licenze/msys2-launcher/LICENSE.md [568ee49de8f3cca9] MIT
+msys/msys2-runtime 3.6.10-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: licenze/msys2-runtime/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/msys2-runtime-3.6.10-3.src.tar.zst [sha256 fc74cc9e1f57b5db4d43117b83dce87fe45681aa9fee460e4f94e8ceb8f1a455]
+msys/msys2-runtime-devel 3.6.10-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: licenze/msys2-runtime/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/msys2-runtime-3.6.10-3.src.tar.zst [sha256 fc74cc9e1f57b5db4d43117b83dce87fe45681aa9fee460e4f94e8ceb8f1a455]
+msys/msys2-w32api-headers 14.0.0.r0.g9b3dd0125-1
+    licenza: LicenseRef-MinGW-w64
+    dichiarata dal pacchetto: custom
+    testo: licenze/msys2-w32api-headers/COPYING [99a69660981156c2] BSD
+    testo: licenze/msys2-w32api-headers/COPYING.MinGW-w64-runtime.txt [1db8da07b436c688] BSD, ISC, MIT
+    testo: licenze/msys2-w32api-headers/COPYING.MinGW-w64.txt [f38e6194bd3bfa1b] BSD, MIT
+    testo: licenze/msys2-w32api-headers/DISCLAIMER [039ed6b4f31bb7fb] BSD
+    testo: licenze/msys2-w32api-headers/DISCLAIMER.PD [87f33608570312a0]
+msys/msys2-w32api-runtime 14.0.0.r0.g9b3dd0125-1
+    licenza: LicenseRef-MinGW-w64
+    dichiarata dal pacchetto: custom
+    nota: stesso repository delle intestazioni
+    testo: licenze/msys2-w32api-headers/COPYING [99a69660981156c2] BSD
+    testo: licenze/msys2-w32api-headers/COPYING.MinGW-w64-runtime.txt [1db8da07b436c688] BSD, ISC, MIT
+msys/nano 9.0-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/nano-9.0-1.src.tar.zst [sha256 8538716a0b8c381853acabea59b7b62d0a73ac5d6b533df52fc3a3b4d82dcff2]
+msys/ncurses 6.6-2
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/share/licenses/ncurses/LICENSE [708999f95527e1ff] MIT
+msys/nettle 3.10.2-1
+    licenza: (GPL-2.0-or-later OR LGPL-3.0-or-later)
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later OR LGPL-3.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/guile/COPYING.LESSER [9ccf26cfe845e0eb] LGPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/nettle-3.10.2-1.src.tar.zst [sha256 8a76d26462c689b4d5223199e5ded562eb88ff261619f291318f1bcdf30110fe]
+msys/ninja 1.13.2-1
+    licenza: Apache-2.0
+    dichiarata dal pacchetto: Apache
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/openssl 3.6.3-1
+    licenza: Apache-2.0
+    dichiarata dal pacchetto: spdx:Apache-2.0
+    nota: stessa sorgente di libopenssl
+    testo: msys64/usr/share/licenses/libopenssl/LICENSE.txt [7d5450cb2d142651] Apache-2.0
+    testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0
+msys/p11-kit 0.26.2-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/p11-kit/COPYING [2e1ba993904df807] BSD
+msys/pacman 6.1.0-25
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/pacman-6.1.0-25.src.tar.zst [sha256 aeb2fe8b77613d1938f92967249e21bf26b60fc9f1046a612f661056270d8c66]
+msys/pacman-contrib 1.10.6-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/pacman-contrib-1.10.6-1.src.tar.zst [sha256 b657a1e0ceb410810fe830448a08d048a147d5e570bbca466ce586dc3888f63c]
+msys/pacman-mirrors 20260129-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: «GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/pacman-mirrors-20260129-1.src.tar.zst [sha256 ac5627ec539746d5b7430599132cab7e223574b1c3c74e3840d0113f1e984a89]
+msys/patch 2.7.6-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/patch-2.7.6-3.src.tar.zst [sha256 df9a99ee825845b761911f2d1f29024468cb7a7811d1717fe8fa8d08348314e1]
+msys/perl 5.42.2-1
+    licenza: Artistic-1.0-Perl OR GPL-1.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: Artistic e Copying della sorgente
+    testo: licenze/Artistic-1.0-Perl.txt [dd90d4f42e4dcadf] Artistic-1.0
+    testo: licenze/GPL-1.0.txt [8979e6dd61852041] GPL-1.0
+msys/pinentry 1.3.2-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL
+    nota: il COPYING della sorgente e' la GPL 2
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/pinentry-1.3.2-1.src.tar.zst [sha256 53ca524e953f6d15fd057f21975a30c322036cd8bb3574daea64d5385aecc349]
+msys/pkgconf 3.0.5-1
+    licenza: ISC
+    dichiarata dal pacchetto: spdx:ISC
+    testo: licenze/pkgconf/COPYING [055a265b839672a6] 0BSD, ISC
+msys/procps-ng 4.0.5-1
+    licenza: GPL-2.0-or-later AND LGPL-2.0-or-later
+    dichiarata dal pacchetto: GPL; LGPL
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING.LIB [56bdea73b6145ef6] LGPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/procps-ng-4.0.5-1.src.tar.zst [sha256 82b0c3ce9bb083f0a38ed9837902b50d88ba0fb0db18390297d936d12babfb27]
+msys/python 3.12.14-1
+    licenza: Python-2.0
+    dichiarata dal pacchetto: spdx:Python-2.0
+    testo: msys64/usr/lib/python3.12/LICENSE.txt [3b2f81fe21d181c4] 0BSD, ISC, PSF-2.0
+    testo: msys64/usr/share/licenses/python/LICENSE [3b2f81fe21d181c4] 0BSD, ISC, PSF-2.0
+msys/python-jinja 3.1.6-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: msys64/usr/lib/python3.12/site-packages/jinja2-3.1.6.dist-info/licenses/LICENSE.txt [3b49dcee4105eb37] BSD
+    testo: msys64/usr/share/licenses/python-jinja/LICENSE.txt [3b49dcee4105eb37] BSD
+msys/python-lxml 6.1.1-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: msys64/usr/lib/python3.12/site-packages/lxml-6.1.1.dist-info/licenses/LICENSE.txt [8fc2b568133516e4] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/lxml-6.1.1.dist-info/licenses/LICENSES.txt [41d49dd406aa0e15]
+    testo: msys64/usr/share/licenses/python-lxml/LICENSES.txt [41d49dd406aa0e15]
+msys/python-markupsafe 3.0.3-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: spdx:BSD-3-Clause
+    testo: msys64/usr/lib/python3.12/site-packages/markupsafe-3.0.3.dist-info/licenses/LICENSE.txt [489a8e1108509ed9] BSD
+    testo: msys64/usr/share/licenses/python-markupsafe/LICENSE [489a8e1108509ed9] BSD
+msys/python-pip 26.2.1-1
+    licenza: MIT
+    dichiarata dal pacchetto: spdx:MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/LICENSE.txt [634300a669d49aea] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt [86eeee87be2a43f3]
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/certifi/LICENSE [e93716da6b9c0d5a]
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt [808e10c8a6ab8deb] PSF-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/distro/LICENSE [cb5e8e7e5f4a3988] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md [1a9a4f0e3d479a27] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/msgpack/COPYING [492dedba85da5872]
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE [cad1ef5bd340d73e]
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.APACHE [0d542e0c8804e39a] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.BSD [b70e7e9b742f1cc6] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pkg_resources/LICENSE [86da0f01aeae4634] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/platformdirs/LICENSE [29e0fd62e929850e] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pygments/LICENSE [a9d66f1d526df02e] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pyproject_hooks/LICENSE [1b22b049b5267d6d] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/requests/LICENSE [09e8a9bcec806710] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/resolvelib/LICENSE [f388fd38cad13112] ISC
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/rich/LICENSE [deed7c17a4318158] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/tomli/LICENSE [b80816b0d530b8ac] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/tomli_w/LICENSE [b80816b0d530b8ac] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/truststore/LICENSE [33be7b7e8fa4fd19] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt [130e3a64d5fdd5d0] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/cachecontrol/LICENSE.txt [86eeee87be2a43f3]
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/certifi/LICENSE [e93716da6b9c0d5a]
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/distlib/LICENSE.txt [808e10c8a6ab8deb] PSF-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/distro/LICENSE [cb5e8e7e5f4a3988] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/idna/LICENSE.md [1a9a4f0e3d479a27] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/msgpack/COPYING [492dedba85da5872]
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/packaging/LICENSE [cad1ef5bd340d73e]
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/packaging/LICENSE.APACHE [0d542e0c8804e39a] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/packaging/LICENSE.BSD [b70e7e9b742f1cc6] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/pkg_resources/LICENSE [86da0f01aeae4634] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/platformdirs/LICENSE [29e0fd62e929850e] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/pygments/LICENSE [a9d66f1d526df02e] BSD
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/LICENSE [1b22b049b5267d6d] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/requests/LICENSE [09e8a9bcec806710] Apache-2.0
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/resolvelib/LICENSE [f388fd38cad13112] ISC
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/rich/LICENSE [deed7c17a4318158] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/tomli/LICENSE [b80816b0d530b8ac] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/tomli_w/LICENSE [b80816b0d530b8ac] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/truststore/LICENSE [33be7b7e8fa4fd19] MIT
+    testo: msys64/usr/lib/python3.12/site-packages/pip/_vendor/urllib3/LICENSE.txt [130e3a64d5fdd5d0] MIT
+    testo: msys64/usr/share/licenses/python-pip/LICENSE [634300a669d49aea] MIT
+msys/python-pygments 2.20.0-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: spdx:BSD-2-Clause
+    testo: msys64/usr/lib/python3.12/site-packages/pygments-2.20.0.dist-info/licenses/LICENSE [a9d66f1d526df02e] BSD
+    testo: msys64/usr/share/licenses/python-pygments/LICENSE [a9d66f1d526df02e] BSD
+msys/rebase 4.5.0-5
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: custom
+    nota: il pacchetto dichiara custom, ma il testo, sotto usr/share/doc che la ricetta toglie, e' la GPL 2
+    testo: licenze/rebase/COPYING [dcc100d4161cc0b7] GPL-2.0
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/rebase-4.5.0-5.src.tar.zst [sha256 5e9c24c35a881888c045aa04b676f79d238e870a7391f595665e9bd9d26b09c9]
+msys/sed 4.9-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/sed-4.9-1.src.tar.zst [sha256 a9686da7c1f3cb2ba7ae5f20f30d9ef38f7bba993f9c777b43bd13c7fbd7cc58]
+msys/tar 1.35-3
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/tar-1.35-3.src.tar.zst [sha256 eeef1210f2f3db98bdf301ab72e0e8886b8348938e58dfc58897639143eebf0b]
+msys/time 1.10-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-3.0-or-later
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/time-1.10-1.src.tar.zst [sha256 3070f7f6db57042ab04e34838503570464da26f6ba701244b0c167b3dcc2d1b6]
+msys/tmux 3.7.c-1
+    licenza: ISC
+    dichiarata dal pacchetto: spdx:ISC
+    testo: msys64/usr/share/licenses/tmux/COPYING [2116115d46eeb1e7] ISC
+msys/tree 2.3.2-1
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/tree-2.3.2-1.src.tar.zst [sha256 0ae3d9a9acf485a2c81a9813aaf43316d40b2c4ca5f99f5ce9b909bdde0c988d]
+msys/tzcode 2026b-1
+    licenza: LicenseRef-PublicDomain
+    dichiarata dal pacchetto: GPL
+    nota: il pacchetto dichiara GPL, ma il testo della sorgente dice che i file sono di pubblico dominio
+    testo: msys64/usr/share/licenses/tzcode/LICENSE [0613408568889f57]
+msys/util-linux 2.40.2-2
+    licenza: GPL-2.0-or-later
+    dichiarata dal pacchetto: spdx:GPL-2.0-or-later
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/util-linux-2.40.2-2.src.tar.zst [sha256 ea018e116866c0e2d9a3d6cee3f0d09801e6725789b6f99fd1979dfc7a68b703]
+msys/wget 1.25.0-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/wget-1.25.0-1.src.tar.zst [sha256 4d78e26f77ae5e4c0fa891f1f310e37b03baf7a137676cec8fc82b4e2226c8ef]
+msys/which 2.25-1
+    licenza: GPL-3.0-or-later
+    dichiarata dal pacchetto: GPL3
+    testo: msys64/usr/share/licenses/guile/COPYING [8ceb4b9ee5adedde] GPL-3.0
+    sorgente: https://repo.msys2.org/msys/sources/which-2.25-1.src.tar.zst [sha256 374eb8f909ee69c57bdf9b4f4baf696459eb6e47e96e3e7f396661614d8628b0]
+msys/windows-default-manifest 6.4-2
+    licenza: FSFAP
+    dichiarata dal pacchetto: BSD
+    nota: il COPYING della sorgente e' un permesso pieno, non la BSD dichiarata
+    testo: licenze/windows-default-manifest/COPYING [e3d0dbf3753f4fbf]
+msys/xxhash 0.8.3-1
+    licenza: BSD-2-Clause
+    dichiarata dal pacchetto: BSD
+    nota: stessa sorgente di libxxhash
+    testo: msys64/usr/share/licenses/libxxhash/LICENSE [6ffedbc0f7878612] BSD
+msys/xz 5.8.3-1
+    licenza: 0BSD AND GPL-2.0-or-later
+    dichiarata dal pacchetto: GPL; LGPL; custom
+    nota: COPYING della sorgente: i programmi 0BSD, alcuni script GPL
+    testo: licenze/xz/COPYING [616a3ad264ce29b8]
+    testo: licenze/xz/COPYING.0BSD [0b01625d853911cd] 0BSD, ISC
+    testo: msys64/usr/share/licenses/gdb/COPYING [231f7edcc7352d77] GPL-2.0
+    sorgente: https://repo.msys2.org/msys/sources/xz-5.8.3-1.src.tar.zst [sha256 3f6e933808bd34918fd98eda3442483901ec123c8272733b960932e541d7b770]
+msys/zlib 1.3.2-1
+    licenza: Zlib
+    dichiarata dal pacchetto: custom
+    testo: msys64/usr/share/licenses/zlib/LICENSE [e32ff4e00d9d9493] Zlib
+msys/zstd 1.5.7-1
+    licenza: BSD-3-Clause
+    dichiarata dal pacchetto: BSD
+    testo: msys64/usr/share/licenses/zstd/LICENSE [7055266497633c90] BSD
+nostro/gdb-ponte
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/lanciatore
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/icona
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/autorun
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/fallback
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/comandi
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/progetti
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/nginx-modello
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/pagina
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/guida
+    licenza: CC-BY-4.0
+    dichiarata dal pacchetto: CC
+    testo: licenze/MYDEV-LICENSE-DOCS.txt [9ba9550ad48438d0] CC-BY-4.0
+nostro/configurazione-editor
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/estensione-algo
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/licenze
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/licenza-mydev
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/licenza-mydev-documenti
+    licenza: CC-BY-4.0
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+    testo: licenze/MYDEV-LICENSE-DOCS.txt [9ba9550ad48438d0] CC-BY-4.0
+
+Da dove vengono i testi della cartella licenze/
+-----------------------------------------------
+
+licenze/Artistic-1.0-Perl.txt: MSYS, pacchetto sorgente perl-5.42.2-1: perl-5.42.2/Artistic
+licenze/bzip2/LICENSE: MSYS, pacchetto sorgente bzip2-1.0.8-4: bzip2-1.0.8/LICENSE
+licenze/ca-certificates/copyright: MSYS, pacchetto sorgente ca-certificates-20250419-1: ca-certificates/debian/copyright
+licenze/CC0-1.0.txt: MSYS, pacchetto sorgente gnupg-2.4.9-1: COPYING.CC0
+licenze/db/LICENSE: MSYS, pacchetto sorgente db-6.2.32-6: db-6.2.32/LICENSE
+licenze/expat/COPYING: MSYS, pacchetto sorgente expat-2.8.1-1: expat-2.8.1/COPYING
+licenze/filesystem/LICENSE: https://raw.githubusercontent.com/msys2/MSYS2-packages/ff0b4c9120ed6742bafb784d5a71562074724b65/LICENSE
+licenze/gc/README.QUICK: MSYS, pacchetto sorgente gc-8.2.12-1: gc-8.2.12/README.QUICK
+licenze/GFDL-1.3.txt: https://www.gnu.org/licenses/fdl-1.3.txt
+licenze/GPL-1.0.txt: MSYS, pacchetto sorgente perl-5.42.2-1: perl-5.42.2/Copying
+licenze/jsoncpp/LICENSE: MSYS, pacchetto sorgente jsoncpp-1.9.8-1: jsoncpp-1.9.8/LICENSE
+licenze/LGPL-2.1.txt: MSYS, pacchetto sorgente libgcrypt-1.12.2-1: COPYING.LIB
+licenze/lz4/LICENSE: MSYS, pacchetto sorgente lz4-1.10.0-1: lz4-1.10.0/lib/LICENSE
+licenze/man-pages-posix/POSIX-COPYRIGHT: MSYS, pacchetto sorgente man-pages-posix-2017_a-1: man-pages-posix-2017/POSIX-COPYRIGHT
+licenze/msys2-launcher/LICENSE.md: MSYS, pacchetto sorgente msys2-launcher-1.5-3: msys2-launcher-1.5/LICENSE.md
+licenze/msys2-runtime/COPYING: deposito, msys2-runtime-3.6.10-3: usr/share/doc/Cygwin/COPYING
+licenze/msys2-w32api-headers/COPYING: MSYS, pacchetto sorgente msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1, repository mingw-w64 al commit bd663f0e159e: COPYING
+licenze/msys2-w32api-headers/COPYING.MinGW-w64-runtime.txt: MSYS, pacchetto sorgente msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1, repository mingw-w64 al commit bd663f0e159e: COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt
+licenze/msys2-w32api-headers/COPYING.MinGW-w64.txt: MSYS, pacchetto sorgente msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1, repository mingw-w64 al commit bd663f0e159e: COPYING.MinGW-w64/COPYING.MinGW-w64.txt
+licenze/msys2-w32api-headers/DISCLAIMER: MSYS, pacchetto sorgente msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1, repository mingw-w64 al commit bd663f0e159e: DISCLAIMER
+licenze/msys2-w32api-headers/DISCLAIMER.PD: MSYS, pacchetto sorgente msys2-w32api-headers-14.0.0.r0.g9b3dd0125-1, repository mingw-w64 al commit bd663f0e159e: DISCLAIMER.PD
+licenze/pcre/LICENCE: MSYS, pacchetto sorgente pcre-8.45-5: pcre-8.45/LICENCE
+licenze/pcre2/LICENCE.md: MSYS, pacchetto sorgente pcre2-10.47-1: pcre2-10.47/LICENCE.md
+licenze/pkgconf/COPYING: deposito, pkgconf-3.0.5-1: usr/share/doc/pkgconf/COPYING
+licenze/rebase/COPYING: deposito, rebase-4.5.0-5: usr/share/doc/rebase/COPYING
+licenze/strumenti-jq/COPYING: https://raw.githubusercontent.com/jqlang/jq/jq-1.8.2/COPYING
+licenze/strumenti-mkcert/LICENSE: https://raw.githubusercontent.com/FiloSottile/mkcert/v1.4.4/LICENSE
+licenze/strumenti-neovim/LICENSE.txt: https://raw.githubusercontent.com/neovim/neovim/v0.12.5/LICENSE.txt
+licenze/windows-default-manifest/COPYING: MSYS, pacchetto sorgente windows-default-manifest-6.4-2, repository al commit c12b0a634b1a: COPYING
+licenze/xz/COPYING: MSYS, pacchetto sorgente xz-5.8.3-1: xz-5.8.3/COPYING
+licenze/xz/COPYING.0BSD: MSYS, pacchetto sorgente xz-5.8.3-1: xz-5.8.3/COPYING.0BSD

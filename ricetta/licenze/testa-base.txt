@@ -1,0 +1,44 @@
+MyDev: le licenze dei componenti dell'unità
+============================================
+
+Questo file è generato da ricetta/licenze_unita.py del repository di MyDev: non si modifica a mano. Per ogni
+componente dell'unità ci sono la versione, la licenza come espressione SPDX, i testi interi che stanno nell'unità
+(percorso, prime sedici cifre dell'impronta sha256 e licenze riconosciute nel testo) e, per chi ha una licenza che
+chiede di dare i sorgenti, il sorgente alla stessa versione con la sua impronta. I testi che i pacchetti non portano
+stanno nella cartella licenze/, e in fondo c'è da dove viene ciascuno. Se l'unità è la variante estesa, i componenti
+che aggiunge stanno in LICENZE-ESTESA.txt.
+
+I file di MyDev (lanciatore, comandi, configurazioni, progetti) hanno la licenza MIT, licenze/MYDEV-LICENSE.txt; i
+documenti la CC BY 4.0, licenze/MYDEV-LICENSE-DOCS.txt.
+
+
+Chi dà una copia di questa unità ad altri
+-----------------------------------------
+
+Molti componenti hanno la licenza GPL, LGPL, AGPL, MPL o EPL: chi riceve il programma ha diritto ai suoi sorgenti.
+Chi dà una copia di questa unità a un'altra persona, su una chiavetta o in un altro modo, per esempio a una classe,
+deve fare una di queste due cose (GPL 2, sezione 3; GPL 3, sezione 6):
+
+1. mettere i sorgenti accanto alla copia: il comando ricetta\sorgenti.ps1 del repository di MyDev li scarica tutti,
+   alla versione esatta e con l'impronta confrontata, in una cartella da copiare sulla stessa chiavetta;
+2. oppure dare insieme alla copia un'offerta scritta, valida almeno tre anni, di fornire i sorgenti a chiunque possieda
+   la copia, al solo costo della copia; chi la firma conserva per quei tre anni la cartella dei sorgenti.
+
+Il server di MSYS2 pubblica i sorgenti dei suoi pacchetti, ma questo vale per chi distribuisce da quel server: chi dà
+una chiavetta non può limitarsi a rimandare lì, e alcuni componenti non vengono da MSYS2.
+
+Il testo dell'offerta, da completare e firmare:
+
+    Offerta scritta dei sorgenti
+    Questa copia di MyDev (numero e variante in unita.json) contiene programmi distribuiti con le licenze GPL,
+    LGPL, AGPL, MPL ed EPL, elencati in LICENZE.txt con i loro sorgenti. Per almeno tre anni dalla data qui sotto,
+    a chiunque possieda questa copia, ........................................ (nome e recapito di chi la
+    distribuisce) fornisce su richiesta i sorgenti completi corrispondenti, su un supporto usato per lo scambio di
+    programmi, al solo costo della copia.
+    Data ....................        Firma ....................
+
+Questa nota riassume ciò che chiedono i testi delle licenze; non è un parere legale.
+
+
+I componenti
+------------

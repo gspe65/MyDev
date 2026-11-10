@@ -1,0 +1,54 @@
+{
+  "impostazioni": {
+    "rust-analyzer.server.extraEnv": {
+      "CARGO": "${env:MYDEV_RADICE}\\bin\\cargo-ponte.exe",
+      "RUSTC": "${env:MYDEV_RADICE}\\bin\\rustc-ponte.exe"
+    }
+  },
+  "path_terminale": "$MYDEV/gh/bin:",
+  "debug": [
+    {
+      "name": "Debug Rust",
+      "type": "gdb",
+      "request": "launch",
+      "gdb": "gdb-ponte",
+      "program": "${fileDirname}/../target/programma-rust.exe",
+      "cwd": "${fileDirname}/..",
+      "preLaunchTask": "Cargo: compila"
+    }
+  ],
+  "compiti": [
+    {
+      "label": "Cargo: compila",
+      "type": "process",
+      "command": "bash",
+      "args": ["-c", "cargo build && radice=\"$(dirname \"$(cargo locate-project --message-format plain)\")\" && cp -f \"$radice\"/target/debug/*.exe \"$radice/target/programma-rust.exe\""],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Cargo: esegui",
+      "type": "process",
+      "command": "cargo",
+      "args": ["run"],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Cargo: clippy",
+      "type": "process",
+      "command": "cargo",
+      "args": ["clippy"],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Cargo: formatta",
+      "type": "process",
+      "command": "cargo",
+      "args": ["fmt"],
+      "options": { "cwd": "${fileDirname}" },
+      "problemMatcher": []
+    }
+  ]
+}

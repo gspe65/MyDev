@@ -1,0 +1,6 @@
+#!/bin/bash
+# cppcheck vive in $MYDEV/cppcheck con le sue DLL di MinGW: la sua cartella NON
+# sta nel PATH, perche' quelle DLL (libstdc++, libgcc, libwinpthread) verrebbero
+# trovate anche da altri programmi Windows lanciati dal terminale.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+exec "$MYDEV/cppcheck/bin/cppcheck.exe" "$@"

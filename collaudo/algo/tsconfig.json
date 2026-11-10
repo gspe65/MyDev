@@ -1,0 +1,8 @@
+{
+  // La prova dell'estensione: gira sotto Bun. Eredita l'alias perché legge i tipi della libreria. I file per Node e per l'editor sono JavaScript.
+  "extends": "../../extensions/libreria/tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun"]
+  },
+  "include": ["*.ts"]
+}

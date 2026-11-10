@@ -1,0 +1,8 @@
+{
+  // L'estensione: le stesse regole della libreria, da cui eredita anche l'alias dei tipi, più le API dell'editor e di Node.
+  "extends": "../libreria/tsconfig.json",
+  "compilerOptions": {
+    "types": ["vscode", "node"]
+  },
+  "include": ["src"]
+}

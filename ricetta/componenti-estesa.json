@@ -1,0 +1,746 @@
+{
+  "formato": 1,
+  "variante": "estesa",
+  "scaricati": [
+    {
+      "nome": "msys/git",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/git-2.56.0-1-x86_64.pkg.tar.zst",
+      "file": "git-2.56.0-1-x86_64.pkg.tar.zst",
+      "byte": 7681199,
+      "sha256": "051fc526cba4a5c732acde867cddec9dbd54653d781be3009546c611bfd82638",
+      "versione": "2.56.0-1",
+      "licenza": "GPL-2.0-only",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Il git dell'ambiente POSIX dell'unita', provato da terminale, in https e dal pannello dell'editor dalla radice con spazi doppi."
+    },
+    {
+      "nome": "msys/heimdal",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/heimdal-7.8.0-8-x86_64.pkg.tar.zst",
+      "file": "heimdal-7.8.0-8-x86_64.pkg.tar.zst",
+      "byte": 551549,
+      "sha256": "5f90d231b9c95a602ce46a9700a1512a7ad84fa4ec301f57e0c6b0ab07265e02",
+      "versione": "7.8.0-8",
+      "licenza": "LicenseRef-Heimdal",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/heimdal-libs",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/heimdal-libs-7.8.0-8-x86_64.pkg.tar.zst",
+      "file": "heimdal-libs-7.8.0-8-x86_64.pkg.tar.zst",
+      "byte": 855780,
+      "sha256": "f3542819b579fffe55ca8535db20a39dede731422f04a17246088316f4ed32fd",
+      "versione": "7.8.0-8",
+      "licenza": "LicenseRef-Heimdal",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/libcbor",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libcbor-0.14.0-2-x86_64.pkg.tar.zst",
+      "file": "libcbor-0.14.0-2-x86_64.pkg.tar.zst",
+      "byte": 23152,
+      "sha256": "a661826edc2d452f8d74bae2cd5974dfbcd84e23bfbfa7ea3db38ee010d7b004",
+      "versione": "0.14.0-2",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/libedit",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libedit-20240808_3.1-1-x86_64.pkg.tar.zst",
+      "file": "libedit-20240808_3.1-1-x86_64.pkg.tar.zst",
+      "byte": 94059,
+      "sha256": "aada8ba7dfe41fdcac28d3706c0dc7c621b7667035a5e629cb5f3af7fb3f7de0",
+      "versione": "20240808_3.1-1",
+      "licenza": "BSD",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/libfido2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libfido2-1.17.0-1-x86_64.pkg.tar.zst",
+      "file": "libfido2-1.17.0-1-x86_64.pkg.tar.zst",
+      "byte": 84734,
+      "sha256": "30794db36fa21af67c7126a221e2cb95b177be08845bb38720a8c9f28c39cdbb",
+      "versione": "1.17.0-1",
+      "licenza": "BSD-2-Clause",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/libgit2",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/libgit2-1.9.7-1-x86_64.pkg.tar.zst",
+      "file": "libgit2-1.9.7-1-x86_64.pkg.tar.zst",
+      "byte": 706520,
+      "sha256": "2ee9037a6e31cf63d92ced7733740064b627c6bcb9e432e8879f20b5598ec21f",
+      "versione": "1.9.7-1",
+      "licenza": "LicenseRef-libgit2-GPL-2.0-with-linking-exception",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/llvm-libs",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/llvm-libs-21.1.8-4-x86_64.pkg.tar.zst",
+      "file": "llvm-libs-21.1.8-4-x86_64.pkg.tar.zst",
+      "byte": 19941181,
+      "sha256": "e71c44d7692f71d3f6026e02299c294494ba55c90f6b9e398fa830645246e82a",
+      "versione": "21.1.8-4",
+      "licenza": "Apache-2.0 WITH LLVM-exception",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/openssh",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/openssh-10.6p2-1-x86_64.pkg.tar.zst",
+      "file": "openssh-10.6p2-1-x86_64.pkg.tar.zst",
+      "byte": 1224158,
+      "sha256": "4e9cd1d3d0804c6580021a87b0f377b0fd5be5e3f7dc791cc2ca9eb5c8da9f18",
+      "versione": "10.6p2-1",
+      "licenza": "LicenseRef-OpenSSH",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-authen-sasl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-authen-sasl-2.2100-2-any.pkg.tar.zst",
+      "file": "perl-authen-sasl-2.2100-2-any.pkg.tar.zst",
+      "byte": 42301,
+      "sha256": "98cdd396f65df318ca777de7f4166485ad7815c5000399e4aa6843f59e00e55b",
+      "versione": "2.2100-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-clone",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-clone-0.51-1-x86_64.pkg.tar.zst",
+      "file": "perl-clone-0.51-1-x86_64.pkg.tar.zst",
+      "byte": 17867,
+      "sha256": "39ee27b8a2ff4062e0aa1d3cdf334e59a1a726916daaa0c4bc13d31d1788a49a",
+      "versione": "0.51-1",
+      "licenza": "GPL-1.0-or-later; Artistic-1.0-Perl",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-convert-binhex",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-convert-binhex-1.125-3-any.pkg.tar.zst",
+      "file": "perl-convert-binhex-1.125-3-any.pkg.tar.zst",
+      "byte": 29568,
+      "sha256": "96d9418550129e569a69b17682654f71754c92bbe97515f2f255d6aa9ad4d1bc",
+      "versione": "1.125-3",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-encode-locale",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-encode-locale-1.05-3-any.pkg.tar.zst",
+      "file": "perl-encode-locale-1.05-3-any.pkg.tar.zst",
+      "byte": 10630,
+      "sha256": "e02957a3468521d6a35fec39327ee9ecf024b00261fb4c496339cb5428decd8f",
+      "versione": "1.05-3",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-error",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-error-0.17031-1-any.pkg.tar.zst",
+      "file": "perl-error-0.17031-1-any.pkg.tar.zst",
+      "byte": 21374,
+      "sha256": "d02d3163e36cd6eb279d106a041b74caf86df8e7982df525e4c5d62ec6c4b03d",
+      "versione": "0.17031-1",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-file-listing",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-file-listing-6.16-2-any.pkg.tar.zst",
+      "file": "perl-file-listing-6.16-2-any.pkg.tar.zst",
+      "byte": 10271,
+      "sha256": "15e00cd7923ec76c8127576bb64e0cb159a48ea87efefc35f64493bcd1e8a95e",
+      "versione": "6.16-2",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-html-parser",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-html-parser-3.86-2-x86_64.pkg.tar.zst",
+      "file": "perl-html-parser-3.86-2-x86_64.pkg.tar.zst",
+      "byte": 80703,
+      "sha256": "18a6097593b08689f3923bfe948356c645e486929af5fee6e9d661a1285c060c",
+      "versione": "3.86-2",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-html-tagset",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-html-tagset-3.24-2-any.pkg.tar.zst",
+      "file": "perl-html-tagset-3.24-2-any.pkg.tar.zst",
+      "byte": 10815,
+      "sha256": "cf9adccdaaa6b5b1307365afed083daa126d4230ef812f35ec65eb5f6e472c92",
+      "versione": "3.24-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-cookiejar",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-cookiejar-0.014-2-any.pkg.tar.zst",
+      "file": "perl-http-cookiejar-0.014-2-any.pkg.tar.zst",
+      "byte": 13667,
+      "sha256": "70fdf1d4bdbab078765e7200436f614cf995007f2329f487baafc1841e8d66a9",
+      "versione": "0.014-2",
+      "licenza": "Apache-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-cookies",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-cookies-6.12-2-any.pkg.tar.zst",
+      "file": "perl-http-cookies-6.12-2-any.pkg.tar.zst",
+      "byte": 22253,
+      "sha256": "902e3d2ac5564536bafd113f42d49df7ecf8c4808c793369ba7bb413a12546d1",
+      "versione": "6.12-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-daemon",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-daemon-6.17-2-any.pkg.tar.zst",
+      "file": "perl-http-daemon-6.17-2-any.pkg.tar.zst",
+      "byte": 20173,
+      "sha256": "77d6fd31b6e1a1db66237a97da8a99c7a0eff8297ca1d5b75acfcb38a86251ca",
+      "versione": "6.17-2",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-date",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-date-6.08-2-any.pkg.tar.zst",
+      "file": "perl-http-date-6.08-2-any.pkg.tar.zst",
+      "byte": 10237,
+      "sha256": "c26c4e9655557e7c9ec8b74c39d32e31ec5640552f5371b221d59bc22bfa520a",
+      "versione": "6.08-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-message",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-message-7.04-2-any.pkg.tar.zst",
+      "file": "perl-http-message-7.04-2-any.pkg.tar.zst",
+      "byte": 75778,
+      "sha256": "526c89268f0489c37d950fbd8fdbdbb745dbe61ec2d2bd2871c6c8646d01792d",
+      "versione": "7.04-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-http-negotiate",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-http-negotiate-6.01-4-any.pkg.tar.zst",
+      "file": "perl-http-negotiate-6.01-4-any.pkg.tar.zst",
+      "byte": 12075,
+      "sha256": "0cb00eb507d51b5fb9446827acc7d7f0629381f7d7bf8548fa3e0ba64704dd5e",
+      "versione": "6.01-4",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-io-html",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-io-html-1.004-3-any.pkg.tar.zst",
+      "file": "perl-io-html-1.004-3-any.pkg.tar.zst",
+      "byte": 14494,
+      "sha256": "3d42f5fe05b06fda5cbe94c79f98c9a1f32d0b0361b93839f9244af3676620f0",
+      "versione": "1.004-3",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-io-socket-ssl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-io-socket-ssl-2.099-2-any.pkg.tar.zst",
+      "file": "perl-io-socket-ssl-2.099-2-any.pkg.tar.zst",
+      "byte": 170073,
+      "sha256": "d9d0adc2c9435a50d573869031f893babbceef8ddbc8039efe01a7ee598ac35f",
+      "versione": "2.099-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-io-stringy",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-io-stringy-2.113-4-any.pkg.tar.zst",
+      "file": "perl-io-stringy-2.113-4-any.pkg.tar.zst",
+      "byte": 44503,
+      "sha256": "35664d5b4b6e6c569984f4901d7d57b56869b5a41b9ab35674f938186a50b7e2",
+      "versione": "2.113-4",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-libwww",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-libwww-6.83-3-any.pkg.tar.zst",
+      "file": "perl-libwww-6.83-3-any.pkg.tar.zst",
+      "byte": 130150,
+      "sha256": "adbc8538af75c6d9d37ec3c05cbda27843ad35c6b9fc6de8de64e016bb4c27b1",
+      "versione": "6.83-3",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-lwp-mediatypes",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-lwp-mediatypes-6.05-2-any.pkg.tar.zst",
+      "file": "perl-lwp-mediatypes-6.05-2-any.pkg.tar.zst",
+      "byte": 19513,
+      "sha256": "4afde66f5a53366fbed27779345b3f7fd782feffa00613a5d5482b5d207f6358",
+      "versione": "6.05-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-mailtools",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-mailtools-2.22-2-any.pkg.tar.zst",
+      "file": "perl-mailtools-2.22-2-any.pkg.tar.zst",
+      "byte": 59858,
+      "sha256": "53cba8b2bc2042518d83a88d562a9ee0d1ceae3d581ac4896baec0ac25bfc91c",
+      "versione": "2.22-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-mime-tools",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-mime-tools-5.518-2-any.pkg.tar.zst",
+      "file": "perl-mime-tools-5.518-2-any.pkg.tar.zst",
+      "byte": 182639,
+      "sha256": "05d3cb6d53c943ce4481f67a04e7b9272e383577ea84672f2ff390d7dab95766",
+      "versione": "5.518-2",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-net-http",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-net-http-6.24-2-any.pkg.tar.zst",
+      "file": "perl-net-http-6.24-2-any.pkg.tar.zst",
+      "byte": 22198,
+      "sha256": "8f45b20264525e3c5788f2b12a1c15ae8a27ef2904030bd598aa7fc9d10fda36",
+      "versione": "6.24-2",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-net-smtp-ssl",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-net-smtp-ssl-1.04-3-any.pkg.tar.zst",
+      "file": "perl-net-smtp-ssl-1.04-3-any.pkg.tar.zst",
+      "byte": 4714,
+      "sha256": "d553221db395c227c93643800af42d39049b055f2630e39b1c4cd78a7d3745c1",
+      "versione": "1.04-3",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-net-ssleay",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-net-ssleay-1.96-3-x86_64.pkg.tar.zst",
+      "file": "perl-net-ssleay-1.96-3-x86_64.pkg.tar.zst",
+      "byte": 224921,
+      "sha256": "8201350a167bd4447e009ef130c4dcb25746ac09d8458f79e9be8df0c3203f65",
+      "versione": "1.96-3",
+      "licenza": "Artistic-2.0",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-termreadkey",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-termreadkey-2.38-9-x86_64.pkg.tar.zst",
+      "file": "perl-termreadkey-2.38-9-x86_64.pkg.tar.zst",
+      "byte": 20568,
+      "sha256": "584029cb544e78f46d7cc2040d22d144bc26657d0584452d2119dc67f1cf747d",
+      "versione": "2.38-9",
+      "licenza": "LicenseRef-TermReadKey",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-timedate",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-timedate-2.35-2-any.pkg.tar.zst",
+      "file": "perl-timedate-2.35-2-any.pkg.tar.zst",
+      "byte": 62901,
+      "sha256": "ddd3cd5bb07f6c1cc2a6315233e48002d904a492901134d6f1f4139d21f31625",
+      "versione": "2.35-2",
+      "licenza": "Artistic-1.0-Perl",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-try-tiny",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-try-tiny-0.32-2-any.pkg.tar.zst",
+      "file": "perl-try-tiny-0.32-2-any.pkg.tar.zst",
+      "byte": 19142,
+      "sha256": "3d36d2b776c6aa8d4313b3b08eea81ad58002783c5f95c4ad8ca718cd84b9c8c",
+      "versione": "0.32-2",
+      "licenza": "MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-uri",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-uri-5.40-1-any.pkg.tar.zst",
+      "file": "perl-uri-5.40-1-any.pkg.tar.zst",
+      "byte": 101204,
+      "sha256": "bca295f7bc3c70dd55fa310a05378c5bf09f9fa0a1fc50036576622c502e9a3c",
+      "versione": "5.40-1",
+      "licenza": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/perl-www-robotrules",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/perl-www-robotrules-6.03-2-any.pkg.tar.zst",
+      "file": "perl-www-robotrules-6.03-2-any.pkg.tar.zst",
+      "byte": 14489,
+      "sha256": "c4b720d8a7e5973d524de6b53d798db49e6f3697252da1ea68a680ca0861c4d5",
+      "versione": "6.03-2",
+      "licenza": "Artistic-1.0-Perl; GPL-1.0-or-later",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Dipendenza di rust o di git nel repository di MSYS, alla versione che il pacchetto richiede."
+    },
+    {
+      "nome": "msys/rust",
+      "gruppo": "msys",
+      "fonte": "https://repo.msys2.org/msys/x86_64/rust-1.99.1-2-x86_64.pkg.tar.zst",
+      "file": "rust-1.99.1-2-x86_64.pkg.tar.zst",
+      "byte": 65506657,
+      "sha256": "788d2997a5a130dab0a309412efdb33ca95c2f1eec798d794cc959639361d2a7",
+      "versione": "1.99.1-2",
+      "licenza": "Apache-2.0 AND MIT",
+      "modo": "tar.zst",
+      "destinazioni": [
+        "msys64"
+      ],
+      "motivo": "Porta Rust dentro l'ambiente POSIX dell'unita': fork, segnali e thread da Rust, provati dalla radice con spazi doppi; la versione nativa per Windows non li ha. Versione del pacchetto, non scelta come l'ultima."
+    },
+    {
+      "nome": "rust/rust-src",
+      "gruppo": "rust",
+      "fonte": "https://static.rust-lang.org/dist/rust-src-1.99.1.tar.xz",
+      "file": "rust-src-1.99.1.tar.xz",
+      "byte": 5863216,
+      "sha256": "e485a88c45db546b73571df7bebfcb4454ba4fb552c492e25fc5b00eeb5bf22d",
+      "versione": "1.99.1",
+      "licenza": "MIT OR Apache-2.0",
+      "modo": "tar.xz",
+      "membri": [
+        "rust-src-1.99.1/rust-src/lib"
+      ],
+      "togli_livelli": 2,
+      "destinazioni": [
+        "msys64/usr"
+      ],
+      "motivo": "I sorgenti della libreria standard, che il pacchetto di MSYS non ha: servono al completamento e alla navigazione nell'editor."
+    },
+    {
+      "nome": "rust/rust-docs",
+      "gruppo": "rust",
+      "fonte": "https://static.rust-lang.org/dist/rust-docs-1.99.1-x86_64-pc-windows-gnu.tar.xz",
+      "file": "rust-docs-1.99.1-x86_64-pc-windows-gnu.tar.xz",
+      "byte": 24303680,
+      "sha256": "38ec2a49aa27af4151009cb718f889bb83146a59cd346f9c4f721a208756e2ea",
+      "versione": "1.99.1",
+      "licenza": "MIT OR Apache-2.0",
+      "modo": "tar.xz",
+      "membri": [
+        "rust-docs-1.99.1-x86_64-pc-windows-gnu/rust-docs/share/doc/rust/html/book",
+        "rust-docs-1.99.1-x86_64-pc-windows-gnu/rust-docs/share/doc/rust/html/rust-by-example",
+        "rust-docs-1.99.1-x86_64-pc-windows-gnu/rust-docs/share/doc/rust/html/cargo",
+        "rust-docs-1.99.1-x86_64-pc-windows-gnu/rust-docs/share/doc/rust/html/reference"
+      ],
+      "togli_livelli": 6,
+      "destinazioni": [
+        "rust-docs"
+      ],
+      "motivo": "I quattro manuali di Rust per chi lavora senza rete; delle pagine di riferimento delle librerie non entra nulla, 60.000 file in meno."
+    },
+    {
+      "nome": "strumenti/gh",
+      "gruppo": "strumenti",
+      "fonte": "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_windows_amd64.zip",
+      "file": "gh_2.103.3_windows_amd64.zip",
+      "byte": 15197187,
+      "sha256": "98d0cfa794721665d7973dd728c78aff7bd836d58f10f6d7a03568eccb0a22e0",
+      "versione": "2.103.3",
+      "licenza": "MIT",
+      "modo": "zip",
+      "destinazioni": [
+        "gh"
+      ],
+      "motivo": "La versione provata dalla radice con spazi doppi, con stato e configurazione nell'unita' e la telemetria spenta dal lanciatore."
+    },
+    {
+      "nome": "estensioni/rust-lang.rust-analyzer",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/rust-lang/rust-analyzer/win32-x64/0.4.3112/file/rust-lang.rust-analyzer-0.4.3112@win32-x64.vsix",
+      "file": "rust-lang.rust-analyzer-0.4.3112@win32-x64.vsix",
+      "byte": 19549289,
+      "sha256": "fae3aecdeec2964e2f0150a9fb89c54c5f866ed2534e69b4228c3d020162a16b",
+      "versione": "0.4.3112",
+      "licenza": "MIT OR Apache-2.0",
+      "modo": "vsix",
+      "piattaforma": "win32-x64",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "Il completamento e la navigazione del codice Rust, da VSIX, attraverso il traduttore di percorsi."
+    }
+  ],
+  "nostri": [
+    {
+      "nome": "cargo-ponte",
+      "percorso": "ricetta/unita/ponte.c",
+      "definizioni": [
+        "PROGRAMMA=cargo",
+        "TRADUCI"
+      ],
+      "destinazioni": [
+        "bin/cargo-ponte.exe"
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "Traduce fra i percorsi Windows di rust-analyzer e quelli POSIX del cargo di MSYS: senza, il server non parte."
+    },
+    {
+      "nome": "rustc-ponte",
+      "percorso": "ricetta/unita/ponte.c",
+      "definizioni": [
+        "PROGRAMMA=rustc",
+        "TRADUCI"
+      ],
+      "destinazioni": [
+        "bin/rustc-ponte.exe"
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "Lo stesso traduttore per il rustc di MSYS, che rust-analyzer interroga per il sysroot."
+    },
+    {
+      "nome": "git-pannello",
+      "percorso": "ricetta/unita/ponte.c",
+      "definizioni": [
+        "PROGRAMMA=git"
+      ],
+      "destinazioni": [
+        "programmi/Git/cmd/git.exe"
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "L'eseguibile che il pannello git dell'editor trova dentro l'unita', al posto di quello del PC; chiama il git di MSYS."
+    },
+    {
+      "nome": "gh-comando",
+      "percorso": "ricetta/unita/gh-comando",
+      "destinazioni": [
+        "bin/gh"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Chiama il gh vero e aggiunge --insecure-storage al login: il token resta nell'unita'."
+    },
+    {
+      "nome": "impostazioni-estesa",
+      "percorso": "ricetta/unita/impostazioni-estesa.json",
+      "destinazioni": [
+        "vscodium/data/user-data/User"
+      ],
+      "stato": "fuso",
+      "licenza": "MIT",
+      "motivo": "Cio' che l'estesa aggiunge a impostazioni e compiti della base: fuso alla costruzione, cosi' le due varianti non divergono."
+    },
+    {
+      "nome": "progetti-rust",
+      "percorso": "ricetta/unita/progetti-rust/",
+      "destinazioni": [
+        "progetti"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "La versione Rust dei progetti C, solo nell'estesa: cartelle accanto a quelle C, stesso nome e stesso atteso."
+    },
+    {
+      "nome": "licenze-estesa",
+      "percorso": "ricetta/licenze/estesa/",
+      "destinazioni": [
+        "."
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "L'indice LICENZE-ESTESA.txt dei componenti dell'aggiunta, e in licenze/ i testi che i loro pacchetti non portano."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+#!/bin/bash
+# $MYDEV si autodetermina dalla posizione dello script: cosi gli script
+# funzionano anche se il terminale non e' stato aperto dal collegamento.
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+# Vedi la nota estesa in bin/pip: gli shim .exe di python/Scripts incorporano
+# il percorso assoluto dell'interprete e falliscono in silenzio appena l'unita'
+# viene spostata. Qui si passa da "python -m", che non ha quel difetto.
+exec "$MYDEV/python/python.exe" -m virtualenv "$@"

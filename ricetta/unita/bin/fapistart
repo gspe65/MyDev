@@ -1,0 +1,33 @@
+#!/bin/bash
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+PROJ="$MYDEV/progetti/fastapi-hello"
+PIDFILE="$MYDEV/bin/.fastapi.pid"
+
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    echo "FastAPI e' gia' in esecuzione (PID $(cat "$PIDFILE"))."
+    exit 1
+fi
+
+if [ ! -f "$PROJ/venv/Scripts/activate" ]; then
+    echo "ERRORE: manca l'ambiente virtuale in progetti/fastapi-hello/venv."
+    echo "Gli ambienti virtuali NON viaggiano con la pendrive: vanno creati"
+    echo "una volta su ogni PC. Dal terminale:"
+    echo
+    echo "  cd \"\$MYDEV/progetti/fastapi-hello\""
+    echo "  virtualenv venv"
+    echo "  source venv/Scripts/activate"
+    echo "  pip install -r requirements.txt"
+    echo "  deactivate"
+    exit 1
+fi
+
+cd "$PROJ" || exit 1
+# shellcheck disable=SC1091
+source venv/Scripts/activate
+# "python -m uvicorn" invece di "uvicorn": lo shim uvicorn.exe del venv
+# funziona, ma solo finche' il venv resta dove e' stato creato.
+python -m uvicorn main:app --host 127.0.0.1 --port 5001 &
+echo $! > "$PIDFILE"
+echo "FastAPI avviato (PID $!) su http://127.0.0.1:5001"

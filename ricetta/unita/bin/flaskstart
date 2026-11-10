@@ -1,0 +1,31 @@
+#!/bin/bash
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+PROJ="$MYDEV/progetti/flask-hello"
+PIDFILE="$MYDEV/bin/.flask.pid"
+
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    echo "Flask e' gia' in esecuzione (PID $(cat "$PIDFILE"))."
+    exit 1
+fi
+
+if [ ! -f "$PROJ/venv/Scripts/activate" ]; then
+    echo "ERRORE: manca l'ambiente virtuale in progetti/flask-hello/venv."
+    echo "Gli ambienti virtuali NON viaggiano con la pendrive: vanno creati"
+    echo "una volta su ogni PC. Dal terminale:"
+    echo
+    echo "  cd \"\$MYDEV/progetti/flask-hello\""
+    echo "  virtualenv venv"
+    echo "  source venv/Scripts/activate"
+    echo "  pip install -r requirements.txt"
+    echo "  deactivate"
+    exit 1
+fi
+
+cd "$PROJ" || exit 1
+# shellcheck disable=SC1091
+source venv/Scripts/activate
+python app.py &
+echo $! > "$PIDFILE"
+echo "Flask avviato (PID $!) su http://127.0.0.1:5000"

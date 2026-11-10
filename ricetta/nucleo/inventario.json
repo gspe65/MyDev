@@ -1,0 +1,151 @@
+{
+  "etichetta": "v1.0.0",
+  "commit": "358ed925f039ee4012ae1fb477def8c738851c2b",
+  "forma": "sha256 dei byte conservati dal repository (git show <commit>:<file>)",
+  "file": [
+    {
+      "percorso": "app/core/casi/esito.ts",
+      "sha256": "6f472d0e46173b16ad5a36663caaab2e5ed65096dc737f342aea114f51611473"
+    },
+    {
+      "percorso": "app/core/casi/voci.ts",
+      "sha256": "2841bec2b82b0de3c110165a949c6c74ed9ba15b4db61faa8eadb449f502baad"
+    },
+    {
+      "percorso": "app/core/controllo/controllo.ts",
+      "sha256": "007399056589f5114ad41a58afb5ea4b1b46e849e19f21027359e8617c54488a"
+    },
+    {
+      "percorso": "app/core/controllo/lunghezza.ts",
+      "sha256": "7cc0fd2a2815309a35cb85554523d3e31709aa032ed977ed202007bf306b2838"
+    },
+    {
+      "percorso": "app/core/controllo/spazio.ts",
+      "sha256": "e6e950de381a91e454e1cbf89d9ad44bbcea4c231221aabe8710470be726c142"
+    },
+    {
+      "percorso": "app/core/disegno/domanda.ts",
+      "sha256": "ae34757de9a5cc4bce13b10bac5413df495dfdd7950ee4aa505551c8fdf10d09"
+    },
+    {
+      "percorso": "app/core/disegno/impaginazione.ts",
+      "sha256": "61a00a9192799dcfaaf040cc88d541d74b0b01faba06dc06747124996756bd95"
+    },
+    {
+      "percorso": "app/core/disegno/lingua.ts",
+      "sha256": "bdb5c93a37fd133c28521124e8b19fae412ada6e2512e0157640aa1f61740776"
+    },
+    {
+      "percorso": "app/core/disegno/tema.ts",
+      "sha256": "024efd1a14c4bcdb88ff4d1228fc36a56f4fe55a1e18815d1ce2bdb188aec4a0"
+    },
+    {
+      "percorso": "app/core/espressioni/analizzatore.ts",
+      "sha256": "5198a7a3512d3b1949c3efbfb5cc386e1a054e976cb505579df4b99cca8ae18f"
+    },
+    {
+      "percorso": "app/core/genera/accademico.ts",
+      "sha256": "b5d594260fd9fa5a2447cce94989a43dbda7a546fd23e0bd08f7bbd5873e5e19"
+    },
+    {
+      "percorso": "app/core/genera/c.ts",
+      "sha256": "da3280bcc02b9d1d7f33004b41f9103bcf9d31096fdb95d0ab1c351c01ad371c"
+    },
+    {
+      "percorso": "app/core/genera/forma.ts",
+      "sha256": "f83aab81733159fb6cc1661e949e0799e5b7beb608faf972a497da3bcc55cd62"
+    },
+    {
+      "percorso": "app/core/genera/linguaggi.ts",
+      "sha256": "52c942809b835adf2cedafaeb355b2b543e152e73042d5dd2e593ba719aab2b7"
+    },
+    {
+      "percorso": "app/core/genera/motivi.ts",
+      "sha256": "ed5df1e0aaa9f43942de89a2370a173ed468a4ce77a24905e780de40edac82fe"
+    },
+    {
+      "percorso": "app/core/genera/nomi.ts",
+      "sha256": "67c4f976e094150cd3d634b3321a12c63e0c75d3672ac4a1836bbe2277321260"
+    },
+    {
+      "percorso": "app/core/genera/pseudocodice.ts",
+      "sha256": "ddcecb6c9ac56908803c3d90dd954b2b00eb5802e280e946aa96d108929074a3"
+    },
+    {
+      "percorso": "app/core/genera/python.ts",
+      "sha256": "6712a33e2b611e473c67093c876ad921dcdb979e1cd4c9d307023eb2932d4328"
+    },
+    {
+      "percorso": "app/core/genera/typescript.ts",
+      "sha256": "85d5557c527e6ae505e95ece31bf6adb8f888382a3849bb73273e5b32919b940"
+    },
+    {
+      "percorso": "app/core/interprete/interprete.ts",
+      "sha256": "d78d5b75e5f2db4e8ca0b71f5ecd88627cebd31ebfb5c0211746dd76984d5cc8"
+    },
+    {
+      "percorso": "app/core/interprete/potenza.ts",
+      "sha256": "f0b014e4958d76c1d78be93425048ba9362afd30fc4ebdd8dc2f3939821566ef"
+    },
+    {
+      "percorso": "app/core/lettore/accademico.ts",
+      "sha256": "c042cba1c890a244e8117babb87a37c15ef7b9f400be4931bda451f51ee35600"
+    },
+    {
+      "percorso": "app/core/modifica/funzioni.ts",
+      "sha256": "878f176ad1da7b29b02e4b26699bfda3a37ecb93e1ffe4c58473f4ac6449c224"
+    },
+    {
+      "percorso": "app/core/modifica/identificatori.ts",
+      "sha256": "f6fc9d3f23b13bc759ce99e12cc96859b4efabd901b6b077087fda210cbc5dd0"
+    },
+    {
+      "percorso": "app/core/modifica/importa.ts",
+      "sha256": "282d826192c991bef808dbc04b9aaa093ead21d4f0ef818fb1916a497079be13"
+    },
+    {
+      "percorso": "app/core/modifica/operazioni.ts",
+      "sha256": "3d44bc133c13085845dda7b92c477ebec0359a99468126e59713b53bf590f3e6"
+    },
+    {
+      "percorso": "app/core/modifica/rinomina.ts",
+      "sha256": "cc6b8cad235bf9c1d62f253683b73fdfabdf6347e71b35ec6f1adc5119443e66"
+    },
+    {
+      "percorso": "app/core/progetto/copia.ts",
+      "sha256": "711354b6e2c3b6933fc8dabb78cdee324a7ce508fac1966d8129c58b314361e5"
+    },
+    {
+      "percorso": "app/core/progetto/formato.ts",
+      "sha256": "bbf7716b60225d9aeea6fc5f623eb92b3dd6722941828dbb5e949578c9a4238a"
+    },
+    {
+      "percorso": "app/core/progetto/modello.ts",
+      "sha256": "a5b655583e53f487b86cb15d34449ad18015208674cdb1d2841290446eaed511"
+    },
+    {
+      "percorso": "app/i18n/en.ts",
+      "sha256": "5587855d5672596f0f82a30a4a0a429f7f2f2ddab8cd118f8867159792c84c42"
+    },
+    {
+      "percorso": "app/i18n/it.ts",
+      "sha256": "e4bbab631f42b58a23e0bcd07b274cac4ea7afab9f7c8f03d65c2fe8b0cf9f18"
+    },
+    {
+      "percorso": "app/i18n/lingue.ts",
+      "sha256": "fa0f24639fb4cef090979b9f22a8da12f63003ff93e591c01c2ddc9a5a43c92d"
+    },
+    {
+      "percorso": "app/i18n/operatori.ts",
+      "sha256": "f1db35153c9f6f039d9d84d1d778440b925d89655f5ed83802398458054f03d9"
+    },
+    {
+      "percorso": "app/ui/dati/righe.ts",
+      "sha256": "f38ed24eae1319dc436bbc78b0b008f543bc81398153b7eca45418f539047c3f"
+    },
+    {
+      "percorso": "app/ui/genera/parole.ts",
+      "sha256": "15226ea56f59135f21e2af02ad7b6a9fe130243d43fc1e48d69c564196abb76e"
+    }
+  ]
+}

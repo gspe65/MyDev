@@ -1,0 +1,18 @@
+#!/bin/bash
+: "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export MYDEV
+
+# gcovr e' un pacchetto Python. Come per pip e virtualenv non si usa lo shim
+# .exe generato da pip (percorso assoluto incorporato, fallimento muto appena
+# l'unita' cambia posizione) ma "python -m".
+#
+# Gira con il Python di MSYS (python3), NON con quello Windows dell'unita':
+# il gcov di msys scrive i percorsi dei sorgenti in formato Cygwin
+# (/home/..., /tmp/...), e un gcovr Windows li confronta con una radice
+# C:/... e li esclude tutti. Il sintomo e' un report vuoto, "TOTAL 0", senza
+# errori.
+#
+# Uso tipico dopo aver compilato con  gcc --coverage  (oppure -fprofile-arcs
+# -ftest-coverage) ed eseguito il programma:
+#     gcovr -r . --html-details copertura.html
+exec "$MYDEV/msys64/usr/bin/python3" -m gcovr "$@"
