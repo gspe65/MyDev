@@ -15,7 +15,8 @@
 # per convenzione in C:\MyDev-estesa.
 #
 # unita.json dichiara anche i file tolti dai pacchetti ufficiali (le voci togli) e quelli sostituiti: una voce con
-# sostituisce deve nominare un file che una voce precedente toglie, o la costruzione e' un rosso.
+# sostituisce deve nominare un file che una voce precedente toglie, o la costruzione e' un rosso. Dichiara anche
+# l'insieme delle estensioni installate e l'impronta di product.json (campo estensioni), che il lanciatore confronta.
 #
 # Il deposito predefinito sta accanto alla destinazione. Ogni file del deposito si confronta con byte e
 # impronta dell'elenco: un'impronta sbagliata e' un rosso e non fa riscaricare nulla; un file che manca
@@ -447,6 +448,21 @@ try {
     $r = Lancia (Unisci $Dest 'python/python.exe') ('-I -B ' + (Virgolette (Unisci $Dest 'vscodium/lingua.py'))) $null
     if ($r.Uscita -ne 0) { Rosso "lingua dell'editor non preparata, uscita $($r.Uscita): $($r.Testo)" }
     Scrivi $r.Testo.Trim()
+    # L'insieme garantito delle estensioni: le cartelle installate devono essere le voci dell'elenco alle loro versioni
+    # (piu' il prototipo, alla versione del suo package.json); vscodium/insieme.py scrive extensions.allowed nelle
+    # impostazioni, dopo le installazioni da riga di comando che altrimenti rifiuterebbe, e da' il campo estensioni di
+    # unita.json, che il lanciatore confronta a ogni avvio.
+    $Attese = @($Dati.scaricati | Where-Object { $_.modo -eq 'vsix' } | ForEach-Object { $_.nome.Substring($_.nome.IndexOf('/') + 1) + '=' + $_.versione })
+    foreach ($v in @($Dati.nostri | Where-Object { $_.stato -eq 'prototipo' })) {
+        $pj = [IO.File]::ReadAllText((Unisci $Repo ($v.percorso.TrimEnd('/') + '/package.json')), (New-Object Text.UTF8Encoding($false))) | ConvertFrom-Json
+        $Attese += "$($pj.publisher).$($pj.name)=$($pj.version)"
+    }
+    $r = Lancia (Unisci $Dest 'python/python.exe') ('-I -B ' + (Virgolette (Unisci $Dest 'vscodium/insieme.py')) + ' --scrivi ' + ($Attese -join ' ')) $null
+    if ($r.Uscita -ne 0) { Rosso "insieme delle estensioni non scritto, uscita $($r.Uscita): $($r.Testo)" }
+    $RigaInsieme = @($r.Testo -split "`r?`n" | Where-Object { $_.StartsWith('ESTENSIONI: ') })
+    if ($RigaInsieme.Count -ne 1) { Rosso "insieme delle estensioni: la riga ESTENSIONI c'e' $($RigaInsieme.Count) volte invece di una" }
+    $CampoInsieme = $RigaInsieme[0].Substring(12) | ConvertFrom-Json
+    Scrivi "insieme delle estensioni: $(@($CampoInsieme.insieme.PSObject.Properties).Count) voci, product.json $($CampoInsieme.prodotto)"
 
 
     # --- Il lanciatore: un eseguibile per strumento alla radice, col clang dell'unita'.
@@ -507,7 +523,7 @@ try {
     }
     $Utf8 = New-Object Text.UTF8Encoding($false)
     [IO.File]::WriteAllText((Join-Path $Dest 'unita-file.txt'), (($Unita -join "`n") + "`n"), $Utf8)
-    $Dichiara = (New-Object PSObject -Property ([ordered]@{ numero = $Numero; variante = $Variante; commit = $Commit; albero = $Albero; variabili = $Variabili; nati_dall_uso = $NatiDallUso; tolti = [string[]]$Tolti.ToArray(); sostituiti = [string[]]$Sostituiti.ToArray() })) | ConvertTo-Json
+    $Dichiara = (New-Object PSObject -Property ([ordered]@{ numero = $Numero; variante = $Variante; commit = $Commit; albero = $Albero; variabili = $Variabili; nati_dall_uso = $NatiDallUso; tolti = [string[]]$Tolti.ToArray(); sostituiti = [string[]]$Sostituiti.ToArray(); estensioni = $CampoInsieme })) | ConvertTo-Json -Depth 5
     [IO.File]::WriteAllText((Join-Path $Dest 'unita.json'), $Dichiara.Replace("`r`n", "`n") + "`n", $Utf8)
     $Lungo = ($Tutti | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum
     Scrivi "unita': numero $Numero, variante $Variante, commit $Commit, file $($Tutti.Count), percorso relativo piu' lungo $Lungo caratteri"

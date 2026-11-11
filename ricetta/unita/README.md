@@ -54,6 +54,12 @@ Una copia data ad altri porta anche i tuoi dati: la cronologia dei comandi, il n
 
 L'editor, le sue estensioni e gli strumenti non si aggiornano da soli, e non si aggiornano dal menu: le versioni sono quelle provate. Il file `unita.json` dice la versione dell'unità e se è la base o l'estesa; `unita-file.txt` elenca ogni file con la sua impronta.
 
+**Le estensioni dell'editor sono un insieme garantito.** Nel pannello Estensioni non se ne installano altre, né con «Installa da VSIX…» né da riga di comando: l'editor risponde che l'estensione «non è presente nell'elenco consentiti». L'elenco è l'impostazione `extensions.allowed`, che dice le estensioni dell'unità alle loro versioni. Chi la toglie o la cambia, chi aggiunge o toglie un'estensione a mano, o chi modifica `vscodium\resources\app\product.json`, a ogni apertura da `VSCodium.exe` (o da `fallback\VSCodium.bat`) vede una finestra intitolata «MyDev - l'editor non e' piu' quello garantito». La finestra dice che cosa è cambiato. L'editor si apre lo stesso, ma MyDev non garantisce più che l'unità funzioni come è stata provata. Per tornare all'unità garantita:
+- disinstalla dal pannello Estensioni quelle aggiunte e rimetti i file cambiati;
+- oppure usa una copia nuova dell'unità, scaricata di nuovo o costruita dalla ricetta.
+
+Sull'unità intatta la finestra non compare. Chi apre `vscodium\VSCodium.exe` direttamente salta il controllo, ma non l'elenco delle estensioni consentite.
+
 ## Che cosa manca nell'editor, e perché
 
 - **Video H.264 e H.265 e audio AAC non si riproducono** nell'editor (per esempio un video MP4 in un'anteprima Markdown o nella pagina di un'estensione). Sono formati coperti da brevetti, e MyDev non ne distribuisce i decodificatori: al posto dello `ffmpeg.dll` di VSCodium c'è quello di Electron coi soli formati liberi. WebM con VP9 o AV1 e l'audio Opus si riproducono.
