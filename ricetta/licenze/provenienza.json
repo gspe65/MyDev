@@ -7,6 +7,7 @@
  "licenze/bzip2/LICENSE": "MSYS, pacchetto sorgente bzip2-1.0.8-4: bzip2-1.0.8/LICENSE",
  "licenze/ca-certificates/copyright": "MSYS, pacchetto sorgente ca-certificates-20250419-1: ca-certificates/debian/copyright",
  "licenze/db/LICENSE": "MSYS, pacchetto sorgente db-6.2.32-6: db-6.2.32/LICENSE",
+ "licenze/estensioni-MS-CEINTL.vscode-language-pack-it/LICENSE.md": "https://raw.githubusercontent.com/microsoft/vscode-loc/fa368b5a5774c74d7ee953934f1ea567c2c43cf6/LICENSE.md",
  "licenze/expat/COPYING": "MSYS, pacchetto sorgente expat-2.8.1-1: expat-2.8.1/COPYING",
  "licenze/filesystem/LICENSE": "https://raw.githubusercontent.com/msys2/MSYS2-packages/ff0b4c9120ed6742bafb784d5a71562074724b65/LICENSE",
  "licenze/gc/README.QUICK": "MSYS, pacchetto sorgente gc-8.2.12-1: gc-8.2.12/README.QUICK",

@@ -36,6 +36,10 @@ SPECIE = [
     ("registro di Chromium", ED + r"user-data/(Session Storage|Local Storage/leveldb|WebStorage/[^/]+/[^/]+|shared_proto_db|Network)/", "contenitori e registri di Chromium"),
     ("cache di Chromium", ED + r"user-data/(CachedProfilesData|CachedData|Code Cache|GPUCache|Cache|DawnGraphiteCache|DawnWebGPUCache|Crashpad)/", "rigenerata"),
     ("log dell'editor", ED + r"user-data/logs/", "testo dei log"),
+    # Misurati su una copia spostata: l'editor riscrive il primo dopo un'apertura in inglese, la seconda mai; li
+    # prepara vscodium/lingua.py, dal costruttore e dai lanciatori, per la radice in cui l'unita' si trova.
+    ("pacchetti di lingua", ED + r"user-data/languagepacks\.json$", "riscritto per la radice corrente prima di ogni avvio dal lanciatore"),
+    ("cache delle traduzioni", ED + r"user-data/clp/", "tolta prima dell'avvio dal lanciatore se nomina un'altra radice, e rifatta"),
     ("configurazione del server", r"nginx/conf/nginx\.conf$", "nginxstart la rigenera a ogni avvio"),
     ("byte-code di Python", r"(.*/)?__pycache__/[^/]+\.pyc$", "il percorso serve solo ai messaggi d'errore"),
     ("cache di compilazione dell'editor", r"vscodium/resources/app/node-compile-cache/", "chiave col percorso: da un'altra radice non si usa"),
@@ -47,8 +51,8 @@ SPECIE = [
 ]
 # Occorrenze vere che con --usata devono esserci: la sonda non si inventa. Solo quelle che l'editor scrive alla radice
 # in cui gira: extensions.json porta la cartella in cui le estensioni sono state installate, e su una copia e' quella
-# della costruzione, che questo rilevatore non cerca.
-VERI = [ED + "user-data/User/globalStorage/storage.json"]
+# della costruzione, che questo rilevatore non cerca. languagepacks.json lo riscrive il lanciatore per la radice in cui parte.
+VERI = [ED + "user-data/User/globalStorage/storage.json", ED + "user-data/languagepacks.json"]
 
 
 def forme_di(testo, intero):

@@ -47,6 +47,7 @@ $Variabili = @(
     'msys64/var/lib/pacman/local/*/desc',
     'msys64/etc/pki/ca-trust/extracted/java/cacerts',
     'vscodium/data/extensions/extensions.json',
+    'vscodium/data/user-data/languagepacks.json',
     'nginx/conf/nginx.conf'
 )
 # Dove nascono file con l'uso dell'unita', non con la costruzione: per la verifica non sono estranei.
@@ -428,6 +429,11 @@ try {
     }
     $Mancanti = @($Dati.nostri | Where-Object { $_.stato -eq 'da scrivere' })
     Scrivi ("file nostri ancora da scrivere: $($Mancanti.Count): " + (($Mancanti | ForEach-Object { $_.nome }) -join ', '))
+    # La lingua dell'editor: senza languagepacks.json la prima apertura sarebbe in inglese. Lo stesso script lo
+    # riscrive dal lanciatore quando l'unita' si sposta, quindi il file e' fra i variabili.
+    $r = Lancia (Unisci $Dest 'python/python.exe') ('-I -B ' + (Virgolette (Unisci $Dest 'vscodium/lingua.py'))) $null
+    if ($r.Uscita -ne 0) { Rosso "lingua dell'editor non preparata, uscita $($r.Uscita): $($r.Testo)" }
+    Scrivi $r.Testo.Trim()
 
 
     # --- Il lanciatore: un eseguibile per strumento alla radice, col clang dell'unita'.

@@ -10,7 +10,7 @@ Alla radice ci sono i collegamenti. Ognuno avvia gli strumenti **di questa copia
 
 | Collegamento | Che cosa apre |
 |---|---|
-| `VSCodium.exe` | L'editor. Un progetto si apre con **File → Open Folder**, dalla cartella `progetti` |
+| `VSCodium.exe` | L'editor. Un progetto si apre con **File → Apri cartella…**, dalla cartella `progetti` |
 | `Terminale.exe` | Il terminale `bash`, nella cartella `progetti` |
 | `AlgoDesign.exe` | AlgoDesign, per i flowchart |
 | `Neovim.exe` | L'editor Neovim nel terminale |
@@ -18,15 +18,15 @@ Alla radice ci sono i collegamenti. Ognuno avvia gli strumenti **di questa copia
 
 Se il PC non lascia partire i collegamenti (per esempio un antivirus che blocca gli eseguibili che non conosce), nella cartella `fallback` ci sono gli stessi avvii come file `.bat`.
 
-L'editor va aperto da qui, non da `vscodium\VSCodium.exe`: il collegamento gli dà i compilatori e le cartelle dell'unità. Aperto direttamente, non trova `clangd` e propone di scaricarne uno dalla rete: non accettare.
+L'editor va aperto da qui, non da `vscodium\VSCodium.exe`: il collegamento gli dà i compilatori e le cartelle dell'unità. Aperto direttamente, non trova `clangd` e propone di scaricarne uno dalla rete: non accettare. E dopo che hai spostato o copiato la cartella, aperto direttamente resta in inglese, del tutto o in parte, finché non lo riapri dal collegamento.
 
 ## Compilare, eseguire e fare il debug da VSCodium
 
-I menu dell'editor sono in inglese. I comandi valgono per la cartella **del file aperto**: prima apri un sorgente del progetto, per esempio `main.c`, poi lancia il comando.
+I menu dell'editor sono in italiano; qualche voce recente, soprattutto della chat, resta in inglese, perché l'ultimo pacchetto della lingua italiana è di qualche versione prima dell'editor. I comandi valgono per la cartella **del file aperto**: prima apri un sorgente del progetto, per esempio `main.c`, poi lancia il comando.
 
-- **Ctrl+Maiusc+B** compila con `gcc`. Gli errori compaiono nel pannello **Problems**, sulla riga giusta.
-- Dal menu **Terminal → Run Task…** trovi gli altri comandi: «Compila con clang», «Esegui il programma gcc», «Esegui il programma clang» e i quattro comandi «ASan», che compilano ed eseguono con e senza il controllo degli errori di memoria. Ogni «Esegui» compila prima. I comandi «ASan» compilano il solo file aperto, non tutti i sorgenti del progetto.
-- **F5** avvia il debug. Nella vista **Run and Debug** scegli «Debug con gcc» o «Debug con clang»: il programma si compila e si ferma ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. F5 usa poi l'ultima scelta.
+- **Ctrl+Maiusc+B** compila con `gcc`. Gli errori compaiono nel pannello **Problemi**, sulla riga giusta.
+- Dal menu **Terminale → Esegui attività…** (se la finestra è stretta, **Terminale** sta sotto **···**) trovi gli altri comandi: «Compila con clang», «Esegui il programma gcc», «Esegui il programma clang» e i quattro comandi «ASan», che compilano ed eseguono con e senza il controllo degli errori di memoria. Ogni «Esegui» compila prima. I comandi «ASan» compilano il solo file aperto, non tutti i sorgenti del progetto.
+- **F5** avvia il debug. Nella vista **Esegui con debug** scegli «Debug con gcc» o «Debug con clang»: il programma si compila e si ferma ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. F5 usa poi l'ultima scelta.
 
 `clang` compila i progetti di `c-comuni`, non quelli di `c-processi`, che usano le chiamate dei processi di POSIX: per quelli serve `gcc`.
 

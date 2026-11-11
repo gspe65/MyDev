@@ -27,6 +27,7 @@
     "strumenti/jq": {"espressione": "MIT", "motivo": "il COPYING dell'etichetta jq-1.8.2 nomina anche le parti incorporate"},
     "strumenti/mkcert": {"espressione": "BSD-3-Clause"},
     "estensioni/llvm-vs-code-extensions.lldb-dap": {"espressione": "Apache-2.0 WITH LLVM-exception"},
+    "estensioni/MS-CEINTL.vscode-language-pack-it": {"espressione": "MIT", "motivo": "il pacchetto non porta un testo: il manifesto dice SEE MIT LICENSE IN LICENSE.md, che sta nel repository vscode-loc; il testo e' quello del commit della versione 1.131.0"},
     "msys/base": {"espressione": "GPL-2.0-or-later", "motivo": "metapacchetto senza file; «GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva"},
     "msys/msys2-keyring": {"espressione": "GPL-2.0-or-later", "motivo": "«GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva"},
     "msys/pacman-mirrors": {"espressione": "GPL-2.0-or-later", "motivo": "«GPL» senza versione, e la sorgente non ha un testo: si da' la 2 o successiva"},

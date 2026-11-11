@@ -307,6 +307,22 @@
       "motivo": "Il debug col gdb di MSYS, attraverso il traduttore di percorsi; l'unica delle due candidate che non dichiara agganciato un punto rifiutato."
     },
     {
+      "nome": "estensioni/MS-CEINTL.vscode-language-pack-it",
+      "gruppo": "estensioni",
+      "fonte": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-it/1.131.0/file/MS-CEINTL.vscode-language-pack-it-1.131.0.vsix",
+      "file": "MS-CEINTL.vscode-language-pack-it-1.131.0.vsix",
+      "byte": 639536,
+      "sha256": "fcd1676140a5d0058ce80ecaf7fa938d499f6e45c1687f75df83aaaded5d2775",
+      "versione": "1.131.0",
+      "licenza": "MIT",
+      "modo": "vsix",
+      "piattaforma": "universal",
+      "destinazioni": [
+        "vscodium/data/extensions"
+      ],
+      "motivo": "L'interfaccia dell'editor in italiano: l'ultima versione pubblicata, che il suo engines (^1.131.0) lascia caricare sulla 1.143 e che ne traduce il 73 per cento delle frasi (le mancanti sono quasi tutte della chat); la lingua la sceglie argv.json."
+    },
+    {
       "nome": "pip/Jinja2",
       "gruppo": "pip",
       "fonte": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",
