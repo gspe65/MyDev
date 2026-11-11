@@ -122,6 +122,20 @@ static void prepara_lingua(void) {
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
 }
+
+/* L'insieme garantito delle estensioni: vscodium\insieme.py confronta estensioni, product.json ed extensions.allowed
+ * con unita.json e, se qualcosa non torna, mostra una finestra di avviso. Parte dopo l'editor e non si aspetta:
+ * l'editor si apre lo stesso, e sull'unita' intatta lo script esce senza mostrare nulla. */
+static void controlla_insieme(void) {
+    componi(appoggio, L"\"%ls\\python\\pythonw.exe\" -I -B \"%ls\\vscodium\\insieme.py\"", radice, radice);
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof si);
+    si.cb = sizeof si;
+    if (!CreateProcessW(NULL, appoggio, NULL, NULL, FALSE, 0, NULL, radice, &si, &pi)) return;
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+}
 #endif
 
 int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
@@ -187,5 +201,8 @@ int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
     }
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
+#if STRUMENTO == VSCODIUM
+    controlla_insieme();
+#endif
     return 0;
 }

@@ -12,7 +12,8 @@
 #
 # Le sigle dei passi sono le clausole del collaudo dell'unita': U12 nessun percorso assoluto dopo l'uso, U13 il kit da una
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
-# E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore).
+# E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore),
+# A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -191,6 +192,10 @@ try {
         Apri (Join-Path $Rad 'VSCodium.exe') '' $null
         Attendi-Editor
         AnnotaAscolti 'apertura 1'
+        # A9: il silenzio del lanciatore sull'unita' intatta. Lo script dell'insieme parte con pythonw dopo l'editor: senza
+        # differenze esce subito, con una differenza resta acceso finche' la finestra di avviso e' aperta.
+        $Avvisi = @(ProcessiUnita | Where-Object { $_.Name -eq 'pythonw.exe' }).Count
+        Annota 'A9' "nessun avviso dal lanciatore: pythonw dell'unita' accesi $Avvisi" $(if ($Avvisi -eq 0) { 0 } else { 1 })
         Chiudi-Tutto
         # A7: l'editor aperto dal lanciatore ha caricato l'italiano. La cache delle traduzioni nasce solo se la lingua di
         # argv.json ha un pacchetto installato (misurato: col pacchetto e senza la lingua non nasce), e tcf.json deve
@@ -311,6 +316,11 @@ try {
     $ArgEditor = '-Unita "' + $Rad + '"'
     if ($Vsix) { $ArgEditor += ' -Vsix "' + $Vsix + '"' }
     $null = Passo 'U13' 'editor' $Ps (Script51 'editor.ps1' $ArgEditor)
+    # --- A9: l'insieme garantito delle estensioni, dopo l'uso: lo stesso confronto che il lanciatore fa a ogni avvio,
+    # con lo script dell'unita' e non con una copia, piu' le sonde del verdetto.
+    $Ins = '-I -B "' + (Join-Path $Rad 'vscodium\insieme.py') + '"'
+    $null = Passo 'A9' 'insieme' $Py ($Ins + ' --verifica')
+    $null = Passo 'A9' 'insieme-sonde' $Py ($Ins + ' --sonde')
 
     # --- U17: le licenze. Il generatore legge la ricetta, quindi gira dal repository e non dalla copia del kit.
     Scrivi '=== U17: licenze'
@@ -368,7 +378,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 23 } else { 16 }
+    $Attesi = if ($Finestre) { 26 } else { 18 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }

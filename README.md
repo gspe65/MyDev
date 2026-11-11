@@ -87,9 +87,10 @@ Un sorgente non ha impronta, perché il server lo genera al volo a ogni richiest
 ```
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\verifica.ps1 -Unita C:\MyDev
 C:\MyDev\python\python.exe -I -B ricetta\licenze_unita.py C:\MyDev
+C:\MyDev\python\python.exe -I -B C:\MyDev\vscodium\insieme.py --verifica
 ```
 
-La verifica confronta ogni file dell'unità con l'elenco che la costruzione ha scritto in `unita-file.txt`, e dice quali sono diversi, mancanti o estranei. La seconda riga controlla l'indice delle licenze, `LICENZE.txt`, contro i componenti e i testi che l'unità contiene.
+La verifica confronta ogni file dell'unità con l'elenco che la costruzione ha scritto in `unita-file.txt`, e dice quali sono diversi, mancanti o estranei. La seconda riga controlla l'indice delle licenze, `LICENZE.txt`, contro i componenti e i testi che l'unità contiene. La terza confronta le estensioni dell'editor, `product.json` e l'impostazione `extensions.allowed` con l'insieme che `unita.json` dichiara (campo `estensioni`). È lo stesso confronto che `VSCodium.exe` fa a ogni apertura: se qualcosa non torna, mostra una finestra di avviso e apre l'editor lo stesso. L'editor dell'unità non installa estensioni fuori da quell'insieme, né dal menu né da riga di comando.
 
 Il gate di portabilità fa girare le prove dell'unità da una cartella con **due spazi consecutivi** nel nome, il caso più difficile per i percorsi. Prima si copia l'unità lì:
 

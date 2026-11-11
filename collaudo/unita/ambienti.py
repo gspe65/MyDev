@@ -6,14 +6,16 @@ L'ambiente sta scritto in quattro posti: il lanciatore (ricetta/unita/lancia.c),
 (ricetta/unita/fallback/comune.bat), il terminale del kit (collaudo/unita/terminale.bat) e l'editor del gate
 (collaudo/unita/gate.ps1). Una variabile aggiunta in uno e dimenticata in un altro non da' errore: la prova gira
 con un ambiente diverso da quello di chi usa l'unita'. Qui si confrontano i NOMI, nei due versi, per la parte
-comune e per quella dell'unita' estesa, con le eccezioni dichiarate qui sotto.
+comune e per quella dell'unita' estesa, con le eccezioni dichiarate qui sotto. In piu', gli script dell'editor
+(vscodium\\<nome>.py: la lingua, l'insieme delle estensioni) che il lanciatore di VSCodium e il suo .bat di ripiego
+lanciano: gli stessi nomi nei due versi.
 
-Con --sonde, in coda: un nome tolto da una copia e uno aggiunto devono dare DIVERSO.
+Con --sonde, in coda: un nome tolto da una copia e uno aggiunto devono dare DIVERSO, e cosi' uno script tolto dal ripiego.
 
 Uscite: 0 verde, 1 rosso (nomina le variabili), 2 fermo (un file manca, o una copia non si legge).
 
 Che cosa NON guarda: i valori (le forme Windows e POSIX sono scelte per programma, lo dicono i commenti delle copie);
-le variabili che il lanciatore toglie.
+le variabili che il lanciatore toglie; gli argomenti e l'ordine degli script dell'editor.
 """
 import re
 import sys
@@ -83,6 +85,16 @@ def da_gate(testo):
     return comune, estesa
 
 
+def script_editor(testo):
+    """I nomi degli script vscodium\\<nome>.py lanciati: una o due barre, nel C e nel .bat."""
+    return set(re.findall(r"vscodium\\{1,2}(\w+)\.py", testo))
+
+
+def confronta_script(lanciatore, ripiego):
+    return [f"script dell'editor: {n} nel lanciatore e non nel ripiego" for n in sorted(lanciatore - ripiego)] + \
+           [f"script dell'editor: {n} nel ripiego e non nel lanciatore" for n in sorted(ripiego - lanciatore)]
+
+
 def attese(l):
     """Ogni copia, con le sue eccezioni, deve avere esattamente questi nomi."""
     return {
@@ -123,7 +135,12 @@ def main():
         print(f"{k}: {len(v)}")
     if not l["comune"] or not l["estesa"] or not l["terminale"] or not all(copie.values()):
         fermo("una copia senza variabili: il lettore non l'ha vista")
-    diff = confronta(l, copie)
+    sl = script_editor(leggi("ricetta/unita/lancia.c"))
+    sr = script_editor(leggi("ricetta/unita/fallback/VSCodium.bat"))
+    print(f"script dell'editor: lanciatore {len(sl)} ({' '.join(sorted(sl))}), ripiego {len(sr)} ({' '.join(sorted(sr))})")
+    if not sl or not sr:
+        fermo("nessuno script dell'editor letto: il lettore non l'ha visto")
+    diff = confronta(l, copie) + confronta_script(sl, sr)
     for d in diff:
         print(f"DIVERSO: {d}")
     print(f"differenze: {len(diff)}")
@@ -132,8 +149,9 @@ def main():
         tolto["gate, estesa"].discard(sorted(tolto["gate, estesa"])[0])
         aggiunto = {k: set(v) for k, v in copie.items()}
         aggiunto["terminale del kit, parte comune"].add("SONDA_IN_PIU")
-        esiti = [bool(confronta(l, tolto)), bool(confronta(l, aggiunto))]
-        print(f"sonde: tolto={'DIVERSO' if esiti[0] else 'UGUALE'} aggiunto={'DIVERSO' if esiti[1] else 'UGUALE'}")
+        esiti = [bool(confronta(l, tolto)), bool(confronta(l, aggiunto)), bool(confronta_script(sl, sr - {sorted(sr)[-1]}))]
+        print(f"sonde: tolto={'DIVERSO' if esiti[0] else 'UGUALE'} aggiunto={'DIVERSO' if esiti[1] else 'UGUALE'} "
+              f"script tolto={'DIVERSO' if esiti[2] else 'UGUALE'}")
         if not all(esiti):
             fermo("una sonda non si e' accesa")
     if diff:
