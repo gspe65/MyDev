@@ -44,9 +44,8 @@ I componenti
 ------------
 
 editor/vscodium 1.143.17232
-    licenza: MIT AND LGPL-2.1-or-later
-    dichiarata dal pacchetto: MIT
-    nota: ffmpeg.dll e' la FFmpeg di Chromium, LGPL, con i decodificatori H.264 e AAC, coperti da brevetti (contati nella DLL; l'editor riproduce anche H.265, ma quel decodificatore puo' venire da Windows): VSCodium 1.143.17232 viene da VSCode 1.143.1, che usa Electron 43.7.7, su Chromium 150.0.7871.250. Sei file nominano Microsoft: i tre di PSReadLine sono BSD-2-Clause, col testo in ThirdPartyNotices.txt; conpty.dll e OpenConsole.exe del terminale integrato sono ConPTY 1.25.260303002-preview, dal pacchetto Microsoft.Windows.Console.ConPTY, che dichiara la licenza MIT; Microsoft.PowerShell.Pager.dll, per l'integrazione con PowerShell, non ha termini nel pacchetto
+    licenza: MIT
+    nota: VSCodium 1.143.17232 viene da VSCode 1.143.1, che usa Electron 43.7.7, su Chromium 150.0.7871.250. Tolti dal pacchetto: ffmpeg.dll (al suo posto quello coi soli codec liberi, voce editor/ffmpeg-libero), l'estensione di autenticazione di Microsoft con msalruntime.dll, Microsoft.PowerShell.Pager.dll, oltre ai file grafici di Direct3D e al tunnel. Electron e' compilato coi codec proprietari: alle domande sui formati risponde si' per H.264 e AAC, ma senza quel ffmpeg.dll e con la scheda video spenta in argv.json non li decodifica, e H.265 nemmeno. Cinque file nominano Microsoft: i tre di PSReadLine sono BSD-2-Clause, col testo in ThirdPartyNotices.txt; conpty.dll e OpenConsole.exe del terminale integrato sono ConPTY 1.25.260303002-preview, dal pacchetto Microsoft.Windows.Console.ConPTY, che dichiara la licenza MIT
     testo: vscodium/LICENSES.chromium.html [c971fa90cb787337] 0BSD, Apache-2.0, Artistic-2.0, BSD, CC-BY-4.0, CC0-1.0, GPL-2.0, GPL-3.0, ISC, LGPL-2.0, LGPL-2.1, LGPL-3.0, LLVM-exception, MPL-1.1, MPL-2.0, OFL-1.1
     testo: vscodium/resources/app/LICENSE.txt [2fa3f8948a0a17ea] MIT
     testo: vscodium/resources/app/ThirdPartyNotices.txt [51b3fd6b279f33c3] 0BSD, Apache-2.0, BSD, CC-BY-4.0, ISC, MIT, PSF-2.0
@@ -70,7 +69,11 @@ editor/vscodium 1.143.17232
     testo: vscodium/resources/app/node_modules/semver/LICENSE [4ec3d4c66cd87f5c] 0BSD, ISC
     testo: vscodium/resources/app/node_modules/shell-quote/LICENSE [8bb16db1b047019e] MIT
     testo: vscodium/resources/app/node_modules/zod/LICENSE [3f1189b28e3866e0] MIT
+editor/ffmpeg-libero 43.7.7
+    licenza: LGPL-2.1-or-later
+    nota: lo ffmpeg.dll di Electron 43.7.7, la FFmpeg di Chromium col marchio Chromium: soli codec liberi, senza i decodificatori H.264, H.265 e AAC; il testo della FFmpeg sta in LICENSES.chromium.html dell'editor, il sorgente e' la FFmpeg di Chromium al commit fissato da Chromium 150.0.7871.250
     testo: licenze/LGPL-2.1.txt [20e50fe7aae3e563] LGPL-2.1
+    testo: vscodium/LICENSES.chromium.html [c971fa90cb787337] 0BSD, Apache-2.0, Artistic-2.0, BSD, CC-BY-4.0, CC0-1.0, GPL-2.0, GPL-3.0, ISC, LGPL-2.0, LGPL-2.1, LGPL-3.0, LLVM-exception, MPL-1.1, MPL-2.0, OFL-1.1
     sorgente: https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/ad41607c61898cf7150e0fb20fe4bbabd44922a3.tar.gz [senza impronta: il server genera l archivio al volo]
 algodesign/algodesign 1.0.0
     licenza: MIT AND CC-BY-4.0
@@ -112,7 +115,7 @@ toolchain/python 3.14.7
 strumenti/neovim 0.12.5
     licenza: Apache-2.0 AND Vim
     dichiarata dal pacchetto: Apache-2.0 e Vim
-    nota: il LICENSE.txt dell'etichetta v0.12.5 porta l'avviso Apache e la licenza di Vim; il pacchetto non ha un testo. nvim/bin/DbgHelp.dll e' una libreria di Windows di Microsoft (10.0.26100.4202) che il pacchetto di Neovim porta con se', senza i suoi termini
+    nota: il LICENSE.txt dell'etichetta v0.12.5 porta l'avviso Apache e la licenza di Vim; il pacchetto non ha un testo. Tolto dal pacchetto: bin/DbgHelp.dll, una libreria di Windows di Microsoft senza i suoi termini; Neovim usa quella di Windows
     testo: nvim/share/nvim/runtime/pack/dist/opt/netrw/LICENSE.txt [0dac5aa0e9035a96] 0BSD, ISC
     testo: licenze/strumenti-neovim/LICENSE.txt [de23202ef9a51f5e] Apache-2.0
     testo: msys64/usr/share/licenses/cppdap/LICENSE [58d1e17ffe5109a7] Apache-2.0

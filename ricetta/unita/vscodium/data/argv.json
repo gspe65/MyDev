@@ -1,5 +1,6 @@
 {
 	"locale": "it",
+	"disable-hardware-acceleration": true,
 	"enable-crash-reporter": false,
 	"crash-reporter-id": "7d1c3b52-5a40-4e8e-9f0e-2b6a1c9d4e70"
 }

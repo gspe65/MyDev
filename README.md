@@ -102,6 +102,21 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 
 
 Ogni comando finisce con una riga `ESITO:`. Le uscite sono 0 verde, 1 rosso, 2 fermo (non si è potuto misurare). Un parametro sbagliato lo rifiuta PowerShell prima che il comando parta: esce con 1 e senza la riga `ESITO:`.
 
+## Che cosa manca e perché
+
+Dai pacchetti ufficiali il costruttore toglie i file che non si possono ridistribuire o che portano codec proprietari, e `unita.json` li elenca uno per uno (`tolti`, `sostituiti`):
+
+- da VSCodium: `d3dcompiler_47.dll`, `dxcompiler.dll`, `dxil.dll` (Microsoft), `bin/codium-tunnel.exe`, l'estensione di accesso con un account Microsoft (con `msalruntime.dll`), `Microsoft.PowerShell.Pager.dll`, e `ffmpeg.dll`, sostituito da quello di Electron 43.7.7 coi soli formati liberi (senza un `ffmpeg.dll` la finestra dell'editor non parte);
+- da Neovim: `bin/DbgHelp.dll` (Microsoft): Neovim usa quella di Windows.
+
+Che cosa vuol dire per chi usa l'editor:
+
+- **H.264, H.265 e AAC non si riproducono**. Lo `ffmpeg.dll` libero da solo non basta: Electron è compilato coi codec proprietari e passa H.264 e H.265 alla scheda video del PC. Per questo `vscodium\data\argv.json` spegne l'accelerazione della scheda video (`"disable-hardware-acceleration": true`), e l'editor disegna senza. Chi toglie quella riga riaccende H.264 e H.265 attraverso la scheda video; la verifica lo segnala come file cambiato.
+- **Alle domande sui formati** (`canPlayType`, `MediaSource.isTypeSupported`, `MediaCapabilities`) l'editor risponde ancora «sì» per H.264 e AAC, anche se poi non li decodifica: le risposte sono fissate in Electron alla compilazione, e per cambiarle servirebbe ricostruire l'editor. VP9, AV1 e Opus si riproducono.
+- **Non c'è l'accesso con un account Microsoft.**
+
+`collaudo/unita/editor.ps1` controlla i file (quelli tolti, l'impronta di `ffmpeg.dll`, la riga di `argv.json`), non che cosa l'editor decodifica: quello si misura con l'editor aperto, a ogni versione nuova di VSCodium.
+
 ## Se dai l'unità ad altri
 
 Alcuni componenti hanno licenze che chiedono di dare anche i sorgenti a chi riceve una copia. La nota in testa a `LICENZE.txt`, nell'unità, spiega le due strade: i sorgenti accanto alla copia, oppure un'offerta scritta. Questo comando li scarica tutti, alla versione esatta e con l'impronta confrontata:

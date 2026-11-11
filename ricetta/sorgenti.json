@@ -123,7 +123,7 @@
    "file": "ffmpeg-chromium-ad41607c6189.tar.gz",
    "fonte": "https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/ad41607c61898cf7150e0fb20fe4bbabd44922a3.tar.gz",
    "componenti": [
-    "editor/vscodium"
+    "editor/ffmpeg-libero"
    ]
   },
   {
