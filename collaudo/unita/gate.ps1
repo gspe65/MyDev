@@ -13,7 +13,8 @@
 # Le sigle dei passi sono le clausole del collaudo dell'unita': U12 nessun percorso assoluto dopo l'uso, U13 il kit da una
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
 # E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore),
-# A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore).
+# A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore),
+# A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e il repository del nucleo, come la costruzione).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -59,7 +60,7 @@ function Passo([string]$clausola, [string]$nome, [string]$exe, [string]$argoment
     $r = Lancia $exe $argomenti $null
     [IO.File]::WriteAllText((Join-Path $Lav "$nome.log"), $r.Testo, $Utf8)
     foreach ($riga in ($r.Testo -split "`r?`n")) {
-        if ($riga -match '^(ESITO|FERMO|ROSSO|SENZA|  SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
+        if ($riga -match '^(ESITO|FERMO|ROSSO|FAIL|esiti: |SENZA|  SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
     }
     Annota $clausola $nome $r.Uscita
     return $r
@@ -311,6 +312,16 @@ try {
         $null = Lancia $Py ('-X utf8 -B "' + (Join-Path $Kit 'tracce.py') + '" pulisci "' + $Rip + '"') $null
     }
 
+    # --- A16: il corpus di esecuzione. Dopo le fotografie (Bun e i compilatori scrivono nella cartella temporanea del PC) e prima
+    # della verifica, che vede se la generazione o i programmi hanno scritto nell'unita'. Gira dal repository, come le licenze.
+    Scrivi '=== A16: il corpus di esecuzione'
+    $Bun = Get-Command bun -ErrorAction SilentlyContinue
+    if ($null -eq $Bun) { Annota 'A16' 'esecuzione: bun non c''e' 2 }
+    else {
+        $Esec = '"' + (Join-Path (Split-Path -Parent $Qui) 'esecuzione\prova.ts') + '" --unita "' + $Rad + '" --lavoro "' + (Join-Path $Lav 'esecuzione  lavoro') + '"'
+        $null = Passo 'A16' 'esecuzione' $Bun.Source $Esec
+    }
+
     # --- La verifica dei file, dopo l'uso.
     $null = Passo 'U13' 'verifica' $Ps (Script51 'verifica.ps1' ('-Unita "' + $Rad + '"'))
     $ArgEditor = '-Unita "' + $Rad + '"'
@@ -378,7 +389,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 26 } else { 18 }
+    $Attesi = if ($Finestre) { 27 } else { 19 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
