@@ -14,6 +14,9 @@
 # variante vuole il proprio deposito: un file che l'elenco non nomina e' un rosso. L'estesa si costruisce
 # per convenzione in C:\MyDev-estesa.
 #
+# unita.json dichiara anche i file tolti dai pacchetti ufficiali (le voci togli) e quelli sostituiti: una voce con
+# sostituisce deve nominare un file che una voce precedente toglie, o la costruzione e' un rosso.
+#
 # Il deposito predefinito sta accanto alla destinazione. Ogni file del deposito si confronta con byte e
 # impronta dell'elenco: un'impronta sbagliata e' un rosso e non fa riscaricare nulla; un file che manca
 # si scarica dalla fonte, o con -SenzaRete e' un fermo che lo nomina.
@@ -273,11 +276,21 @@ try {
     CreaCartella $Dest
     $PerModo = @{}
     $Msys = $null
+    # Cio' che si toglie dai pacchetti ufficiali e cio' che ne prende il posto: unita.json lo dichiara per nome.
+    $Tolti = New-Object Collections.Generic.List[string]
+    $Sostituiti = New-Object Collections.Generic.List[string]
     foreach ($v in $Dati.scaricati) {
         $a = Unisci $Dep "$($v.gruppo)/$($v.file)"
         $modo = $v.modo
         $PerModo[$modo] = 1 + [int]$PerModo[$modo]
         $togli = @(); if ($null -ne (Campo $v 'togli')) { $togli = @($v.togli) }
+        foreach ($t in $togli) { $Tolti.Add("$($v.nome): $t") }
+        if ($null -ne (Campo $v 'sostituisce')) {
+            foreach ($s in @($v.sostituisce)) {
+                if (-not $Tolti.Contains($s)) { Rosso "$($v.nome): sostituisce '$s', che nessuna voce precedente toglie" }
+                $Sostituiti.Add("$s <- $($v.nome)")
+            }
+        }
         switch ($modo) {
             'zip' {
                 $script:Colpi = @{}
@@ -494,7 +507,7 @@ try {
     }
     $Utf8 = New-Object Text.UTF8Encoding($false)
     [IO.File]::WriteAllText((Join-Path $Dest 'unita-file.txt'), (($Unita -join "`n") + "`n"), $Utf8)
-    $Dichiara = (New-Object PSObject -Property ([ordered]@{ numero = $Numero; variante = $Variante; commit = $Commit; albero = $Albero; variabili = $Variabili; nati_dall_uso = $NatiDallUso })) | ConvertTo-Json
+    $Dichiara = (New-Object PSObject -Property ([ordered]@{ numero = $Numero; variante = $Variante; commit = $Commit; albero = $Albero; variabili = $Variabili; nati_dall_uso = $NatiDallUso; tolti = [string[]]$Tolti.ToArray(); sostituiti = [string[]]$Sostituiti.ToArray() })) | ConvertTo-Json
     [IO.File]::WriteAllText((Join-Path $Dest 'unita.json'), $Dichiara.Replace("`r`n", "`n") + "`n", $Utf8)
     $Lungo = ($Tutti | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum
     Scrivi "unita': numero $Numero, variante $Variante, commit $Commit, file $($Tutti.Count), percorso relativo piu' lungo $Lungo caratteri"

@@ -38,7 +38,10 @@
         "d3dcompiler_47.dll",
         "dxcompiler.dll",
         "dxil.dll",
-        "bin/codium-tunnel.exe"
+        "bin/codium-tunnel.exe",
+        "ffmpeg.dll",
+        "resources/app/extensions/microsoft-authentication/",
+        "resources/app/out/vs/workbench/contrib/terminal/common/scripts/psreadline/Microsoft.PowerShell.Pager.dll"
       ],
       "togli_chiavi": {
         "file": "resources/app/product.json",
@@ -47,6 +50,30 @@
           "extensionsGallery"
         ]
       }
+    },
+    {
+      "nome": "editor/ffmpeg-libero",
+      "gruppo": "editor",
+      "fonte": "https://github.com/electron/electron/releases/download/v43.7.7/ffmpeg-v43.7.7-win32-x64.zip",
+      "file": "ffmpeg-v43.7.7-win32-x64.zip",
+      "byte": 773498,
+      "sha256": "df14da964d36f36c50030004bb5e93a3b5fac9e4ddd6dd4f0e4ecdd49456ee4f",
+      "versione": "43.7.7",
+      "licenza": "LGPL-2.1-or-later",
+      "modo": "estrai",
+      "estrai": [
+        {
+          "da": "ffmpeg.dll",
+          "a": "vscodium/ffmpeg.dll"
+        }
+      ],
+      "sostituisce": [
+        "editor/vscodium: ffmpeg.dll"
+      ],
+      "destinazioni": [
+        "vscodium/ffmpeg.dll"
+      ],
+      "motivo": "Lo ffmpeg di Electron 43.7.7, la versione dell'editor, coi soli codec liberi: senza ffmpeg.dll la finestra dell'editor non parte, con quello del pacchetto si decodificano H.264 e AAC. La via della scheda video la spegne argv.json."
     },
     {
       "nome": "algodesign/algodesign",
@@ -121,7 +148,10 @@
       "destinazioni": [
         "nvim"
       ],
-      "motivo": "2133 file uguali su 2133 con quelli provati; la 0.12.6 esiste e non e' provata."
+      "motivo": "2133 file uguali su 2133 con quelli provati; la 0.12.6 esiste e non e' provata.",
+      "togli": [
+        "bin/DbgHelp.dll"
+      ]
     },
     {
       "nome": "strumenti/nginx",

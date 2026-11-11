@@ -54,6 +54,13 @@ Una copia data ad altri porta anche i tuoi dati: la cronologia dei comandi, il n
 
 L'editor, le sue estensioni e gli strumenti non si aggiornano da soli, e non si aggiornano dal menu: le versioni sono quelle provate. Il file `unita.json` dice la versione dell'unità e se è la base o l'estesa; `unita-file.txt` elenca ogni file con la sua impronta.
 
+## Che cosa manca nell'editor, e perché
+
+- **Video H.264 e H.265 e audio AAC non si riproducono** nell'editor (per esempio un video MP4 in un'anteprima Markdown o nella pagina di un'estensione). Sono formati coperti da brevetti, e MyDev non ne distribuisce i decodificatori: al posto dello `ffmpeg.dll` di VSCodium c'è quello di Electron coi soli formati liberi. WebM con VP9 o AV1 e l'audio Opus si riproducono.
+- **L'editor disegna senza la scheda video** (`"disable-hardware-acceleration": true` in `vscodium\data\argv.json`): senza questa riga H.264 e H.265 si decodificherebbero comunque, attraverso la scheda video del PC. Su un PC lento lo scorrimento di un file molto grande può essere meno fluido. Il comando «Configura argomenti del runtime» (Ctrl+Maiusc+P) apre quel file: chi toglie la riga riaccende la scheda video, e con lei H.264 e H.265; la verifica dell'unità segnala il file cambiato.
+- **Non c'è l'accesso con un account Microsoft**: l'estensione che lo fa porta una libreria di Microsoft senza termini che ne permettano la distribuzione, ed è stata tolta. L'estensione di accesso con GitHub resta.
+- **Il terminale PowerShell aperto dal menu del terminale** usa la PSReadLine di Windows: l'editor porta una sua copia per la modalità di lettura dello schermo, da cui è stato tolto un file di Microsoft senza termini (`Microsoft.PowerShell.Pager.dll`).
+
 ## Le licenze, e se dai una copia ad altri
 
 `LICENZE.txt` elenca la licenza di ogni componente, col percorso del testo intero; i testi che i componenti non portano stanno in `licenze`. L'unità estesa aggiunge `LICENZE-ESTESA.txt` per i suoi strumenti.
