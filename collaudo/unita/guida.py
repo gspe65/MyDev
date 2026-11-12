@@ -18,7 +18,8 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 TITOLI = ["rustc", "cargo", "clippy", "rustfmt", "rust-analyzer", "I manuali", "git", "gh", "cargo-ponte", "rustc-ponte",
-          "programmi/Git/cmd/git.exe", "bin/gh", "Le impostazioni", "I progetti in Rust", "Le licenze"]
+          "programmi/Git/cmd/git.exe", "bin/gh", "Le impostazioni", "I progetti in Rust", "Il corso sui puntatori",
+          "Le licenze"]
 
 
 def leggi_guida(testo):

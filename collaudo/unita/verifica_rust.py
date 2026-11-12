@@ -7,6 +7,7 @@
 3. L'uscita contro il blocco "Cosa devi vedere" del LEGGIMI del C, coi modi di verifica.py.
 4. Le chiamate POSIX del sorgente C sono dichiarate in `unsafe extern "C"`.
 5. Il LEGGIMI del progetto Rust ha lo stesso atteso del C, e dice dove sta l'unsafe.
+6. Ogni cartella di progetti ha un posto: una coppia, o una non coppia dichiarata in NON_COPPIE col motivo, nei due versi.
 
 Che cosa NON guarda: la riga di mezzo dove il modo e' "estremi" (08, 09, 13, 20); i numeri
 dove il modo e' "numeri"; l'editor; che le chiamate dichiarate siano usate bene. Il numero delle chiamate
@@ -45,6 +46,12 @@ DICHIARATE = {
     "15-segnali": "guidato coi segnali veri; il progetto C non e' eseguito dal kit",
 }
 ULTIMA_13 = "[padre] righe ricevute: 6"
+# Le cartelle di progetti che non sono coppie C-Rust, ciascuna col suo motivo: una cartella senza posto e' un rosso.
+NON_COPPIE = {
+    "fastapi-hello": "progetto Python, senza versione Rust",
+    "flask-hello": "progetto Python, senza versione Rust",
+    "puntatori": "il codice del corso sui puntatori: lo provano i suoi verificatori, lanciati dallo stesso kit",
+}
 
 
 def appaia(progetti):
@@ -65,6 +72,12 @@ def appaia(progetti):
                 r[d.name] = d
     coppie = [(n, c[n], r[n]) for n in sorted(c) if n in r]
     return coppie, sorted(set(c) - set(r)), sorted(set(r) - set(c))
+
+
+def senza_posto(cartelle):
+    """Le cartelle di progetti senza posto, e le non-coppie dichiarate che mancano: i due versi dell'appaiamento."""
+    note = set(SINGOLI) | set(SINGOLI.values()) | set(FAMIGLIE) | set(FAMIGLIE.values()) | set(NON_COPPIE)
+    return sorted(set(cartelle) - note), sorted(set(NON_COPPIE) - set(cartelle))
 
 
 def blocco(leggimi):
@@ -137,6 +150,15 @@ def main():
     if len(coppie) != ATTESI:
         print(f"  ROSSO coppie {len(coppie)}, attese {ATTESI}")
         errori += 1
+    cartelle = sorted(d.name for d in pathlib.Path(progetti).iterdir() if d.is_dir())
+    estranee, assenti = senza_posto(cartelle)
+    print(f"cartelle di progetti: {len(cartelle)}, non coppie dichiarate {len(NON_COPPIE)} ({', '.join(sorted(NON_COPPIE))}), "
+          f"senza posto {len(estranee)}, dichiarate assenti {len(assenti)}")
+    for n in estranee:
+        print(f"  ROSSO cartella di progetti senza posto: {n}")
+    for n in assenti:
+        print(f"  ROSSO non coppia dichiarata assente: {n}")
+    errori += len(estranee) + len(assenti)
 
     compila, esegue = righe_log(log, "COMPILA"), righe_log(log, "ESEGUE")
     confronti = chiamate_viste = 0
@@ -198,9 +220,10 @@ def main():
     s2 = controlla_unsafe("## Dove sta l'`unsafe`\n\nNessuno.", "unsafe { x() }") != ""
     s3 = controlla_leggimi("01-ciao", "## Cosa devi vedere\n\n```\nCiao\n```\n", ["Addio"]) != []
     s4 = not confronta("16-allarme", ["a"], ["b"])
+    s5 = "sonda-cartella" in senza_posto(cartelle + ["sonda-cartella"])[0] and "puntatori" in senza_posto([c for c in cartelle if c != "puntatori"])[1]
     print(f"sonde false: chiamate={'ACCESA' if s1 else 'ROTTA'} unsafe={'ACCESA' if s2 else 'ROTTA'} "
-          f"leggimi={'ACCESA' if s3 else 'ROTTA'} uscita={'ACCESA' if s4 else 'ROTTA'}")
-    if not (s1 and s2 and s3 and s4):
+          f"leggimi={'ACCESA' if s3 else 'ROTTA'} uscita={'ACCESA' if s4 else 'ROTTA'} cartelle={'ACCESA' if s5 else 'ROTTA'}")
+    if not (s1 and s2 and s3 and s4 and s5):
         print("ROTTO: una sonda non si accende")
         return 2
     print(f"totale: coppie {len(coppie)}, confronti {confronti}, rossi {errori}")

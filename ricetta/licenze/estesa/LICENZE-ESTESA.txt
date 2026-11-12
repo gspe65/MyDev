@@ -339,6 +339,11 @@ nostro/impostazioni-estesa
 nostro/progetti-rust
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/progetti-puntatori
+    licenza: MIT AND BSD-2-Clause AND BSD-3-Clause
+    nota: il codice del corso e' MIT come MyDev; terzi/sds e' SDS di Salvatore Sanfilippo: LICENSE BSD a due clausole, e l'intestazione di sds.c e sds.h ha una terza clausola (il nome di Redis non promuove derivati): valgono tutti e due gli avvisi, come dice la sua PROVENIENZA.md. Ogni cartella di terzi/ ha qui il suo LICENSE (ricetta/puntatori/uguaglianza.py li appaia)
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+    testo: progetti/puntatori/terzi/sds/LICENSE [bb0d0d505009fdf5] BSD
 nostro/licenze-estesa
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
