@@ -149,6 +149,19 @@ In VSCodium, dal menu dei compiti: `Cargo: compila`, `Cargo: esegui`, `Cargo: cl
 
 `rust-simple`, `rust-multifile`, `rust-comuni/`, `rust-processi/`: la versione Rust di ogni progetto C. Le uscite sono quelle del C. Ogni `LEGGIMI.md` ha una sezione «Dove sta l'`unsafe`».
 
+### Il corso sui puntatori
+**Nell'elenco:** `progetti-puntatori`
+
+`puntatori/` ha il codice del corso sui puntatori: l'archivio di chiavi e valori in C, versione per versione (`c/v0` … `c/v7`), la sua versione in Rust dalla 5 (`rust/v5` … `rust/v7`), le prove con la loro specifica (`test/`), gli esempi delle lezioni (`esempi/`) e SDS, una libreria di altri, in `terzi/sds` con la sua licenza e la sua provenienza. Dal terminale, i due verificatori del corso:
+
+```bash
+cd "$MYDEV/progetti/puntatori"
+python -B strumenti/verifica.py
+python -B strumenti/verifica_esempi.py
+```
+
+Ognuno finisce con `VERDE`: il primo compila e prova ogni versione, in C con e senza AddressSanitizer e in Rust, in meno di mezzo minuto; il secondo prova i 155 esempi delle lezioni, in circa due minuti. Le dispense del corso non sono qui: le distribuisce il docente.
+
 ### Le licenze
 **Nell'elenco:** `licenze-estesa`
 

@@ -267,7 +267,8 @@ try {
     $lettaOk = $primo -match ('MYDEV=/' + $Lettera + '/')
     Annota 'U14' "lettera $Lettera letta dalla prova" $(if ($lettaOk) { 0 } else { 1 })
     if ($Estesa) {
-        $null = Passo 'E9' 'prova-estesa' $Ps (Script51 'estesa.ps1' ('-Unita "' + $Rad + '" -Lavoro "' + (Join-Path $Lav 'prova-estesa') + '"'))
+        # -Repo: la copia del corso nell'unita' si confronta con l'inventario della ricetta.
+        $null = Passo 'E9' 'prova-estesa' $Ps (Script51 'estesa.ps1' ('-Unita "' + $Rad + '" -Lavoro "' + (Join-Path $Lav 'prova-estesa') + '" -Repo "' + (Split-Path -Parent (Split-Path -Parent $Qui)) + '"'))
     }
 
     # --- U15: i programmi del terminale col profilo dell'utente in una cartella vuota.

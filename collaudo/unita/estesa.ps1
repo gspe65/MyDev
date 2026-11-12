@@ -1,15 +1,19 @@
 # La prova di Rust, git e gh su un'unita' estesa costruita, dal suo terminale.
 #
-#   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\estesa.ps1 -Unita <cartella> [-Lavoro <cartella>]
+#   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\estesa.ps1 -Unita <cartella> [-Lavoro <cartella>] [-Repo <repository>]
 #
+# -Repo e' il repository di MyDev, per l'inventario del corso sui puntatori: senza, la cartella sopra il kit
+# (giusto se il kit gira dal repository; il gate, che lo copia altrove, lo passa).
 # Uscite: 0 verde, 1 rosso, 2 fermo. Solo ASCII: PowerShell 5.1 legge un .ps1 senza BOM come ANSI.
 #
-# Che cosa NON guarda: l'editor; il login di gh; che l'https vada (si stampa, ma non decide: vuole la rete).
+# Che cosa NON guarda: l'editor; il login di gh; che l'https vada (si stampa, ma non decide: vuole la rete); la
+# copia del corso contro il commit da cui viene (lo fa ricetta\puntatori\uguaglianza.py col repository del corso).
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$Unita,
-    [string]$Lavoro = ''
+    [string]$Lavoro = '',
+    [string]$Repo = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -101,7 +105,31 @@ try {
     Verifica ($v7.Uscita -eq 0) "verifica_rust.py uscita $($v7.Uscita)"
     Verifica ($v7.Testo.Contains('appaiamento: 23 coppie (attese 23)')) 'E7: 23 progetti appaiati ai progetti C'
     Verifica ($v7.Testo.Contains('totale: coppie 23, confronti 23, rossi 0')) 'E7: 23 confronti, nessun rosso'
-    Verifica ($v7.Testo.Contains('sonde false: chiamate=ACCESA unsafe=ACCESA leggimi=ACCESA uscita=ACCESA')) 'E7: sonde false accese'
+    Verifica ($v7.Testo.Contains('sonde false: chiamate=ACCESA unsafe=ACCESA leggimi=ACCESA uscita=ACCESA cartelle=ACCESA')) 'E7: sonde false accese'
+    Verifica ($v7.Testo.Contains('non coppie dichiarate 3 (fastapi-hello, flask-hello, puntatori), senza posto 0, dichiarate assenti 0')) 'E7: ogni cartella di progetti ha un posto'
+
+    # --- Il corso sui puntatori: i suoi due verificatori su una copia, la sonda, e la cartella contro l'inventario.
+    $rp = (Terminale 'puntatori.sh' @{ PUNTATORI_OUT = $Lav }).Testo
+    [IO.File]::WriteAllText((Join-Path $Lav 'puntatori.log'), $rp, $Utf8)
+    Scrivi $rp.TrimEnd()
+    function LeggiLog([string]$nome) { $p = Join-Path $Lav $nome; if ([IO.File]::Exists($p)) { return [IO.File]::ReadAllText($p, $Utf8) } return '' }
+    $lv = LeggiLog 'puntatori-verifica.log'
+    $le = LeggiLog 'puntatori-esempi.log'
+    $ls = LeggiLog 'puntatori-sonda.log'
+    Verifica ($rp.Contains('INIZIO puntatori') -and $rp.Contains('FINE puntatori')) 'corso: marcatori di inizio e fine'
+    Verifica (($rp -match '(?m)^PASSO verifica: uscita 0') -and $lv.Contains('totale: 8 versioni in C e 3 in Rust provate, 0 problemi')) 'corso: verifica.py, 8 versioni in C e 3 in Rust, 0 problemi'
+    Verifica (($rp -match '(?m)^PASSO verifica_esempi: uscita 0') -and $le.Contains('totale: 155 esempi, 0 problemi')) 'corso: verifica_esempi.py, 155 esempi, 0 problemi'
+    Verifica ($le.Contains('sonde false: 22, viste 22')) 'corso: le 22 sonde false di verifica_esempi.py viste'
+    Verifica (($rp -match '(?m)^PASSO sonda: uscita 1') -and $ls.Contains("ROTTO v0 senza ASan: uscita 0, differenze [(1, '(nil)', 'SONDA (nil)')]") -and $ls.Contains('totale: 8 versioni in C e 3 in Rust provate, 2 problemi'))'corso: sonda, un atteso alterato di v0 fa dire ROTTO a verifica.py'
+    Verifica ($rp -match '(?m)^temporanei rimasti: 0') 'corso: nessun temporaneo rimasto'
+    if (-not $Repo) { $Repo = Split-Path -Parent (Split-Path -Parent $Qui) }
+    $Ugu = Join-Path $Repo 'ricetta\puntatori\uguaglianza.py'
+    if (-not (Test-Path -LiteralPath $Ugu)) { Fermo "manca ${Ugu}, si passa -Repo" }
+    $vu = Lancia (Join-Path $Rad 'python\python.exe') ('-X utf8 -B "' + $Ugu + '" --solo-copia --copia "' + (Join-Path $Rad 'progetti\puntatori') + '"') @{}
+    Scrivi $vu.Testo.TrimEnd()
+    if ($vu.Uscita -eq 2) { Fermo 'uguaglianza.py non ha potuto misurare' }
+    Verifica ($vu.Uscita -eq 0 -and $vu.Testo.Contains('difetti: 0')) 'corso: progetti\puntatori uguale all inventario della ricetta'
+    Verifica ($vu.Testo.Contains('sonde false: byte=ACCESA in-piu=ACCESA provenienza=ACCESA licenza=ACCESA')) 'corso: sonde false di uguaglianza.py accese'
 
     # --- La guida, appaiata con l'aggiunta. Il gate copia l'aggiunta accanto al kit.
     $Agg = Join-Path $Qui 'componenti-estesa.json'
@@ -114,7 +142,7 @@ try {
     Verifica ($v8.Testo.Contains("appaiamento: senza voce 0, voci senza componente 0, titoli mancanti 0, titoli in piu' 0")) 'E8: guida e aggiunta appaiate nei due versi'
     Verifica ($v8.Testo.Contains('sonde false: tolta=ACCESA senza-voce=ACCESA nome-estraneo=ACCESA senza-riga=ACCESA')) 'E8: sonde false accese'
 
-    $Attesi = 43
+    $Attesi = 52
     Scrivi "denominatore: controlli $script:Visti, attesi $Attesi"
     if ($script:Visti -ne $Attesi) { Fermo "controlli eseguiti $script:Visti, attesi $Attesi" }
     Scrivi "controlli rossi: $($script:Rossi.Count)"

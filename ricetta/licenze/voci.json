@@ -113,6 +113,7 @@
     "msys/perl-libwww": {"espressione": "Artistic-1.0-Perl OR GPL-1.0-or-later", "motivo": "il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra"},
     "msys/perl-mime-tools": {"espressione": "Artistic-1.0-Perl OR GPL-1.0-or-later", "motivo": "il pacchetto elenca le due licenze; il modulo ha le stesse condizioni del Perl, cioe' l'una o l'altra"},
     "msys/perl-www-robotrules": {"espressione": "Artistic-1.0-Perl OR GPL-1.0-or-later", "motivo": "il LICENSE della sorgente: le stesse condizioni del Perl, cioe' l'una o l'altra"},
-    "nostro/guida": {"espressione": "CC-BY-4.0", "testi": ["licenze/MYDEV-LICENSE-DOCS.txt"]}
+    "nostro/guida": {"espressione": "CC-BY-4.0", "testi": ["licenze/MYDEV-LICENSE-DOCS.txt"]},
+    "nostro/progetti-puntatori": {"espressione": "MIT AND BSD-2-Clause AND BSD-3-Clause", "testi": ["licenze/MYDEV-LICENSE.txt", "progetti/puntatori/terzi/sds/LICENSE"], "motivo": "il codice del corso e' MIT come MyDev; terzi/sds e' SDS di Salvatore Sanfilippo: LICENSE BSD a due clausole, e l'intestazione di sds.c e sds.h ha una terza clausola (il nome di Redis non promuove derivati): valgono tutti e due gli avvisi, come dice la sua PROVENIENZA.md. Ogni cartella di terzi/ ha qui il suo LICENSE (ricetta/puntatori/uguaglianza.py li appaia)"}
   }
 }

@@ -733,6 +733,16 @@
       "motivo": "La versione Rust dei progetti C, solo nell'estesa: cartelle accanto a quelle C, stesso nome e stesso atteso."
     },
     {
+      "nome": "progetti-puntatori",
+      "percorso": "ricetta/unita/progetti-puntatori/",
+      "destinazioni": [
+        "progetti/puntatori"
+      ],
+      "stato": "presente",
+      "licenza": "MIT AND BSD-2-Clause AND BSD-3-Clause",
+      "motivo": "Il codice del corso sui puntatori, in C e in Rust, coi suoi verificatori: copia fissata a un commit del repository del corso, inventario e prova in ricetta/puntatori/."
+    },
+    {
       "nome": "licenze-estesa",
       "percorso": "ricetta/licenze/estesa/",
       "destinazioni": [
