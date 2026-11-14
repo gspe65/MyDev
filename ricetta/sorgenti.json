@@ -127,6 +127,27 @@
    ]
   },
   {
+   "file": "ffmpeg-chromium-5c85ff666b34.tar.gz",
+   "fonte": "https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/5c85ff666b3434d9323b83437f910ad8431ab7c9.tar.gz",
+   "componenti": [
+    "browser/chromium"
+   ]
+  },
+  {
+   "file": "chromium-senza-codec-dda9e2e48b9f.tar.gz",
+   "fonte": "https://codeload.github.com/gspe65/chromium-senza-codec/tar.gz/dda9e2e48b9fa5fa6a003e4dfe3b3b2a2b5402fc",
+   "componenti": [
+    "browser/chromium"
+   ]
+  },
+  {
+   "file": "ungoogled-chromium-de09e0c70c6b.tar.gz",
+   "fonte": "https://codeload.github.com/ungoogled-software/ungoogled-chromium/tar.gz/de09e0c70c6bc1ac83d4ecdfd0e82c7e250c9a3c",
+   "componenti": [
+    "browser/chromium"
+   ]
+  },
+  {
    "file": "findutils-4.10.0-2.src.tar.zst",
    "fonte": "https://repo.msys2.org/msys/sources/findutils-4.10.0-2.src.tar.zst",
    "byte": 2242859,

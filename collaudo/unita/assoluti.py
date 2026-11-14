@@ -48,6 +48,8 @@ SPECIE = [
     # Su Windows Neovim aggiunge -data al nome: home/.local/state/nvim-data/shada/main.shada (misurato dal gate).
     ("stato di Neovim", r"home/\.local/state/nvim(-data)?/", "file aperti di recente e registro: un percorso vecchio si ignora"),
     ("interpreti di virtualenv", r"home/\.cache/virtualenv/py_info/", "virtualenv rivalida il percorso dell'interprete e la rifa'"),
+    # Misurato su una copia spostata e su due copie aperte alternate: la ricerca impostata resta, i registri si riscrivono.
+    ("profilo di Chromium", r"home/chromium/", "registri di LevelDB e preferenze col percorso del profilo: Chromium li riscrive dove gira"),
 ]
 # Occorrenze vere che con --usata devono esserci: la sonda non si inventa. Solo quelle che l'editor scrive alla radice
 # in cui gira: extensions.json porta la cartella in cui le estensioni sono state installate, e su una copia e' quella

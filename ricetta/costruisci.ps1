@@ -468,18 +468,21 @@ try {
     # --- Il lanciatore: un eseguibile per strumento alla radice, col clang dell'unita'.
     # Senza --no-insert-timestamp il file cambierebbe a ogni costruzione.
     $AmbClang = @{ PATH = (Unisci $Dest 'llvm/bin') + ';' + (Join-Path $env:SystemRoot 'System32') }
-    # Le icone dei lanciatori: VSCodium e AlgoDesign tengono le loro, gli altri il lampo della ricetta.
+    # Le icone dei lanciatori: VSCodium, AlgoDesign e Chromium tengono le loro, gli altri il lampo della ricetta.
     # Si compilano in una cartella temporanea dell'unita': il .rc cita l'icona col solo nome.
     $Icone = Join-Path $Dest 'icone-temporanee'
     CreaCartella $Icone
     $r = Lancia (Join-Path $Dest 'python\python.exe') ('-I -B ' + (Virgolette (Unisci $Repo 'ricetta/estrai_icona.py')) + ' ' + (Virgolette (Unisci $Dest 'algodesign/AlgoDesign.exe')) + ' ' + (Virgolette (Join-Path $Icone 'algodesign.ico'))) $null
     if ($r.Uscita -ne 0) { Rosso "icona di AlgoDesign non estratta, uscita $($r.Uscita): $($r.Testo)" }
     Scrivi $r.Testo.Trim()
+    $r = Lancia (Join-Path $Dest 'python\python.exe') ('-I -B ' + (Virgolette (Unisci $Repo 'ricetta/estrai_icona.py')) + ' ' + (Virgolette (Unisci $Dest 'chromium/chrome.exe')) + ' ' + (Virgolette (Join-Path $Icone 'chromium.ico'))) $null
+    if ($r.Uscita -ne 0) { Rosso "icona di Chromium non estratta, uscita $($r.Uscita): $($r.Testo)" }
+    Scrivi $r.Testo.Trim()
     [IO.File]::Copy((Unisci $Dest 'vscodium/resources/app/resources/win32/code.ico'), (Join-Path $Icone 'vscodium.ico'), $true)
     foreach ($nome in @('terminale', 'neovim', 'progetti')) { [IO.File]::Copy((Unisci $Repo 'ricetta/unita/mydev.ico'), (Join-Path $Icone "$nome.ico"), $true) }
     $Rc = Unisci $Dest 'llvm/bin/llvm-rc.exe'
     $Res = @{}
-    foreach ($nome in @('vscodium', 'algodesign', 'terminale', 'neovim', 'progetti')) {
+    foreach ($nome in @('vscodium', 'algodesign', 'terminale', 'neovim', 'progetti', 'chromium')) {
         $f = Join-Path $Icone "$nome.rc"
         [IO.File]::WriteAllText($f, "1 ICON `"$nome.ico`"`n", (New-Object Text.ASCIIEncoding))
         $Res[$nome] = Join-Path $Icone "$nome.res"

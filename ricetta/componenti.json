@@ -76,6 +76,26 @@
       "motivo": "Lo ffmpeg di Electron 43.7.7, la versione dell'editor, coi soli codec liberi: senza ffmpeg.dll la finestra dell'editor non parte, con quello del pacchetto si decodificano H.264 e AAC. La via della scheda video la spegne argv.json."
     },
     {
+      "nome": "browser/chromium",
+      "gruppo": "browser",
+      "fonte": "https://github.com/gspe65/chromium-senza-codec/releases/download/157.0.8103.38-1.1-senza-codec/ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip",
+      "file": "ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip",
+      "byte": 202576606,
+      "sha256": "2f9206648586d7f62512417241318ae61128341d7243d7dbe4ab2698552d3e87",
+      "versione": "157.0.8103.38-1.1",
+      "licenza": "BSD-3-Clause",
+      "modo": "zip",
+      "radice": "ungoogled-chromium_157.0.8103.38-1.1_windows_x64/",
+      "destinazioni": [
+        "chromium"
+      ],
+      "togli": [
+        "d3dcompiler_47.dll",
+        "dxcompiler.dll"
+      ],
+      "motivo": "ungoogled-chromium 157.0.8103.38-1.1 per Windows x64 costruito senza codec proprietari (proprietary_codecs, ffmpeg col marchio Chromium, niente parser MPEG-2 TS, niente Widevine) dalla corsa 42965706241 di gspe65/chromium-senza-codec, commit dda9e2e, con attestazione di provenienza; l'impronta e' quella attestata. Non decodifica H.264, H.265 e AAC; VP9, AV1 e Opus si'. I due file Microsoft di Direct3D tolti: la decodifica e la pagina reggono senza, e d3dcompiler_47.dll c'e' in Windows."
+    },
+    {
       "nome": "algodesign/algodesign",
       "gruppo": "algodesign",
       "fonte": "https://github.com/gilan65/AlgoDesign/releases/download/v1.0.0/AlgoDesign-1.0.0-windows-x64.zip",
@@ -2654,7 +2674,8 @@
         "AlgoDesign",
         "Terminale",
         "Neovim",
-        "Progetti"
+        "Progetti",
+        "Chromium"
       ],
       "destinazioni": [
         "."
@@ -2752,6 +2773,16 @@
       "stato": "presente",
       "licenza": "MIT",
       "motivo": "Le impostazioni misurate dell'editor; product.json perde le sue chiavi dalla voce dell'editor."
+    },
+    {
+      "nome": "configurazione-chromium",
+      "percorso": "ricetta/unita/chromium/",
+      "destinazioni": [
+        "chromium"
+      ],
+      "stato": "presente",
+      "licenza": "MIT",
+      "motivo": "Le preferenze iniziali di Chromium: al primo avvio di un profilo la barra degli indirizzi cerca con DuckDuckGo invece di aprire le parole come indirizzo, niente importazioni e niente richiesta di browser predefinito."
     },
     {
       "nome": "estensione-algo",
