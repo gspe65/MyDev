@@ -2,7 +2,7 @@
 
 Un ambiente di sviluppo per Windows che non si installa: questa cartella contiene l'editor, i compilatori e gli altri strumenti, e funziona da dove si trova. La puoi copiare sul disco, sul Desktop o su una chiavetta, e non servono i diritti di amministratore. Il percorso della cartella non deve superare i 65 caratteri (per esempio `D:\Scuola\MyDev` va bene): alcuni file stanno 193 caratteri più in fondo, e molti programmi di Windows non aprono i percorsi oltre i 259.
 
-I tuoi file e i dati degli strumenti restano in questa cartella. Fuori restano solo le tracce che Windows lascia per ogni programma che si avvia (alcune voci del registro e la cartella dei file temporanei, che i compilatori usano mentre lavorano) e, nell'unità estesa, la voce del portachiavi di Windows che `gh` tocca quando sul PC c'è già un altro `gh` collegato (lo spiega la guida dell'estesa). Quando si apre, l'editor chiede alla rete il dizionario per il controllo ortografico: non è un aggiornamento, e senza rete l'editor funziona lo stesso.
+I tuoi file e i dati degli strumenti restano in questa cartella. Fuori restano solo le tracce che Windows lascia per ogni programma che si avvia (alcune voci del registro e la cartella dei file temporanei, che i compilatori usano mentre lavorano) e, nell'unità estesa, la voce del portachiavi di Windows che `gh` tocca quando sul PC c'è già un altro `gh` collegato (lo spiega la guida dell'estesa). Anche Chromium scrive alcune voci nel registro di Windows, sotto `HKCU\Software\Chromium`: codici di controllo delle sue impostazioni e lo stato dell'ultima chiusura, nessun dato personale; lo fa qualunque Chromium, e non c'è modo di spegnerlo. Quando si apre, l'editor chiede alla rete il dizionario per il controllo ortografico: non è un aggiornamento, e senza rete l'editor funziona lo stesso.
 
 ## Che cosa avviare
 
@@ -15,6 +15,7 @@ Alla radice ci sono i collegamenti. Ognuno avvia gli strumenti **di questa copia
 | `AlgoDesign.exe` | AlgoDesign, per i flowchart |
 | `Neovim.exe` | L'editor Neovim nel terminale |
 | `Progetti.exe` | La cartella `progetti` in Esplora file |
+| `Chromium.exe` | Il browser Chromium, senza i codec coperti da brevetti |
 
 Se il PC non lascia partire i collegamenti (per esempio un antivirus che blocca gli eseguibili che non conosce), nella cartella `fallback` ci sono gli stessi avvii come file `.bat`.
 
@@ -44,11 +45,20 @@ Si può lavorare anche solo dal terminale, con `make`: lo spiega la guida al C.
 
 VSCodium riconosce i file di AlgoDesign dall'icona. Con un file `.algo` aperto, il comando «Mostra il codice generato» (Ctrl+Maiusc+P, poi il nome del comando) mostra in sola lettura il codice del flowchart. Il linguaggio e la lingua si scelgono nelle impostazioni `algo.linguaggio` e `algo.lingua`.
 
+## Il browser Chromium
+
+`Chromium.exe` apre Chromium, nella versione di ungoogled-chromium senza i servizi di Google. Va aperto da qui, non da `chromium\chrome.exe`: aperto direttamente, Chromium scrive il suo profilo fuori dall'unità, nella cartella dell'utente di Windows, e la barra degli indirizzi non cerca.
+
+- **La prima volta** compare una pagina in inglese di ungoogled-chromium, che spiega che cosa lo distingue da Chrome: si chiude come una scheda qualsiasi, e non torna più.
+- **La barra degli indirizzi cerca con DuckDuckGo**: scrivi delle parole e premi Invio. Il motore si cambia in **Impostazioni → Motore di ricerca**.
+- **Le estensioni sono spente**, e Chromium non si aggiorna: la versione è quella provata.
+- I file che scarichi finiscono nella cartella **Download** di Windows, come con ogni browser.
+
 ## Dove restano i tuoi file
 
-Il tuo lavoro sta in `progetti`, le impostazioni e la cronologia dei comandi in `home`, i dati dell'editor in `vscodium\data`. Copiando la cartella intera porti con te anche quelli.
+Il tuo lavoro sta in `progetti`, le impostazioni e la cronologia dei comandi in `home`, i dati dell'editor in `vscodium\data`, la cronologia, i preferiti, le password salvate e i cookie di Chromium in `home\chromium`. Copiando la cartella intera porti con te anche quelli.
 
-Una copia data ad altri porta anche i tuoi dati: la cronologia dei comandi, il nome e l'indirizzo che hai dato a `git`, nell'estesa il token di `gh` (in chiaro, in `home\.config\gh`), il certificato del server locale col tuo nome utente e il nome del PC, accanto alla chiave dell'autorità che lo firma (in `nginx\ssl`). Prima di darla, dai una copia di un'unità che non hai mai usato, oppure togli dalla copia le cartelle `home` e `nginx\ssl`: l'unità le ricrea, vuote, al primo uso.
+Una copia data ad altri porta anche i tuoi dati: la cronologia dei comandi, quello che Chromium ricorda dei siti visitati (password comprese), il nome e l'indirizzo che hai dato a `git`, nell'estesa il token di `gh` (in chiaro, in `home\.config\gh`), il certificato del server locale col tuo nome utente e il nome del PC, accanto alla chiave dell'autorità che lo firma (in `nginx\ssl`). Prima di darla, dai una copia di un'unità che non hai mai usato, oppure togli dalla copia le cartelle `home` e `nginx\ssl`: l'unità le ricrea, vuote, al primo uso.
 
 ## Le versioni
 
@@ -66,6 +76,13 @@ Sull'unità intatta la finestra non compare. Chi apre `vscodium\VSCodium.exe` di
 - **L'editor disegna senza la scheda video** (`"disable-hardware-acceleration": true` in `vscodium\data\argv.json`): senza questa riga H.264 e H.265 si decodificherebbero comunque, attraverso la scheda video del PC. Su un PC lento lo scorrimento di un file molto grande può essere meno fluido. Il comando «Configura argomenti del runtime» (Ctrl+Maiusc+P) apre quel file: chi toglie la riga riaccende la scheda video, e con lei H.264 e H.265; la verifica dell'unità segnala il file cambiato.
 - **Non c'è l'accesso con un account Microsoft**: l'estensione che lo fa porta una libreria di Microsoft senza termini che ne permettano la distribuzione, ed è stata tolta. L'estensione di accesso con GitHub resta.
 - **Il terminale PowerShell aperto dal menu del terminale** usa la PSReadLine di Windows: l'editor porta una sua copia per la modalità di lettura dello schermo, da cui è stato tolto un file di Microsoft senza termini (`Microsoft.PowerShell.Pager.dll`).
+
+## Che cosa manca in Chromium, e perché
+
+- **Video H.264 e H.265 e audio AAC non si riproducono**: Chromium è costruito senza quei decodificatori, coperti da brevetti, e non li prende nemmeno dalla scheda video. Un sito che offre solo quei formati mostra un errore al posto del video; YouTube in genere funziona, perché usa VP9 o AV1 e l'audio Opus.
+- **I contenuti protetti non si riproducono** (Netflix, Spotify e simili): manca il modulo che li decifra, che non è libero.
+- **Non c'è l'accesso con un account Google** né la sincronizzazione: ungoogled-chromium toglie i servizi di Google.
+- Sono stati tolti due file di Microsoft per la grafica (`d3dcompiler_47.dll`, `dxcompiler.dll`): Chromium usa quello di Windows.
 
 ## Le licenze, e se dai una copia ad altri
 

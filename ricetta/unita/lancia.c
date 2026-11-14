@@ -21,6 +21,7 @@
 #define TERMINALE 3
 #define NEOVIM 4
 #define PROGETTI 5
+#define CHROMIUM 6
 
 #define MASSIMO 32768
 
@@ -185,6 +186,13 @@ int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
 #elif STRUMENTO == PROGETTI
     componi(comando, L"\"%ls\\explorer.exe\" \"%ls\\progetti\"", sistema, radice);
     componi(cartella, L"%ls", radice);
+#elif STRUMENTO == CHROMIUM
+    /* Il profilo sta nell'unita': senza --user-data-dir Chromium lo scriverebbe in %LOCALAPPDATA%. Niente
+     * --no-first-run: al primo avvio di un profilo Chromium legge chromium\initial_preferences (la ricerca nella barra),
+     * e quell'opzione glielo impedirebbe. Le estensioni sono spente; gli aggiornamenti Chromium non li ha. */
+    componi(comando, L"\"%ls\\chromium\\chrome.exe\" --user-data-dir=\"%ls\\home\\chromium\" --disable-extensions --no-default-browser-check",
+            radice, radice);
+    componi(cartella, L"%ls\\chromium", radice);
 #else
 #error "STRUMENTO sconosciuto"
 #endif

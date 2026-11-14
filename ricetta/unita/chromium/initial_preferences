@@ -1,0 +1,23 @@
+{
+  "distribution": {
+    "skip_first_run_ui": true,
+    "suppress_first_run_default_browser_prompt": true,
+    "import_bookmarks": false,
+    "import_history": false,
+    "import_home_page": false,
+    "import_saved_passwords": false,
+    "import_search_engine": false,
+    "make_chrome_default": false,
+    "make_chrome_default_for_user": false
+  },
+  "default_search_provider_data": {
+    "template_url_data": {
+      "short_name": "DuckDuckGo",
+      "keyword": "duckduckgo.com",
+      "url": "https://duckduckgo.com/?q={searchTerms}",
+      "favicon_url": "https://duckduckgo.com/favicon.ico",
+      "input_encodings": ["UTF-8"],
+      "prepopulate_id": 92
+    }
+  }
+}

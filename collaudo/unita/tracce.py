@@ -9,6 +9,8 @@ Tre rilevatori:
 - R2, voci nuove al primo livello delle quattro radici, ammesse solo per nome (AMMESSE);
 - R3, registro dell'utente: una chiave o un valore nuovi o cambiati che portano un nome degli strumenti o la radice dell'unita'.
   Le chiavi di RUMORE sono di Explorer e portano il nome di ogni finestra: lì il nome e' ammesso.
+  Le scritture di Chromium in Software\\Chromium sono dichiarate (CHROMIUM_CHIAVI, CHROMIUM_VALORI): si stampano e non
+  decidono, salvo un valore che nomini la radice; ogni altra chiave o valore sotto Software\\Chromium e' un colpo.
   Le altre chiavi cambiate si stampano, non decidono: sul PC in uso cambiano per conto di altri programmi.
 
 Che cosa NON guarda: le scritture dentro cartelle condivise gia' esistenti (un file riscritto sul posto, senza figli
@@ -31,7 +33,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 RADICI = {k: os.environ.get(k, "") for k in ("APPDATA", "LOCALAPPDATA", "TEMP", "USERPROFILE")}
 NOMI = ["vscodium", "codium", "vscode-oss", "nvim", "nginx", "clangd", "mkcert", "algodesign", "msys", "mingw", "pyright",
-        "cargo", "rustc", "rust-analyzer", "github cli", "virtualenv", "python_history"]
+        "cargo", "rustc", "rust-analyzer", "github cli", "virtualenv", "python_history", "chromium"]
 # Nomi corti che stanno dentro parole comuni («pip» in «pipe»): valgono solo come nome intero di una voce del profilo.
 NOMI_ESATTI = ["pip", "pypa"]
 ROT13 = [codecs.encode(n, "rot13") for n in NOMI]
@@ -49,7 +51,26 @@ RUMORE = [
     r"\\Explorer\\FeatureUsage\\(AppSwitched|ShowJumpView|AppBadgeUpdated)$",
     r"\\Shell\\MuiCache$",
     r"\\HAM\\AUI\\[^\\]+\\V1\\LU$",
+    # Windows annota ogni programma avviato col suo identificativo (Chromium: «Chromium.<impronta>.chromium.Default»).
+    r"\\CurrentVersion\\Search\\JumplistData$",
 ]
+# Le scritture di Chromium nel registro, fisse nel suo codice e senza un'opzione che le spenga: dichiarate, ammesse
+# per chiave e, alla radice, per nome del valore; un valore che nomina la radice dell'unita' resta un colpo. Ogni altra
+# chiave sotto Software\Chromium resta un colpo (R3, il nome «chromium»).
+CHROMIUM = r"^HKEY_CURRENT_USER\\Software\\Chromium"
+CHROMIUM_CHIAVI = [CHROMIUM + r"\\PreferenceMACs(\\.*)?$", CHROMIUM + r"\\BLBeacon$", CHROMIUM + r"\\StabilityMetrics$",
+                   CHROMIUM + r"\\ThirdParty$"]
+CHROMIUM_VALORI = {'"UsageStatsInSample"', '"usagestats"', '"metricsid"', '"metricsid_installdate"',
+                   '"metricsid_enableddate"', '"FirstNotDefault"'}
+
+
+def dichiarata(k, v=None, w=""):
+    """Una scrittura di Chromium dichiarata: la chiave dell'elenco, o un valore dell'elenco alla radice della sua chiave."""
+    if any(n in (w or "").lower() for n in RADICE):
+        return False
+    if any(re.match(p, k) for p in CHROMIUM_CHIAVI):
+        return True
+    return re.match(CHROMIUM + "$", k) is not None and v in CHROMIUM_VALORI
 
 
 def foto(lavoro, nome):
@@ -128,32 +149,38 @@ def differenze(A, B, ra, rb):
 def giudica(r1, r2, nuove, cambiate, valori_nuove):
     """Il verdetto, uguale per il dato vero e per le sonde."""
     r2_fuori = [x for x in r2 if not any(re.match(a, x) for a in AMMESSE)]
-    r3_colpi, r3_altre = [], []
+    r3_colpi, r3_altre, r3_dichiarate = [], [], []
     for k in nuove:
         rumore = any(re.search(p, k) for p in RUMORE)
-        if not rumore and (porta_nome(k) or any(porta_nome(n + "=" + w) for n, w in valori_nuove.get(k, {}).items())):
+        valori = valori_nuove.get(k, {})
+        if not rumore and valori and all(dichiarata(k, n, w) for n, w in valori.items()) or not valori and (
+                dichiarata(k) or re.match(CHROMIUM + "$", k)):
+            r3_dichiarate.append(k)
+        elif not rumore and (porta_nome(k) or any(porta_nome(n + "=" + w) for n, w in valori.items())):
             r3_colpi.append(k)
         elif not rumore:
             r3_altre.append(k)
     for k, v, w in cambiate:
         rumore = any(re.search(p, k) for p in RUMORE)
-        if not rumore and (porta_nome(k) or porta_nome(v) or porta_nome(w)):
+        if not rumore and dichiarata(k, v, w):
+            r3_dichiarate.append(f"{k} :: {v}")
+        elif not rumore and (porta_nome(k) or porta_nome(v) or porta_nome(w)):
             r3_colpi.append(f"{k} :: {v}")
         elif not rumore:
             r3_altre.append(f"{k} :: {v}")
-    return r1, r2_fuori, r3_colpi, r3_altre
+    return r1, r2_fuori, r3_colpi, r3_altre, r3_dichiarate
 
 
 def stampa(verdetto):
-    r1, r2_fuori, r3_colpi, r3_altre = verdetto
-    for titolo, xs in (("R1 col nome di uno strumento", r1), ("R2 nuova, non ammessa", r2_fuori), ("R3 col nome di uno strumento o la radice", r3_colpi), ("registro, altre chiavi cambiate (non decidono)", r3_altre)):
+    r1, r2_fuori, r3_colpi, r3_altre, r3_dichiarate = verdetto
+    for titolo, xs in (("R1 col nome di uno strumento", r1), ("R2 nuova, non ammessa", r2_fuori), ("R3 col nome di uno strumento o la radice", r3_colpi), ("registro, scritture dichiarate di Chromium (non decidono)", r3_dichiarate), ("registro, altre chiavi cambiate (non decidono)", r3_altre)):
         print(f"{titolo}: {len(xs)}")
         for x in xs:
             print("   ", x)
 
 
 def rosso(verdetto):
-    r1, r2_fuori, r3_colpi, _ = verdetto
+    r1, r2_fuori, r3_colpi = verdetto[:3]
     return bool(r1 or r2_fuori or r3_colpi)
 
 
@@ -178,7 +205,7 @@ def sonde_della_catena(lavoro):
         rb = leggi_reg(reg)
     finally:
         reg.unlink()
-    r1, r2_fuori, r3, _ = giudica(*differenze(A, B, {}, rb), rb)
+    r1, r2_fuori, r3 = giudica(*differenze(A, B, {}, rb), rb)[:3]
     r1 = r1 + speciali_nate(A, B)
     casi = {
         "differenze R1 nuova": "APPDATA\\VSCodium" in r1,
@@ -218,18 +245,22 @@ def confronta(lavoro, a, b, con_sonde):
             ("R3 ROT13", ([], [], ["HKEY_CURRENT_USER\\Software\\Sonda"], []), {"HKEY_CURRENT_USER\\Software\\Sonda": {'"HRZR_RKRPHGR:P:\\ivfpbqvhz.rkr"': "hex:01"}}),
             ("R3 hex", ([], [], ["HKEY_CURRENT_USER\\Software\\Sonda2"], []), {"HKEY_CURRENT_USER\\Software\\Sonda2": {'"y"': "hex:" + ",".join(f"{c:02x}" for c in "VSCodium.exe".encode("utf-16-le"))}}),
             ("R3 valore cambiato col nome", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Sonda3", "x", "VSCodium.exe")]), {}),
+            ("R3 Chromium non dichiarata", ([], [], ["HKEY_CURRENT_USER\\Software\\Chromium\\SondaNuova"], []), {}),
         ]
         if RADICE:
             casi.append(("R3 valore con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Sonda4", "x", "C:\\" + RADICE[0] + "\\x")]), {}))
+            casi.append(("R3 Chromium dichiarata con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', "C:\\" + RADICE[0] + "\\x")]), {}))
         for nome, (a1, a2, a3, a4), val in casi:
             if rosso(giudica(a1, a2, a3, a4, val)):
                 accese += 1
             else:
                 print("  SONDA SPENTA:", nome)
-        ammessa = not rosso(giudica([], ["TEMP\\01234567-89ab-cdef-0123-456789abcdef.tmp"], [], [("HKEY_CURRENT_USER\\X\\Explorer\\UserAssist\\Y", '"IFPbqvhz.rkr"', "1"), ("HKEY_CURRENT_USER\\Software\\Sconosciuta", "z", "1")], {}))
+        nuove_ch = ["HKEY_CURRENT_USER\\Software\\Chromium", "HKEY_CURRENT_USER\\Software\\Chromium\\BLBeacon"]
+        valori_ch = {nuove_ch[0]: {'"usagestats"': "dword:00000000"}, nuove_ch[1]: {'"state"': "dword:00000001"}}
+        ammessa = not rosso(giudica([], ["TEMP\\01234567-89ab-cdef-0123-456789abcdef.tmp"], nuove_ch, [("HKEY_CURRENT_USER\\X\\Explorer\\UserAssist\\Y", '"IFPbqvhz.rkr"', "1"), ("HKEY_CURRENT_USER\\Software\\Sconosciuta", "z", "1"), ("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', '"ABC"')], valori_ch))
         catena, di = sonde_della_catena(lavoro)
-        print(f"sonde: {accese} accese su {len(casi)}, attese 7; della catena {catena} su {di}; sonda ammessa per nome: {ammessa}")
-        if accese != len(casi) or len(casi) != 7 or catena != di or not ammessa:
+        print(f"sonde: {accese} accese su {len(casi)}, attese 9; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
+        if accese != len(casi) or len(casi) != 9 or catena != di or not ammessa:
             print("ESITO: FERMO")
             return 2
     if rosso(v):

@@ -14,7 +14,8 @@
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
 # E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore),
 # A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore),
-# A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e il repository del nucleo, come la costruzione).
+# A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e il repository del nucleo, come la costruzione),
+# A13 Chromium dal lanciatore col profilo nell'unita' (con le finestre).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -255,6 +256,21 @@ try {
             Chiudi-Tutto
             $null = Passo 'E9' 'tracce-rust' $Py ('-X utf8 -B "' + (Join-Path $Kit 'tracce.py') + '" confronta "' + $Rip + '" prima rust --radice "' + $Rad + '"')
         }
+        # A13: Chromium dal lanciatore. Il profilo nasce in home\chromium e, al primo avvio, chromium\initial_preferences vi
+        # scrive il motore della barra. Le scritture fuori le vedono le fotografie di U15: il registro di Chromium e'
+        # dichiarato in tracce.py, una cartella Chromium nel profilo dell'utente e' un rosso (R1).
+        Scrivi '=== apertura di Chromium, dal lanciatore'
+        Apri (Join-Path $Rad 'Chromium.exe') '' $null
+        $Inizio = Get-Date
+        while (((Get-Date) - $Inizio).TotalSeconds -lt 60 -and @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count -lt 1) { Start-Sleep -Seconds 2 }
+        Start-Sleep -Seconds 15
+        AnnotaAscolti 'chromium'
+        $Chrome = @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count
+        Chiudi-Tutto
+        $Pref = Join-Path $Rad 'home\chromium\Default\Preferences'
+        $Motore = ([IO.File]::Exists($Pref)) -and ([IO.File]::ReadAllText($Pref, $Utf8).Contains('duckduckgo.com'))
+        Scrivi "    chromium: processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore"
+        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita''' $(if ($Chrome -ge 1 -and $Motore) { 0 } else { 1 })
     }
 
     # --- L'ambiente C, dal terminale dell'unita'.
@@ -390,7 +406,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 27 } else { 19 }
+    $Attesi = if ($Finestre) { 28 } else { 19 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
