@@ -18,7 +18,7 @@ import { pathToFileURL } from "node:url";
 import { git as gitDelNucleo, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, type Inventario } from "./comune";
 
 /** Il denominatore, dichiarato prima della corsa e confrontato alla fine. */
-const PROVE_ATTESE = 43;
+const PROVE_ATTESE = 47;
 
 const QUI = import.meta.dir;
 const cartella = mkdtempSync(join(tmpdir(), "nucleo  prova-"));
@@ -216,6 +216,16 @@ verde("un'etichetta nuova con l'impronta e il numero cambiati", corsa("pacchetto
 rossoCon("l'ultima voce del contratto per un'altra etichetta", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.etichetta = "v0.0.0")), "--uscita", uscitaFinta()),
   `ROSSO: l'ultima voce del contratto è per l'etichetta v0.0.0, il pacchetto per ${voceVera.etichetta}`);
 rossoCon("un contratto non dichiarato", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto = [])), "--uscita", uscitaFinta()), "ROSSO: pacchetto.json non dichiara il contratto");
+// La forma del numero, la storia con un'etichetta ripetuta, e il numero che scende con l'impronta cambiata (il confronto fra voci
+// consecutive, da solo, lo lascerebbe passare).
+rossoCon("un numero del contratto a tre parti", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.versione = "1.0.0")), "--uscita", uscitaFinta()),
+  "ROSSO: il numero del contratto non è nella forma maggiore.minore: 1.0.0");
+rossoCon("un numero del contratto con uno zero in testa", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.versione = "01.0")), "--uscita", uscitaFinta()),
+  "ROSSO: il numero del contratto non è nella forma maggiore.minore: 01.0");
+rossoCon("due voci del contratto con la stessa etichetta", corsa("pacchetto.ts", "--descrizione", conStoria({ etichetta: voceVera.etichetta, versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: il contratto ha più voci per la stessa etichetta: ${voceVera.etichetta}`);
+rossoCon("un numero del contratto che scende", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "1.1", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero scende da 1.1 a ${voceVera.versione}`);
 
 // Senza deposito e senza rete non si è potuto misurare: un fermo, mai un rosso.
 fermoCon("un indirizzo irraggiungibile", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.indirizzo = "http://127.0.0.1:9/assente.zip")), "--deposito", depositoFinto(), "--uscita", uscitaFinta()), "non si è potuto scaricare");

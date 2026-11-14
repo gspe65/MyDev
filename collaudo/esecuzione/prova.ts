@@ -19,7 +19,14 @@
 //
 // Le specie di una differenza: `unita` (un difetto dell'unità, si corregge qui), `generatore` (una segnalazione ad AlgoDesign,
 // dichiarata fino alla sua release), `linguaggio` (un comportamento che il linguaggio non definisce o non ha). Un programma che non
-// compila è sempre rosso, anche se il caso è dichiarato: non è mai una differenza.
+// compila è sempre rosso, anche se il caso è dichiarato: non è mai una differenza. Il C si compila con gcc e clang; il Python passa
+// prima dal `compile` del Python dell'unità, in un processo solo e senza scrivere nulla accanto ai sorgenti, e solo ciò che compila
+// si esegue.
+//
+// Gli esiti sono 1506, (213 + 38) casi per 6 esecutori: 1392 vengono da un programma compilato ed eseguito, 114 (i 19 casi dei file
+// con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del caso.
+//
+// Il motore dell'editor che genera ha un tempo massimo: oltre, il motore si ferma e la prova è rossa, con il suo nome.
 //
 // Che cosa NON guarda:
 // - gli avvisi del compilatore, che si contano e si stampano senza decidere;
@@ -33,7 +40,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, repoDelNucleo } from "../../ricetta/nucleo/comune";
+import { fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, rosso } from "../../ricetta/nucleo/comune";
 
 /** I denominatori, dichiarati prima della corsa e confrontati con ciò che si misura. Cambiare etichetta è rimisurarli. */
 const FILE_ATTESI = 192;
@@ -43,7 +50,11 @@ const CASI_CON_ERRORE_STATICO = 19;
 const ESEMPI_ATTESI = 12;
 const ESECUTORI = ["python it", "python en", "gcc it", "gcc en", "clang it", "clang en"] as const;
 const ESITI_ATTESI = (CASI_DEL_PROGRAMMA + CASI_DI_FUNZIONI) * ESECUTORI.length;
+/** Gli esiti che vengono da un programma (eseguito, o rosso perché non compila); gli altri li decide l'errore statico. */
+const DA_UN_PROGRAMMA = ESITI_ATTESI - CASI_CON_ERRORE_STATICO * ESECUTORI.length;
 const SECONDI_DI_UN_PROGRAMMA = 10;
+const SECONDI_DEL_MOTORE = 300;
+const PROVE_ATTESE = 12;
 
 type Specie = "unita" | "generatore" | "linguaggio";
 type Esecutore = (typeof ESECUTORI)[number];
@@ -84,8 +95,23 @@ const DICHIARATE: Dichiarate = {
   "tipi/riferimento-a-un-record-senza-valore#senza-valore": linguaggio("record senza nessun campo con un valore passato per riferimento"),
 };
 
+let fatte = 0;
+const fallite: string[] = [];
+function prova(nome: string, buona: boolean, dettaglio = ""): void {
+  fatte++;
+  console.log(`${buona ? "PASS" : "FAIL"}  ${nome}${buona ? "" : `\n      ${dettaglio}`}`);
+  if (!buona) fallite.push(nome);
+}
+
+// --- I tipi di questa prova: Bun non li controlla, li controlla `tsc` con la configurazione accanto.
+const tsc = Bun.which("tsc", { PATH: join(RADICE, "node_modules", ".bin") }) ?? fermo("tsc non c'è: bun install alla radice");
+const tipi = Bun.spawnSync([tsc, "-p", join(import.meta.dir, "tsconfig.json")], { cwd: RADICE, stdout: "pipe", stderr: "pipe" });
+const testoDeiTipi = `${tipi.stdout.toString()}${tipi.stderr.toString()}`;
+console.log(`tipi: tsc uscita ${tipi.exitCode}, errori ${[...testoDeiTipi.matchAll(/error TS\d+/g)].length}`);
+prova("tsc sulla prova", tipi.exitCode === 0, testoDeiTipi.slice(0, 1500));
+
 // --- Le premesse.
-const argomento = (nome: string): string | undefined => {
+const argomento =(nome: string): string | undefined => {
   const i = process.argv.indexOf(nome);
   return i >= 0 ? (process.argv[i + 1] ?? fermo(`${nome} vuole un valore`)) : undefined;
 };
@@ -154,20 +180,14 @@ const voci = { c: voceDi("c"), python: voceDi("python") };
 
 // --- Il lato del `.vsix`, nel motore dell'editor dell'unità.
 const fileDelVsix = join(lavoro, "vsix.json");
-const g = Bun.spawnSync([editor, join(import.meta.dir, "genera.cjs"), pacchetto, corpus, fileDelVsix], { env: { ...process.env, ELECTRON_RUN_AS_NODE: "1" }, stdout: "pipe", stderr: "pipe" });
+// Con un tempo massimo: un motore che non entra nel modo di Node aprirebbe una finestra e resterebbe lì.
+const g = Bun.spawnSync([editor, join(import.meta.dir, "genera.cjs"), pacchetto, corpus, fileDelVsix], { env: { ...process.env, ELECTRON_RUN_AS_NODE: "1" }, stdout: "pipe", stderr: "pipe", timeout: SECONDI_DEL_MOTORE * 1000 });
+if (g.exitedDueToTimeout === true) rosso(`il motore dell'editor (${editor}) non ha finito di generare in ${SECONDI_DEL_MOTORE} s ed è stato fermato: ${g.stderr.toString().slice(0, 500)}`);
 if (g.exitCode !== 0 || !existsSync(fileDelVsix)) fermo(`il motore dell'editor non ha generato, uscita ${g.exitCode}: ${g.stderr.toString().slice(0, 500)}`);
 const dalVsix = JSON.parse(readFileSync(fileDelVsix, "utf8")) as { motore: { node: string; electron: string | null }; esiti: Record<string, { generato?: boolean; testo?: string; perche?: string }> };
 console.log(`motore dell'editor: electron ${dalVsix.motore.electron}, node ${dalVsix.motore.node}; combinazioni generate ${Object.keys(dalVsix.esiti).length}`);
 
 // --- Il corpus: i file, i casi, i programmi. Il testo del `.vsix` contro quello del generatore, combinazione per combinazione.
-let fatte = 0;
-const fallite: string[] = [];
-function prova(nome: string, buona: boolean, dettaglio = ""): void {
-  fatte++;
-  console.log(`${buona ? "PASS" : "FAIL"}  ${nome}${buona ? "" : `\n      ${dettaglio}`}`);
-  if (!buona) fallite.push(nome);
-}
-
 type DaEseguire = { id: string; file: string; caso: Caso; funzione?: Funzione; input: string[]; controllo: Extract<Controllo, { fuoriTappa: false }>; pila: number; esclusoDaAlgoDesign?: string };
 type Programma = { sorgente: string; righe: readonly Riga[] };
 const daEseguire: DaEseguire[] = [];
@@ -296,6 +316,42 @@ let t0 = performance.now();
 await inParallelo(compilazioni);
 console.log(`compilazioni ${compilazioni.length} in ${((performance.now() - t0) / 1000).toFixed(1)} s, non compilati ${nonCompilati.size}; avvisi gcc ${avvisiPer.gcc}, clang ${avvisiPer.clang}`);
 
+// Il Python: `compile` di ogni sorgente letto in byte, come lo leggerebbe l'interprete, in un processo solo. Non scrive `__pycache__`:
+// compila in memoria e non importa nulla. Un file che non si legge è un'eccezione del controllo, quindi un fermo.
+const CONTROLLO_PYTHON = [
+  "import json, sys",
+  "elenco = open(sys.argv[1], encoding='utf-8').read().split('\\n')",
+  "errori = {}",
+  "for f in elenco:",
+  "    with open(f, 'rb') as d:",
+  "        testo = d.read()",
+  "    try:",
+  "        compile(testo, f, 'exec', dont_inherit=True)",
+  "    except (SyntaxError, ValueError) as e:",
+  "        errori[f] = type(e).__name__ + ': ' + str(e)",
+  "sys.stdout.write(json.dumps({'controllati': len(elenco), 'errori': errori}))",
+  "",
+].join("\n");
+const cartellaDelControllo = join(lavoro, "controllo python");
+mkdirSync(cartellaDelControllo, { recursive: true });
+const scriptDelControllo = join(cartellaDelControllo, "compila.py");
+writeFileSync(scriptDelControllo, CONTROLLO_PYTHON);
+let elenchiPython = 0;
+/** I sorgenti Python che non compilano, col messaggio del compilatore: una funzione sola, per il corpus e per la sonda. */
+async function nonCompilaPython(sorgenti: readonly string[]): Promise<Map<string, string>> {
+  const elenco = join(cartellaDelControllo, `elenco ${++elenchiPython}.txt`);
+  writeFileSync(elenco, sorgenti.join("\n"));
+  const f = await lancia([python, "-I", "-B", scriptDelControllo, elenco], new Uint8Array(), 120, dirname(python));
+  if (f.scaduto || f.uscita !== 0) fermo(`il controllo di sintassi del Python non ha finito, uscita ${f.uscita}: ${comeTesto.decode(f.err).slice(0, 500)}`);
+  const r = JSON.parse(comeTesto.decode(f.out)) as { controllati: number; errori: Record<string, string> };
+  if (r.controllati !== sorgenti.length) fermo(`il controllo di sintassi del Python ha letto ${r.controllati} file su ${sorgenti.length}`);
+  return new Map(Object.entries(r.errori));
+}
+const sorgentiPython = [...programmi.values()].filter((p) => p.sorgente.endsWith(".py")).map((p) => p.sorgente);
+t0 = performance.now();
+const pythonNonCompilati = await nonCompilaPython(sorgentiPython);
+console.log(`programmi Python controllati ${sorgentiPython.length} in ${((performance.now() - t0) / 1000).toFixed(1)} s, non compilati ${pythonNonCompilati.size}`);
+
 // --- Le esecuzioni e gli esiti, uno per caso ed esecutore.
 type Esito =
   | { genere: "verde"; ottenuto?: Atteso; tagliato?: boolean }
@@ -323,6 +379,8 @@ function ottenutoDi(f: Fine, voce: Voce, righe: readonly Riga[], lingua: string,
 }
 
 const esecuzioni: (() => Promise<void>)[] = [];
+let decisiDalloStatico = 0;
+let esitiNonCompila = 0;
 for (const d of daEseguire) {
   const input = new TextEncoder().encode(d.input.map((t) => `${t}\n`).join(""));
   for (const esecutore of ESECUTORI) {
@@ -331,16 +389,25 @@ for (const d of daEseguire) {
     const k = `${d.id}|${esecutore}`;
     if (statici.has(d.file)) {
       esiti.set(k, esitoDi(d.caso.expected, { atteso: { output: "", static_error: d.controllo.errori[0]!, warnings: d.controllo.avvisi }, tagliato: false }));
+      decisiDalloStatico++;
       continue;
     }
     const prog = programmi.get(`${d.funzione !== undefined ? d.id : d.file} ${lid} ${l}`) ?? fermo(`manca il programma di ${k}`);
     let cmd: string[];
-    if (m === "python") cmd = [python, "-I", "-B", prog.sorgente];
-    else {
+    if (m === "python") {
+      const errore = pythonNonCompilati.get(prog.sorgente);
+      if (errore !== undefined) {
+        esiti.set(k, { genere: "non compila", dettaglio: errore });
+        esitiNonCompila++;
+        continue;
+      }
+      cmd = [python, "-I", "-B", prog.sorgente];
+    } else {
       const chiaveExe = `${d.funzione !== undefined ? d.id : d.file} c ${l} ${m}`;
       const exe = eseguibili.get(chiaveExe);
       if (exe === undefined) {
         esiti.set(k, { genere: "non compila", dettaglio: nonCompilati.get(chiaveExe) ?? "eseguibile assente" });
+        esitiNonCompila++;
         continue;
       }
       cmd = [exe];
@@ -353,7 +420,7 @@ for (const d of daEseguire) {
 }
 t0 = performance.now();
 await inParallelo(esecuzioni);
-console.log(`esecuzioni ${esecuzioni.length} in ${((performance.now() - t0) / 1000).toFixed(1)} s; esiti senza programma (errore statico) ${daEseguire.filter((d) => statici.has(d.file)).length * ESECUTORI.length}`);
+console.log(`esecuzioni ${esecuzioni.length} in ${((performance.now() - t0) / 1000).toFixed(1)} s, non compilati ${esitiNonCompila} (insieme ${esecuzioni.length + esitiNonCompila}, dichiarati ${DA_UN_PROGRAMMA}); esiti senza programma (errore statico) ${decisiDalloStatico}`);
 
 // --- Il verdetto: una funzione sola, attraversata dal dato vero e dalle sonde.
 const previste = daEseguire.flatMap((d) => ESECUTORI.map((e) => `${d.id}|${e}`));
@@ -391,7 +458,8 @@ const vero = giudica(esiti, previste, DICHIARATE);
 console.log(`esiti: ${esiti.size} su ${previste.length} previsti, dichiarati ${ESITI_ATTESI}; verdi ${vero.verdi}, differenze dichiarate: unità ${vero.perSpecie.unita}, generatore ${vero.perSpecie.generatore}, linguaggio ${vero.perSpecie.linguaggio}; rossi ${vero.rossi.length}`);
 for (const r of vero.rossi) console.log(`  ${r}`);
 for (const [id, v] of Object.entries(DICHIARATE)) console.log(`  DICHIARATA ${v.specie} ${id} [${v.esecutori.join(", ")}]: ${v.motivo}`);
-prova("gli esiti sono quelli dichiarati, elemento per elemento", previste.length === ESITI_ATTESI && esiti.size === ESITI_ATTESI, `previsti ${previste.length}, esiti ${esiti.size}, dichiarati ${ESITI_ATTESI}`);
+prova("gli esiti sono quelli dichiarati, elemento per elemento", previste.length === ESITI_ATTESI && esiti.size === ESITI_ATTESI && esecuzioni.length + esitiNonCompila === DA_UN_PROGRAMMA && decisiDalloStatico === ESITI_ATTESI - DA_UN_PROGRAMMA,
+  `previsti ${previste.length}, esiti ${esiti.size}, dichiarati ${ESITI_ATTESI}; da un programma ${esecuzioni.length + esitiNonCompila}, dichiarati ${DA_UN_PROGRAMMA}; dall'errore statico ${decisiDalloStatico}`);
 prova("ogni differenza è dichiarata con specie e motivo, ogni dichiarata è avvenuta, ogni programma compila", vero.rossi.length === 0, `${vero.rossi.length} rossi`);
 prova("nessun difetto dell'unità dichiarato", vero.perSpecie.unita === 0, `${vero.perSpecie.unita}`);
 // Gli ingressi con spazi, passati da una cartella con spazi doppi: la premessa è che il corpus ne abbia.
@@ -434,6 +502,23 @@ const conDichiarata: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["gc
 const s2 = giudica(conGuasto, previste, conDichiarata).rossi.filter((r) => r.includes(nomina(`${idGuasto}|gcc it`)));
 prova("sonda: un programma che non compila è rosso «non compila», mai una differenza, anche dichiarato", !r2.ok && s2.length === 1 && s2[0]!.startsWith("ROSSO NON COMPILA"), `compila ${r2.ok}; ${s2.join(" | ")}`);
 
+// Lo stesso per il Python, con lo stesso controllo del corpus: il programma vero compila, la sua copia guastata no, e il caso
+// dichiarato in quello slot è rosso «non compila». Eseguito senza controllo, il guasto sarebbe stato un «senza esito», cioè una
+// differenza che la dichiarata avrebbe coperto: si stampa per confronto.
+const guastoPy = programmi.get(`tappa-1/overflow-fattoriale python it`) ?? fermo("manca il programma Python della sonda");
+const sorgenteGuastoPy = join(lavoro, "sonda-non-compila.py");
+writeFileSync(sorgenteGuastoPy, `${readFileSync(guastoPy.sorgente, "utf8")}\ndef sonda(:\n`);
+const r5 = await nonCompilaPython([guastoPy.sorgente, sorgenteGuastoPy]);
+const casoGuasto = daEseguire.find((d) => d.id === idGuasto) ?? fermo(`il caso della sonda non c'è: ${idGuasto}`);
+const senzaControllo = esitoDi(casoGuasto.caso.expected, ottenutoDi(await lancia([python, "-I", "-B", sorgenteGuastoPy], new TextEncoder().encode(casoGuasto.input.map((t) => `${t}\n`).join("")), SECONDI_DI_UN_PROGRAMMA, dirname(python)), voci.python, guastoPy.righe, "it", casoGuasto));
+console.log(`      sonda Python: controllati 2, non compilati ${r5.size} [${[...r5.keys()].map((f) => f.slice(lavoro.length + 1)).join(", ")}]; il guasto eseguito senza controllo: ${senzaControllo.genere}`);
+const conGuastoPy = new Map(esiti);
+const erroreDelGuasto = r5.get(sorgenteGuastoPy);
+conGuastoPy.set(`${idGuasto}|python it`, erroreDelGuasto !== undefined ? { genere: "non compila", dettaglio: erroreDelGuasto } : { genere: "verde" });
+const conDichiarataPy: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["python it"], specie: "linguaggio", motivo: "sonda" } };
+const s5 = giudica(conGuastoPy, previste, conDichiarataPy).rossi.filter((r) => r.includes(nomina(`${idGuasto}|python it`)));
+prova("sonda: un programma Python che non compila è rosso «non compila», mai una differenza, anche dichiarato", r5.size === 1 && erroreDelGuasto !== undefined && s5.length === 1 && s5[0]!.startsWith("ROSSO NON COMPILA"), `non compilati ${[...r5.keys()].join(", ")}; ${s5.join(" | ")}`);
+
 // I due versi dell'elenco: una dichiarata su un caso verde, e un esito che manca.
 const verde = previste.find((k) => esiti.get(k)?.genere === "verde") ?? fermo("nessun esito verde per la sonda");
 const [idVerde, exVerde] = verde.split("|") as [string, Esecutore];
@@ -443,7 +528,6 @@ senzaUno.delete(verde);
 const s4 = giudica(senzaUno, previste, DICHIARATE).rossi.filter((r) => !vero.rossi.includes(r));
 prova("sonda: una dichiarata che non avviene e un esito che manca sono rossi", s3.length === 1 && s3[0]!.includes("dichiarata e non avvenuta") && s4.length === 1 && s4[0]!.includes("mancante"), `${s3.join(" | ")} || ${s4.join(" | ")}`);
 
-const PROVE_ATTESE = 10;
 console.log(`prove: ${fatte}/${PROVE_ATTESE}, fallite ${fallite.length}`);
 if (fatte !== PROVE_ATTESE) {
   console.log(`FERMO: il denominatore non torna: dichiarate ${PROVE_ATTESE}, eseguite ${fatte}`);
