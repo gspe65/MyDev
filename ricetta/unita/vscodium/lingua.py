@@ -31,8 +31,9 @@ def fermo(m):
 
 
 def forma_editor(percorso):
-    """Il percorso come lo scrive l'editor: barre rovesce, lettera del disco minuscola."""
-    p = str(percorso).replace("/", "\\")
+    """Il percorso come lo scrive l'editor: barre rovesce, lettera del disco minuscola, senza barra finale (alla radice
+    di un disco E:\\ diventa e:, e i percorsi composti hanno una barra sola: e:\\vscodium\\...)."""
+    p = str(percorso).replace("/", "\\").rstrip("\\")
     return p[0].lower() + p[1:] if len(p) > 1 and p[1] == ":" else p
 
 
@@ -73,10 +74,12 @@ def componi(radice_editor, trovati):
 
 
 def da_togliere(radice_editor, tcf):
-    """Il verdetto sulla cache di una lingua: va tolta se tcf.json manca o non nomina questa radice."""
+    """Il verdetto sulla cache di una lingua: va tolta se tcf.json manca o non nomina i file di questa radice.
+    L'ago e' la radice seguita da vscodium\\data\\, dove stanno i file di traduzione: la sola radice si troverebbe anche
+    dentro i percorsi di una radice piu' profonda (unita' aperta in MyDev\\MyDev, poi spostata un livello piu' su)."""
     if tcf is None:
         return True
-    return json.dumps(radice_editor + "\\", ensure_ascii=False)[1:-1].lower() not in tcf.lower()
+    return json.dumps(radice_editor + "\\vscodium\\data\\", ensure_ascii=False)[1:-1].lower() not in tcf.lower()
 
 
 def prepara(radice):
@@ -111,22 +114,36 @@ def prepara(radice):
 
 
 def sonde():
-    """Lo stesso verdetto e lo stesso compositore del dato vero, su dati scritti qui."""
-    r = forma_editor(pathlib.Path("C:/Temp/una  copia/MyDev"))
+    """Lo stesso verdetto e lo stesso compositore del dato vero, su dati scritti qui. La radice di prova si compone qui,
+    a pezzi: scritta intera, il rilevatore dei percorsi assoluti la troverebbe in questo file su un'unita' che si trovi
+    proprio li'."""
+    r = forma_editor(pathlib.PureWindowsPath("C:\\", "Temp", "una" + "  " + "copia", "MyDev"))
     p = {"publisher": "MS-CEINTL", "name": "vscode-language-pack-it", "version": "1.131.0",
          "contributes": {"localizations": [{"languageId": "it", "localizedLanguageName": "italiano",
                                             "translations": [{"id": "vscode", "path": "./translations/main.i18n.json"}]}]}}
     t = componi(r, {"ms-ceintl.vscode-language-pack-it-1.131.0": p})
+    # Il testo misurato dell'editor; la radice vi entra con le barre raddoppiate a mano, non dal compositore.
     atteso = ('{"it":{"hash":"8bb7ca527193098d6cf50c300425bd92","extensions":[{"extensionIdentifier":{"id":"ms-ceintl.vscode-language-pack-it"},"version":"1.131.0"}],'
-              '"translations":{"vscode":"c:\\\\Temp\\\\una  copia\\\\MyDev\\\\vscodium\\\\data\\\\extensions\\\\ms-ceintl.vscode-language-pack-it-1.131.0\\\\translations\\\\main.i18n.json"},"label":"italiano"}}')
+              '"translations":{"vscode":"@R@\\\\vscodium\\\\data\\\\extensions\\\\ms-ceintl.vscode-language-pack-it-1.131.0\\\\translations\\\\main.i18n.json"},"label":"italiano"}}')
+    disco = forma_editor(pathlib.PureWindowsPath("E:\\"))
+    t_disco = componi(disco, {"ms-ceintl.vscode-language-pack-it-1.131.0": p})
+
+    def cache(radice):
+        return json.dumps({"vscode": radice + "\\vscodium\\data\\extensions\\x\\main.i18n.json"})
+    altra = forma_editor(pathlib.PureWindowsPath("C:\\", "Temp", "altra" + "  " + "copia", "MyDev"))
     casi = [
-        ("il file dell'editor, con l'impronta misurata", t == atteso),
+        ("il file dell'editor, con l'impronta misurata", t == atteso.replace("@R@", r.replace("\\", "\\\\"))),
         ("nessun pacchetto: nessun file", componi(r, {}) is None),
-        ("cache della stessa radice: resta", not da_togliere(r, json.dumps({"vscode": r + "\\vscodium\\x"}))),
-        ("cache della stessa radice, maiuscole diverse: resta", not da_togliere(r, json.dumps({"vscode": r.upper() + "\\vscodium\\x"}))),
-        ("cache di un'altra radice: tolta", da_togliere(r, json.dumps({"vscode": "c:\\Temp\\altra  copia\\MyDev\\vscodium\\x"}))),
-        ("cache di una radice che comincia con questa: tolta", da_togliere(r, json.dumps({"vscode": r + "2\\vscodium\\x"}))),
+        ("cache della stessa radice: resta", not da_togliere(r, cache(r))),
+        ("cache della stessa radice, maiuscole diverse: resta", not da_togliere(r, cache(r.upper()))),
+        ("cache di un'altra radice: tolta", da_togliere(r, cache(altra))),
+        ("cache di una radice che comincia con questa: tolta", da_togliere(r, cache(r + "2"))),
+        ("cache di una radice piu' profonda (questa ne e' antenata): tolta", da_togliere(r, cache(r + "\\MyDev"))),
         ("cache senza tcf.json: tolta", da_togliere(r, None)),
+        ("radice di un disco: senza barra finale", disco == "e:"),
+        ("radice di un disco: il file dell'editor con una barra sola", t_disco == atteso.replace("@R@", "e:")),
+        ("radice di un disco: la sua cache resta", not da_togliere(disco, cache(disco))),
+        ("radice di un disco: la cache di una cartella del disco e' tolta", da_togliere(disco, cache(disco + "\\MyDev"))),
     ]
     for nome, ok in casi:
         print(f"  sonda {'OK' if ok else 'ROTTA'}: {nome}")

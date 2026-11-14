@@ -130,6 +130,9 @@ try {
     if ($vu.Uscita -eq 2) { Fermo 'uguaglianza.py non ha potuto misurare' }
     Verifica ($vu.Uscita -eq 0 -and $vu.Testo.Contains('difetti: 0')) 'corso: progetti\puntatori uguale all inventario della ricetta'
     Verifica ($vu.Testo.Contains('sonde false: byte=ACCESA in-piu=ACCESA provenienza=ACCESA licenza=ACCESA')) 'corso: sonde false di uguaglianza.py accese'
+    # Tutte le sonde, una per ramo del verdetto: accese quante ne dichiara, e almeno quelle contate con la copia sola.
+    $mu = [regex]::Match($vu.Testo, 'sonde accese: (\d+)/(\d+)')
+    Verifica ($mu.Success -and $mu.Groups[1].Value -eq $mu.Groups[2].Value -and [int]$mu.Groups[2].Value -ge 11) "corso: ogni sonda di uguaglianza.py accesa ($($mu.Value))"
 
     # --- La guida, appaiata con l'aggiunta. Il gate copia l'aggiunta accanto al kit.
     $Agg = Join-Path $Qui 'componenti-estesa.json'
@@ -142,7 +145,7 @@ try {
     Verifica ($v8.Testo.Contains("appaiamento: senza voce 0, voci senza componente 0, titoli mancanti 0, titoli in piu' 0")) 'E8: guida e aggiunta appaiate nei due versi'
     Verifica ($v8.Testo.Contains('sonde false: tolta=ACCESA senza-voce=ACCESA nome-estraneo=ACCESA senza-riga=ACCESA')) 'E8: sonde false accese'
 
-    $Attesi = 52
+    $Attesi = 53
     Scrivi "denominatore: controlli $script:Visti, attesi $Attesi"
     if ($script:Visti -ne $Attesi) { Fermo "controlli eseguiti $script:Visti, attesi $Attesi" }
     Scrivi "controlli rossi: $($script:Rossi.Count)"

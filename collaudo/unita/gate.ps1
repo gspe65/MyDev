@@ -19,7 +19,8 @@
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
-# temporanea del PC, che compiti e debug dell'editor usano come ogni programma; un figlio appeso, che non ha un tempo massimo.
+# temporanea del PC, che compiti e debug dell'editor usano come ogni programma; un figlio appeso, che non ha un tempo massimo;
+# che cosa Chromium decodifica (la pagina dei codec e' una misura a parte, fuori dal kit: qui solo l'avvio, il profilo e la pagina).
 
 [CmdletBinding()]
 param(
@@ -61,7 +62,8 @@ function Passo([string]$clausola, [string]$nome, [string]$exe, [string]$argoment
     $r = Lancia $exe $argomenti $null
     [IO.File]::WriteAllText((Join-Path $Lav "$nome.log"), $r.Testo, $Utf8)
     foreach ($riga in ($r.Testo -split "`r?`n")) {
-        if ($riga -match '^(ESITO|FERMO|ROSSO|FAIL|esiti: |SENZA|  SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
+        # Il rientro non nasconde un rosso: alcune prove lo elencano con due spazi davanti.
+        if ($riga -match '^\s*(ESITO|FERMO|ROSSO|NON COMPILA|FAIL|tipi: |esiti: |SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
     }
     Annota $clausola $nome $r.Uscita
     return $r
@@ -126,8 +128,10 @@ function Chiudi-Tutto() {
     foreach ($p in (ProcessiUnita)) {
         $g = Get-Process -Id $p.ProcessId -ErrorAction SilentlyContinue
         # Chiusa la finestra principale di Chromium, gli altri suoi processi escono: su uno gia' uscito CloseMainWindow
-        # solleva un'eccezione ("il processo e' terminato"), e un processo uscito e' cio' che si vuole.
-        try { if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() } } catch { }
+        # solleva un'eccezione ("il processo e' terminato"), e un processo uscito e' cio' che si vuole. Ogni altra eccezione
+        # si stampa; la chiusura forzata qui sotto vale per tutti e due.
+        try { if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() } }
+        catch { $g.Refresh(); if (-not $g.HasExited) { Scrivi "    chiusura di $($p.Name) ($($p.ProcessId)): $($_.Exception.Message)" } }
     }
     $inizio = Get-Date
     while (((Get-Date) - $inizio).TotalSeconds -lt 20) {
@@ -204,13 +208,20 @@ try {
         # A7: l'editor aperto dal lanciatore ha caricato l'italiano. La cache delle traduzioni nasce solo se la lingua di
         # argv.json ha un pacchetto installato (misurato: col pacchetto e senza la lingua non nasce), e tcf.json deve
         # nominare questa radice: una cache rimasta da un'altra cartella lascerebbe in inglese le estensioni incorporate.
-        $Esc = (($Rad.Substring(0, 1).ToLower() + $Rad.Substring(1)).Replace('\', '\\') + '\\').ToLower()
+        # L'ago e' ancorato alla cartella dei dati dell'editor sotto questa radice, come in vscodium\lingua.py: la sola radice
+        # seguita da una barra si troverebbe anche dentro il percorso di una radice discendente (E:\MyDev in E:\MyDev\MyDev).
+        function AgoRadice([string]$r) { return ($r.TrimEnd('\') + '\vscodium\data\').ToLower().Replace('\', '\\') }
+        $Esc = AgoRadice $Rad
+        # La sonda del predicato: una cache scritta da una radice che contiene questa ("unita' spostata un livello piu' su")
+        # non la nomina; una scritta da questa si'.
+        $SondaSu = ('{"x":"' + (AgoRadice ($Rad + '\MyDev')) + 'extensions"}').ToLower().Contains($Esc)
+        $SondaQui = ('{"x":"' + (AgoRadice $Rad) + 'extensions"}').ToLower().Contains($Esc)
         $Clp = Join-Path $Rad 'vscodium\data\user-data\clp'
         $Tcf = @()
         if ([IO.Directory]::Exists($Clp)) { $Tcf = @(Get-ChildItem -LiteralPath $Clp -Directory -Filter '*.it' | ForEach-Object { Join-Path $_.FullName 'tcf.json' } | Where-Object { [IO.File]::Exists($_) }) }
         $Nominano = @($Tcf | Where-Object { [IO.File]::ReadAllText($_, $Utf8).ToLower().Contains($Esc) }).Count
-        Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano"
-        Annota 'A7' 'editor in italiano dal lanciatore' $(if ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
+        Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano; sonda radice discendente $SondaSu (atteso False), questa radice $SondaQui (atteso True)"
+        Annota 'A7' 'editor in italiano dal lanciatore' $(if ($SondaSu -or -not $SondaQui) { 2 } elseif ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
         Scrivi '=== apertura 2, con una cartella e un file'
         # Lo stesso ambiente che da' il lanciatore, che non accetta una cartella da aprire: senza il PATH clangd sarebbe un altro.
         # Nell'estesa anche le sue variabili, come prepara_estesa di lancia.c: progetti contiene i progetti Rust, rust-analyzer si
@@ -261,6 +272,9 @@ try {
         # A13: Chromium dal lanciatore. Il profilo nasce in home\chromium e, al primo avvio, chromium\initial_preferences vi
         # scrive il motore della barra. Le scritture fuori le vedono le fotografie di U15: il registro di Chromium e'
         # dichiarato in tracce.py, una cartella Chromium nel profilo dell'utente e' un rosso (R1).
+        # Il motore si accredita solo a un profilo nato in questo passo: uno rimasto da un'apertura precedente lo porta gia',
+        # anche con le preferenze iniziali rotte, e il passo non potrebbe dire rosso (fermo: si misura su un'unita' mai aperta).
+        $ProfiloPrima = [IO.Directory]::Exists((Join-Path $Rad 'home\chromium'))
         Scrivi '=== apertura di Chromium, dal lanciatore'
         Apri (Join-Path $Rad 'Chromium.exe') '' $null
         $Inizio = Get-Date
@@ -274,8 +288,26 @@ try {
         Chiudi-Tutto
         $Pref = Join-Path $Rad 'home\chromium\Default\Preferences'
         $Motore = ([IO.File]::Exists($Pref)) -and ([IO.File]::ReadAllText($Pref, $Utf8).Contains('duckduckgo.com'))
-        Scrivi "    chromium: processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore; finestre: $($Titoli -join ' | ')"
-        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita'', la pagina dell''unita'' all''avvio' $(if ($Chrome -ge 1 -and $Motore -and $Pagina) { 0 } else { 1 })
+        Scrivi "    chromium: profilo assente prima del passo: $(-not $ProfiloPrima); processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore; finestre: $($Titoli -join ' | ')"
+        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita'', la pagina dell''unita'' all''avvio' $(if ($ProfiloPrima) { 2 } elseif ($Chrome -ge 1 -and $Motore -and $Pagina) { 0 } else { 1 })
+        # A13, controllo negativo: lo stesso chrome.exe senza il lanciatore, senza la pagina, con un profilo nuovo nella cartella
+        # di lavoro e senza primo avvio (cosi' le preferenze iniziali non si leggono): pagina e motore devono uscire falsi.
+        # Premessa: Chromium acceso, una finestra e le preferenze scritte; senza, due falsi non direbbero nulla (fermo).
+        $ProfSonda = Join-Path $Lav 'chromium  sonda'
+        Scrivi '=== apertura di Chromium senza lanciatore, controllo negativo'
+        Apri (Join-Path $Rad 'chromium\chrome.exe') ('--user-data-dir="' + $ProfSonda + '" --no-first-run --disable-extensions --no-default-browser-check') $null
+        $Inizio = Get-Date
+        while (((Get-Date) - $Inizio).TotalSeconds -lt 60 -and @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count -lt 1) { Start-Sleep -Seconds 2 }
+        Start-Sleep -Seconds 15
+        $ChromeS = @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count
+        $TitoliS = @(Get-Process -Name chrome -ErrorAction SilentlyContinue | Where-Object { $_.Path -and (Sotto $_.Path) -and $_.MainWindowHandle -ne 0 } | ForEach-Object { $_.MainWindowTitle })
+        $PaginaS = @($TitoliS | Where-Object { $_ -like 'Chromium in MyDev*' }).Count -ge 1
+        Chiudi-Tutto
+        $PrefS = Join-Path $ProfSonda 'Default\Preferences'
+        $ScritteS = [IO.File]::Exists($PrefS)
+        $MotoreS = $ScritteS -and ([IO.File]::ReadAllText($PrefS, $Utf8).Contains('duckduckgo.com'))
+        Scrivi "    sonda: processi accesi $ChromeS; preferenze scritte $ScritteS; pagina dell'unita' $PaginaS; motore della barra $MotoreS; finestre: $($TitoliS -join ' | ')"
+        Annota 'A13' 'controllo negativo: senza lanciatore ne'' primo avvio, pagina e motore falsi' $(if ($ChromeS -lt 1 -or $TitoliS.Count -lt 1 -or -not $ScritteS) { 2 } elseif (-not $PaginaS -and -not $MotoreS) { 0 } else { 1 })
     }
 
     # --- L'ambiente C, dal terminale dell'unita'.
@@ -354,6 +386,8 @@ try {
     $Ins = '-I -B "' + (Join-Path $Rad 'vscodium\insieme.py') + '"'
     $null = Passo 'A9' 'insieme' $Py ($Ins + ' --verifica')
     $null = Passo 'A9' 'insieme-sonde' $Py ($Ins + ' --sonde')
+    # --- A7: le sonde dello script della lingua dell'unita' (il verdetto sulla cache e la forma dei percorsi).
+    $null = Passo 'A7' 'lingua-sonde' $Py ('-I -B "' + (Join-Path $Rad 'vscodium\lingua.py') + '" --sonde')
 
     # --- U17: le licenze. Il generatore legge la ricetta, quindi gira dal repository e non dalla copia del kit.
     Scrivi '=== U17: licenze'
@@ -411,7 +445,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 28 } else { 19 }
+    $Attesi = if ($Finestre) { 30 } else { 20 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
