@@ -125,7 +125,9 @@ function Attendi-Editor() {
 function Chiudi-Tutto() {
     foreach ($p in (ProcessiUnita)) {
         $g = Get-Process -Id $p.ProcessId -ErrorAction SilentlyContinue
-        if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() }
+        # Chiusa la finestra principale di Chromium, gli altri suoi processi escono: su uno gia' uscito CloseMainWindow
+        # solleva un'eccezione ("il processo e' terminato"), e un processo uscito e' cio' che si vuole.
+        try { if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() } } catch { }
     }
     $inizio = Get-Date
     while (((Get-Date) - $inizio).TotalSeconds -lt 20) {
