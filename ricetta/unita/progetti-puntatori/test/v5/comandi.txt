@@ -1,0 +1,1179 @@
+SET solo 1
+DEL solo
+GET solo
+EXISTS solo
+SET primo 1
+SET secondo 2
+SET terzo 3
+DEL terzo
+GET terzo
+GET secondo
+GET primo
+SET terzo 3
+DEL secondo
+GET terzo
+GET secondo
+GET primo
+DEL primo
+GET terzo
+GET primo
+DEL terzo
+GET terzo
+GET colore
+SET colore rosso
+GET colore
+   SET  colore 	 verde   
+	GET   colore
+
+     
+SET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+GET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+SET lunga vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+GET lunga
+SET a 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+GET a
+SET a
+SET
+SET a b c
+GET
+GET a b
+set a 1
+PIPPO a b c d e
+DEL
+DEL a b
+EXISTS
+EXISTS a b
+INCR
+INCR a b
+EXISTS a
+EXISTS assente
+DEL assente
+DEL colore
+GET colore
+DEL colore
+EXISTS colore
+INCR n
+INCR n
+GET n
+SET s abc
+INCR s
+GET s
+SET s 12a
+INCR s
+SET s 99999999999999999999
+INCR s
+SET s -99999999999999999999
+INCR s
+SET s +
+INCR s
+SET s -
+INCR s
+SET massimo 9223372036854775807
+INCR massimo
+GET massimo
+SET oltre 9223372036854775808
+INCR oltre
+SET meno -1
+INCR meno
+SET chiave0 0
+SET chiave1 1
+SET chiave2 2
+SET chiave3 3
+SET chiave4 4
+SET chiave5 5
+SET chiave6 6
+SET chiave7 7
+SET chiave8 8
+SET chiave9 9
+SET chiave10 10
+SET chiave11 11
+SET chiave12 12
+SET chiave13 13
+SET chiave14 14
+SET chiave15 15
+SET chiave16 16
+SET chiave17 17
+SET chiave18 18
+SET chiave19 19
+SET chiave20 20
+SET chiave21 21
+SET chiave22 22
+SET chiave23 23
+SET chiave24 24
+SET chiave25 25
+SET chiave26 26
+SET chiave27 27
+SET chiave28 28
+SET chiave29 29
+SET chiave30 30
+SET chiave31 31
+SET chiave32 32
+SET chiave33 33
+SET chiave34 34
+SET chiave35 35
+SET chiave36 36
+SET chiave37 37
+SET chiave38 38
+SET chiave39 39
+SET chiave40 40
+SET chiave41 41
+SET chiave42 42
+SET chiave43 43
+SET chiave44 44
+SET chiave45 45
+SET chiave46 46
+SET chiave47 47
+SET chiave48 48
+SET chiave49 49
+SET chiave50 50
+SET chiave51 51
+SET chiave52 52
+SET chiave53 53
+SET chiave54 54
+SET chiave55 55
+SET chiave56 56
+SET chiave57 57
+SET chiave58 58
+SET chiave59 59
+SET chiave60 60
+SET chiave61 61
+SET chiave62 62
+SET chiave63 63
+SET chiave64 64
+SET chiave65 65
+SET chiave66 66
+SET chiave67 67
+SET chiave68 68
+SET chiave69 69
+SET chiave70 70
+SET chiave71 71
+SET chiave72 72
+SET chiave73 73
+SET chiave74 74
+SET chiave75 75
+SET chiave76 76
+SET chiave77 77
+SET chiave78 78
+SET chiave79 79
+SET chiave80 80
+SET chiave81 81
+SET chiave82 82
+SET chiave83 83
+SET chiave84 84
+SET chiave85 85
+SET chiave86 86
+SET chiave87 87
+SET chiave88 88
+SET chiave89 89
+SET chiave90 90
+SET chiave91 91
+SET chiave92 92
+SET chiave93 93
+SET chiave94 94
+SET chiave95 95
+SET chiave96 96
+SET chiave97 97
+SET chiave98 98
+SET chiave99 99
+SET chiave100 100
+SET chiave101 101
+SET chiave102 102
+SET chiave103 103
+SET chiave104 104
+SET chiave105 105
+SET chiave106 106
+SET chiave107 107
+SET chiave108 108
+SET chiave109 109
+SET chiave110 110
+SET chiave111 111
+SET chiave112 112
+SET chiave113 113
+SET chiave114 114
+SET chiave115 115
+SET chiave116 116
+SET chiave117 117
+SET chiave118 118
+SET chiave119 119
+SET chiave120 120
+SET chiave121 121
+SET chiave122 122
+SET chiave123 123
+SET chiave124 124
+SET chiave125 125
+SET chiave126 126
+SET chiave127 127
+SET chiave128 128
+SET chiave129 129
+SET chiave130 130
+SET chiave131 131
+SET chiave132 132
+SET chiave133 133
+SET chiave134 134
+SET chiave135 135
+SET chiave136 136
+SET chiave137 137
+SET chiave138 138
+SET chiave139 139
+SET chiave140 140
+SET chiave141 141
+SET chiave142 142
+SET chiave143 143
+SET chiave144 144
+SET chiave145 145
+SET chiave146 146
+SET chiave147 147
+SET chiave148 148
+SET chiave149 149
+SET chiave150 150
+SET chiave151 151
+SET chiave152 152
+SET chiave153 153
+SET chiave154 154
+SET chiave155 155
+SET chiave156 156
+SET chiave157 157
+SET chiave158 158
+SET chiave159 159
+SET chiave160 160
+SET chiave161 161
+SET chiave162 162
+SET chiave163 163
+SET chiave164 164
+SET chiave165 165
+SET chiave166 166
+SET chiave167 167
+SET chiave168 168
+SET chiave169 169
+SET chiave170 170
+SET chiave171 171
+SET chiave172 172
+SET chiave173 173
+SET chiave174 174
+SET chiave175 175
+SET chiave176 176
+SET chiave177 177
+SET chiave178 178
+SET chiave179 179
+SET chiave180 180
+SET chiave181 181
+SET chiave182 182
+SET chiave183 183
+SET chiave184 184
+SET chiave185 185
+SET chiave186 186
+SET chiave187 187
+SET chiave188 188
+SET chiave189 189
+SET chiave190 190
+SET chiave191 191
+SET chiave192 192
+SET chiave193 193
+SET chiave194 194
+SET chiave195 195
+SET chiave196 196
+SET chiave197 197
+SET chiave198 198
+SET chiave199 199
+GET chiave0
+GET chiave1
+GET chiave2
+GET chiave3
+GET chiave4
+GET chiave5
+GET chiave6
+GET chiave7
+GET chiave8
+GET chiave9
+GET chiave10
+GET chiave11
+GET chiave12
+GET chiave13
+GET chiave14
+GET chiave15
+GET chiave16
+GET chiave17
+GET chiave18
+GET chiave19
+GET chiave20
+GET chiave21
+GET chiave22
+GET chiave23
+GET chiave24
+GET chiave25
+GET chiave26
+GET chiave27
+GET chiave28
+GET chiave29
+GET chiave30
+GET chiave31
+GET chiave32
+GET chiave33
+GET chiave34
+GET chiave35
+GET chiave36
+GET chiave37
+GET chiave38
+GET chiave39
+GET chiave40
+GET chiave41
+GET chiave42
+GET chiave43
+GET chiave44
+GET chiave45
+GET chiave46
+GET chiave47
+GET chiave48
+GET chiave49
+GET chiave50
+GET chiave51
+GET chiave52
+GET chiave53
+GET chiave54
+GET chiave55
+GET chiave56
+GET chiave57
+GET chiave58
+GET chiave59
+GET chiave60
+GET chiave61
+GET chiave62
+GET chiave63
+GET chiave64
+GET chiave65
+GET chiave66
+GET chiave67
+GET chiave68
+GET chiave69
+GET chiave70
+GET chiave71
+GET chiave72
+GET chiave73
+GET chiave74
+GET chiave75
+GET chiave76
+GET chiave77
+GET chiave78
+GET chiave79
+GET chiave80
+GET chiave81
+GET chiave82
+GET chiave83
+GET chiave84
+GET chiave85
+GET chiave86
+GET chiave87
+GET chiave88
+GET chiave89
+GET chiave90
+GET chiave91
+GET chiave92
+GET chiave93
+GET chiave94
+GET chiave95
+GET chiave96
+GET chiave97
+GET chiave98
+GET chiave99
+GET chiave100
+GET chiave101
+GET chiave102
+GET chiave103
+GET chiave104
+GET chiave105
+GET chiave106
+GET chiave107
+GET chiave108
+GET chiave109
+GET chiave110
+GET chiave111
+GET chiave112
+GET chiave113
+GET chiave114
+GET chiave115
+GET chiave116
+GET chiave117
+GET chiave118
+GET chiave119
+GET chiave120
+GET chiave121
+GET chiave122
+GET chiave123
+GET chiave124
+GET chiave125
+GET chiave126
+GET chiave127
+GET chiave128
+GET chiave129
+GET chiave130
+GET chiave131
+GET chiave132
+GET chiave133
+GET chiave134
+GET chiave135
+GET chiave136
+GET chiave137
+GET chiave138
+GET chiave139
+GET chiave140
+GET chiave141
+GET chiave142
+GET chiave143
+GET chiave144
+GET chiave145
+GET chiave146
+GET chiave147
+GET chiave148
+GET chiave149
+GET chiave150
+GET chiave151
+GET chiave152
+GET chiave153
+GET chiave154
+GET chiave155
+GET chiave156
+GET chiave157
+GET chiave158
+GET chiave159
+GET chiave160
+GET chiave161
+GET chiave162
+GET chiave163
+GET chiave164
+GET chiave165
+GET chiave166
+GET chiave167
+GET chiave168
+GET chiave169
+GET chiave170
+GET chiave171
+GET chiave172
+GET chiave173
+GET chiave174
+GET chiave175
+GET chiave176
+GET chiave177
+GET chiave178
+GET chiave179
+GET chiave180
+GET chiave181
+GET chiave182
+GET chiave183
+GET chiave184
+GET chiave185
+GET chiave186
+GET chiave187
+GET chiave188
+GET chiave189
+GET chiave190
+GET chiave191
+GET chiave192
+GET chiave193
+GET chiave194
+GET chiave195
+GET chiave196
+GET chiave197
+GET chiave198
+GET chiave199
+DEL chiave0
+DEL chiave2
+DEL chiave4
+DEL chiave6
+DEL chiave8
+DEL chiave10
+DEL chiave12
+DEL chiave14
+DEL chiave16
+DEL chiave18
+DEL chiave20
+DEL chiave22
+DEL chiave24
+DEL chiave26
+DEL chiave28
+DEL chiave30
+DEL chiave32
+DEL chiave34
+DEL chiave36
+DEL chiave38
+DEL chiave40
+DEL chiave42
+DEL chiave44
+DEL chiave46
+DEL chiave48
+DEL chiave50
+DEL chiave52
+DEL chiave54
+DEL chiave56
+DEL chiave58
+DEL chiave60
+DEL chiave62
+DEL chiave64
+DEL chiave66
+DEL chiave68
+DEL chiave70
+DEL chiave72
+DEL chiave74
+DEL chiave76
+DEL chiave78
+DEL chiave80
+DEL chiave82
+DEL chiave84
+DEL chiave86
+DEL chiave88
+DEL chiave90
+DEL chiave92
+DEL chiave94
+DEL chiave96
+DEL chiave98
+DEL chiave100
+DEL chiave102
+DEL chiave104
+DEL chiave106
+DEL chiave108
+DEL chiave110
+DEL chiave112
+DEL chiave114
+DEL chiave116
+DEL chiave118
+DEL chiave120
+DEL chiave122
+DEL chiave124
+DEL chiave126
+DEL chiave128
+DEL chiave130
+DEL chiave132
+DEL chiave134
+DEL chiave136
+DEL chiave138
+DEL chiave140
+DEL chiave142
+DEL chiave144
+DEL chiave146
+DEL chiave148
+DEL chiave150
+DEL chiave152
+DEL chiave154
+DEL chiave156
+DEL chiave158
+DEL chiave160
+DEL chiave162
+DEL chiave164
+DEL chiave166
+DEL chiave168
+DEL chiave170
+DEL chiave172
+DEL chiave174
+DEL chiave176
+DEL chiave178
+DEL chiave180
+DEL chiave182
+DEL chiave184
+DEL chiave186
+DEL chiave188
+DEL chiave190
+DEL chiave192
+DEL chiave194
+DEL chiave196
+DEL chiave198
+EXISTS chiave0
+EXISTS chiave1
+EXISTS chiave2
+EXISTS chiave3
+EXISTS chiave4
+EXISTS chiave5
+EXISTS chiave6
+EXISTS chiave7
+EXISTS chiave8
+EXISTS chiave9
+EXISTS chiave10
+EXISTS chiave11
+EXISTS chiave12
+EXISTS chiave13
+EXISTS chiave14
+EXISTS chiave15
+EXISTS chiave16
+EXISTS chiave17
+EXISTS chiave18
+EXISTS chiave19
+EXISTS chiave20
+EXISTS chiave21
+EXISTS chiave22
+EXISTS chiave23
+EXISTS chiave24
+EXISTS chiave25
+EXISTS chiave26
+EXISTS chiave27
+EXISTS chiave28
+EXISTS chiave29
+EXISTS chiave30
+EXISTS chiave31
+EXISTS chiave32
+EXISTS chiave33
+EXISTS chiave34
+EXISTS chiave35
+EXISTS chiave36
+EXISTS chiave37
+EXISTS chiave38
+EXISTS chiave39
+EXISTS chiave40
+EXISTS chiave41
+EXISTS chiave42
+EXISTS chiave43
+EXISTS chiave44
+EXISTS chiave45
+EXISTS chiave46
+EXISTS chiave47
+EXISTS chiave48
+EXISTS chiave49
+EXISTS chiave50
+EXISTS chiave51
+EXISTS chiave52
+EXISTS chiave53
+EXISTS chiave54
+EXISTS chiave55
+EXISTS chiave56
+EXISTS chiave57
+EXISTS chiave58
+EXISTS chiave59
+EXISTS chiave60
+EXISTS chiave61
+EXISTS chiave62
+EXISTS chiave63
+EXISTS chiave64
+EXISTS chiave65
+EXISTS chiave66
+EXISTS chiave67
+EXISTS chiave68
+EXISTS chiave69
+EXISTS chiave70
+EXISTS chiave71
+EXISTS chiave72
+EXISTS chiave73
+EXISTS chiave74
+EXISTS chiave75
+EXISTS chiave76
+EXISTS chiave77
+EXISTS chiave78
+EXISTS chiave79
+EXISTS chiave80
+EXISTS chiave81
+EXISTS chiave82
+EXISTS chiave83
+EXISTS chiave84
+EXISTS chiave85
+EXISTS chiave86
+EXISTS chiave87
+EXISTS chiave88
+EXISTS chiave89
+EXISTS chiave90
+EXISTS chiave91
+EXISTS chiave92
+EXISTS chiave93
+EXISTS chiave94
+EXISTS chiave95
+EXISTS chiave96
+EXISTS chiave97
+EXISTS chiave98
+EXISTS chiave99
+EXISTS chiave100
+EXISTS chiave101
+EXISTS chiave102
+EXISTS chiave103
+EXISTS chiave104
+EXISTS chiave105
+EXISTS chiave106
+EXISTS chiave107
+EXISTS chiave108
+EXISTS chiave109
+EXISTS chiave110
+EXISTS chiave111
+EXISTS chiave112
+EXISTS chiave113
+EXISTS chiave114
+EXISTS chiave115
+EXISTS chiave116
+EXISTS chiave117
+EXISTS chiave118
+EXISTS chiave119
+EXISTS chiave120
+EXISTS chiave121
+EXISTS chiave122
+EXISTS chiave123
+EXISTS chiave124
+EXISTS chiave125
+EXISTS chiave126
+EXISTS chiave127
+EXISTS chiave128
+EXISTS chiave129
+EXISTS chiave130
+EXISTS chiave131
+EXISTS chiave132
+EXISTS chiave133
+EXISTS chiave134
+EXISTS chiave135
+EXISTS chiave136
+EXISTS chiave137
+EXISTS chiave138
+EXISTS chiave139
+EXISTS chiave140
+EXISTS chiave141
+EXISTS chiave142
+EXISTS chiave143
+EXISTS chiave144
+EXISTS chiave145
+EXISTS chiave146
+EXISTS chiave147
+EXISTS chiave148
+EXISTS chiave149
+EXISTS chiave150
+EXISTS chiave151
+EXISTS chiave152
+EXISTS chiave153
+EXISTS chiave154
+EXISTS chiave155
+EXISTS chiave156
+EXISTS chiave157
+EXISTS chiave158
+EXISTS chiave159
+EXISTS chiave160
+EXISTS chiave161
+EXISTS chiave162
+EXISTS chiave163
+EXISTS chiave164
+EXISTS chiave165
+EXISTS chiave166
+EXISTS chiave167
+EXISTS chiave168
+EXISTS chiave169
+EXISTS chiave170
+EXISTS chiave171
+EXISTS chiave172
+EXISTS chiave173
+EXISTS chiave174
+EXISTS chiave175
+EXISTS chiave176
+EXISTS chiave177
+EXISTS chiave178
+EXISTS chiave179
+EXISTS chiave180
+EXISTS chiave181
+EXISTS chiave182
+EXISTS chiave183
+EXISTS chiave184
+EXISTS chiave185
+EXISTS chiave186
+EXISTS chiave187
+EXISTS chiave188
+EXISTS chiave189
+EXISTS chiave190
+EXISTS chiave191
+EXISTS chiave192
+EXISTS chiave193
+EXISTS chiave194
+EXISTS chiave195
+EXISTS chiave196
+EXISTS chiave197
+EXISTS chiave198
+EXISTS chiave199
+INCR chiave1
+INCR chiave3
+INCR chiave5
+INCR chiave7
+INCR chiave9
+INCR chiave11
+INCR chiave13
+INCR chiave15
+INCR chiave17
+INCR chiave19
+INCR chiave21
+INCR chiave23
+INCR chiave25
+INCR chiave27
+INCR chiave29
+INCR chiave31
+INCR chiave33
+INCR chiave35
+INCR chiave37
+INCR chiave39
+INCR chiave41
+INCR chiave43
+INCR chiave45
+INCR chiave47
+INCR chiave49
+INCR chiave51
+INCR chiave53
+INCR chiave55
+INCR chiave57
+INCR chiave59
+INCR chiave61
+INCR chiave63
+INCR chiave65
+INCR chiave67
+INCR chiave69
+INCR chiave71
+INCR chiave73
+INCR chiave75
+INCR chiave77
+INCR chiave79
+INCR chiave81
+INCR chiave83
+INCR chiave85
+INCR chiave87
+INCR chiave89
+INCR chiave91
+INCR chiave93
+INCR chiave95
+INCR chiave97
+INCR chiave99
+INCR chiave101
+INCR chiave103
+INCR chiave105
+INCR chiave107
+INCR chiave109
+INCR chiave111
+INCR chiave113
+INCR chiave115
+INCR chiave117
+INCR chiave119
+INCR chiave121
+INCR chiave123
+INCR chiave125
+INCR chiave127
+INCR chiave129
+INCR chiave131
+INCR chiave133
+INCR chiave135
+INCR chiave137
+INCR chiave139
+INCR chiave141
+INCR chiave143
+INCR chiave145
+INCR chiave147
+INCR chiave149
+INCR chiave151
+INCR chiave153
+INCR chiave155
+INCR chiave157
+INCR chiave159
+INCR chiave161
+INCR chiave163
+INCR chiave165
+INCR chiave167
+INCR chiave169
+INCR chiave171
+INCR chiave173
+INCR chiave175
+INCR chiave177
+INCR chiave179
+INCR chiave181
+INCR chiave183
+INCR chiave185
+INCR chiave187
+INCR chiave189
+INCR chiave191
+INCR chiave193
+INCR chiave195
+INCR chiave197
+INCR chiave199
+SET chiave0 di-nuovo
+SET chiave2 di-nuovo
+SET chiave4 di-nuovo
+SET chiave6 di-nuovo
+SET chiave8 di-nuovo
+SET chiave10 di-nuovo
+SET chiave12 di-nuovo
+SET chiave14 di-nuovo
+SET chiave16 di-nuovo
+SET chiave18 di-nuovo
+SET chiave20 di-nuovo
+SET chiave22 di-nuovo
+SET chiave24 di-nuovo
+SET chiave26 di-nuovo
+SET chiave28 di-nuovo
+SET chiave30 di-nuovo
+SET chiave32 di-nuovo
+SET chiave34 di-nuovo
+SET chiave36 di-nuovo
+SET chiave38 di-nuovo
+SET chiave40 di-nuovo
+SET chiave42 di-nuovo
+SET chiave44 di-nuovo
+SET chiave46 di-nuovo
+SET chiave48 di-nuovo
+SET chiave50 di-nuovo
+SET chiave52 di-nuovo
+SET chiave54 di-nuovo
+SET chiave56 di-nuovo
+SET chiave58 di-nuovo
+SET chiave60 di-nuovo
+SET chiave62 di-nuovo
+SET chiave64 di-nuovo
+SET chiave66 di-nuovo
+SET chiave68 di-nuovo
+SET chiave70 di-nuovo
+SET chiave72 di-nuovo
+SET chiave74 di-nuovo
+SET chiave76 di-nuovo
+SET chiave78 di-nuovo
+SET chiave80 di-nuovo
+SET chiave82 di-nuovo
+SET chiave84 di-nuovo
+SET chiave86 di-nuovo
+SET chiave88 di-nuovo
+SET chiave90 di-nuovo
+SET chiave92 di-nuovo
+SET chiave94 di-nuovo
+SET chiave96 di-nuovo
+SET chiave98 di-nuovo
+SET chiave100 di-nuovo
+SET chiave102 di-nuovo
+SET chiave104 di-nuovo
+SET chiave106 di-nuovo
+SET chiave108 di-nuovo
+SET chiave110 di-nuovo
+SET chiave112 di-nuovo
+SET chiave114 di-nuovo
+SET chiave116 di-nuovo
+SET chiave118 di-nuovo
+SET chiave120 di-nuovo
+SET chiave122 di-nuovo
+SET chiave124 di-nuovo
+SET chiave126 di-nuovo
+SET chiave128 di-nuovo
+SET chiave130 di-nuovo
+SET chiave132 di-nuovo
+SET chiave134 di-nuovo
+SET chiave136 di-nuovo
+SET chiave138 di-nuovo
+SET chiave140 di-nuovo
+SET chiave142 di-nuovo
+SET chiave144 di-nuovo
+SET chiave146 di-nuovo
+SET chiave148 di-nuovo
+SET chiave150 di-nuovo
+SET chiave152 di-nuovo
+SET chiave154 di-nuovo
+SET chiave156 di-nuovo
+SET chiave158 di-nuovo
+SET chiave160 di-nuovo
+SET chiave162 di-nuovo
+SET chiave164 di-nuovo
+SET chiave166 di-nuovo
+SET chiave168 di-nuovo
+SET chiave170 di-nuovo
+SET chiave172 di-nuovo
+SET chiave174 di-nuovo
+SET chiave176 di-nuovo
+SET chiave178 di-nuovo
+SET chiave180 di-nuovo
+SET chiave182 di-nuovo
+SET chiave184 di-nuovo
+SET chiave186 di-nuovo
+SET chiave188 di-nuovo
+SET chiave190 di-nuovo
+SET chiave192 di-nuovo
+SET chiave194 di-nuovo
+SET chiave196 di-nuovo
+SET chiave198 di-nuovo
+GET chiave0
+GET chiave1
+GET chiave2
+GET chiave3
+GET chiave4
+GET chiave5
+GET chiave6
+GET chiave7
+GET chiave8
+GET chiave9
+GET chiave10
+GET chiave11
+GET chiave12
+GET chiave13
+GET chiave14
+GET chiave15
+GET chiave16
+GET chiave17
+GET chiave18
+GET chiave19
+GET chiave20
+GET chiave21
+GET chiave22
+GET chiave23
+GET chiave24
+GET chiave25
+GET chiave26
+GET chiave27
+GET chiave28
+GET chiave29
+GET chiave30
+GET chiave31
+GET chiave32
+GET chiave33
+GET chiave34
+GET chiave35
+GET chiave36
+GET chiave37
+GET chiave38
+GET chiave39
+GET chiave40
+GET chiave41
+GET chiave42
+GET chiave43
+GET chiave44
+GET chiave45
+GET chiave46
+GET chiave47
+GET chiave48
+GET chiave49
+GET chiave50
+GET chiave51
+GET chiave52
+GET chiave53
+GET chiave54
+GET chiave55
+GET chiave56
+GET chiave57
+GET chiave58
+GET chiave59
+GET chiave60
+GET chiave61
+GET chiave62
+GET chiave63
+GET chiave64
+GET chiave65
+GET chiave66
+GET chiave67
+GET chiave68
+GET chiave69
+GET chiave70
+GET chiave71
+GET chiave72
+GET chiave73
+GET chiave74
+GET chiave75
+GET chiave76
+GET chiave77
+GET chiave78
+GET chiave79
+GET chiave80
+GET chiave81
+GET chiave82
+GET chiave83
+GET chiave84
+GET chiave85
+GET chiave86
+GET chiave87
+GET chiave88
+GET chiave89
+GET chiave90
+GET chiave91
+GET chiave92
+GET chiave93
+GET chiave94
+GET chiave95
+GET chiave96
+GET chiave97
+GET chiave98
+GET chiave99
+GET chiave100
+GET chiave101
+GET chiave102
+GET chiave103
+GET chiave104
+GET chiave105
+GET chiave106
+GET chiave107
+GET chiave108
+GET chiave109
+GET chiave110
+GET chiave111
+GET chiave112
+GET chiave113
+GET chiave114
+GET chiave115
+GET chiave116
+GET chiave117
+GET chiave118
+GET chiave119
+GET chiave120
+GET chiave121
+GET chiave122
+GET chiave123
+GET chiave124
+GET chiave125
+GET chiave126
+GET chiave127
+GET chiave128
+GET chiave129
+GET chiave130
+GET chiave131
+GET chiave132
+GET chiave133
+GET chiave134
+GET chiave135
+GET chiave136
+GET chiave137
+GET chiave138
+GET chiave139
+GET chiave140
+GET chiave141
+GET chiave142
+GET chiave143
+GET chiave144
+GET chiave145
+GET chiave146
+GET chiave147
+GET chiave148
+GET chiave149
+GET chiave150
+GET chiave151
+GET chiave152
+GET chiave153
+GET chiave154
+GET chiave155
+GET chiave156
+GET chiave157
+GET chiave158
+GET chiave159
+GET chiave160
+GET chiave161
+GET chiave162
+GET chiave163
+GET chiave164
+GET chiave165
+GET chiave166
+GET chiave167
+GET chiave168
+GET chiave169
+GET chiave170
+GET chiave171
+GET chiave172
+GET chiave173
+GET chiave174
+GET chiave175
+GET chiave176
+GET chiave177
+GET chiave178
+GET chiave179
+GET chiave180
+GET chiave181
+GET chiave182
+GET chiave183
+GET chiave184
+GET chiave185
+GET chiave186
+GET chiave187
+GET chiave188
+GET chiave189
+GET chiave190
+GET chiave191
+GET chiave192
+GET chiave193
+GET chiave194
+GET chiave195
+GET chiave196
+GET chiave197
+GET chiave198
+GET chiave199
+PIPPO
+get

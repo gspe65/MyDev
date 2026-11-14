@@ -1,0 +1,4 @@
+/usr/bin/x86_64-linux-gnu-ld.bfd: /usr/bin/x86_64-linux-gnu-ld.bfd: DWARF error: mangled line number section (bad file number)
+/tmp/usa_triplo-009d24.o: nella funzione `main':
+/home/studente/lez00/usa_triplo.c:8:(.text+0x15): riferimento non definito a `triplo'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

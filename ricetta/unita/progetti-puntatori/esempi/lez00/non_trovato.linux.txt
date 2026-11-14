@@ -1,0 +1,1 @@
+bash: clang: comando non trovato

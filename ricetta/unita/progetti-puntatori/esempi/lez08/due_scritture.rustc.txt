@@ -1,0 +1,13 @@
+error[E0499]: cannot borrow `x` as mutable more than once at a time
+ --> due_scritture.rs:5:13
+  |
+4 |     let a = &mut x;
+  |             ------ first mutable borrow occurs here
+5 |     let b = &mut x;
+  |             ^^^^^^ second mutable borrow occurs here
+6 |     *a = 2;
+  |     ------ first borrow later used here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0499`.

@@ -1,0 +1,10 @@
+   Compiling prova_lista v0.1.0 (/home/studente/lez09p/prova_lista)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running unittests src/main.rs (target/debug/deps/prova_lista-07b41aa33f4a7686)
+
+running 2 tests
+test prove::il_nodo_nuovo_sta_in_testa ... ok
+test prove::il_primo_nodo_non_ha_successivo ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

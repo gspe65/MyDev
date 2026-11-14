@@ -1,0 +1,4 @@
+n = 3 alla cella 0x7fff2f824478
+n = 2 alla cella 0x7fff2f824458
+n = 1 alla cella 0x7fff2f824438
+6

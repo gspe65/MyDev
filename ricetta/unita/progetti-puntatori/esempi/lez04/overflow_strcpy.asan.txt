@@ -1,0 +1,14 @@
+=================================================================
+==4296==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x726741f00028 at pc 0x63c50ead1dfe bp 0x7fff1a19f410 sp 0x7fff1a19ebc8
+WRITE of size 23 at 0x726741f00028 thread T0
+    #0 0x63c50ead1dfd in strcpy (/home/studente/lez4/overflow_strcpy+0xb7dfd) (BuildId: ca3b35c79e0c24c56ece3d45c0193d06818c4a59)
+    #1 0x63c50eb2fb83 in main /home/studente/lez4/overflow_strcpy.c:9:5
+    #2 0x76674422a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x76674422a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x63c50ea46364 in _start (/home/studente/lez4/overflow_strcpy+0x2c364) (BuildId: ca3b35c79e0c24c56ece3d45c0193d06818c4a59)
+
+Address 0x726741f00028 is located in stack of thread T0 at offset 40 in frame
+    #0 0x63c50eb2fabf in main /home/studente/lez4/overflow_strcpy.c:6
+
+  This frame has 1 object(s):
+    [32, 40) 'destinazione' (line 7) <== Memory access at offset 40 overflows this variable

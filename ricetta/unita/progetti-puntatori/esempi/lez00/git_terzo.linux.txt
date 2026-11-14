@@ -1,0 +1,4 @@
+[master 454077a] Sei giri
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+To ../deposito.git
+   96b146c..454077a  master -> master

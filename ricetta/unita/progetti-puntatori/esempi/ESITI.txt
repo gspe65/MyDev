@@ -1,0 +1,168 @@
+# Esito atteso di ogni esempio delle lezioni, controllato da strumenti/verifica_esempi.py.
+# percorso | tipo | atteso. Nell'atteso di «uscita», « ; » separa le righe stampate;
+# in quello di «asan», « oppure » separa le alternative fra sistemi.
+
+lez00/primo.c | uscita | giro 1 ; giro 2 ; giro 3
+lez00/primo.rs | uscita | giro 1 ; giro 2 ; giro 3
+lez00/usa_triplo.c | collega | triplo
+lez00/triplo.c | modulo |
+lez00/indice.c | avviso | -Warray-bounds
+lez00/errore.c | errore | undeclared identifier 'soma'
+lez00/voto.c | codice | 1 ; indice non valido
+lez00/sfora.c | asan | stack-buffer-overflow
+lez01/scambio_per_valore.c | uscita | dentro: a=2 b=1 ; fuori: a=1 b=2
+lez01/indirizzi.c | esegue |
+lez01/scanf_con_e.c | uscita | 8
+lez01/scanf_senza_e.c | avviso | -Wformat
+lez01/scambio_per_valore.rs | uscita | dentro: a=2 b=1 ; fuori: a=1 b=2
+lez01/variabili.rs | uscita | 21 ; 42
+lez01/senza_mut.rs | rustc | E0384
+
+lez02/puntatore.c | uscita | 7 7
+lez02/dimensioni.c | uscita | un int occupa 4 celle ; un puntatore a int occupa 8 celle
+lez02/scambio.c | uscita | a=2 b=1
+lez02/null_controllato.c | uscita | nessun valore ; 5
+lez02/null_dereferenziato.c | asan | SEGV oppure access-violation
+lez02/scambio.rs | uscita | a=2 b=1
+lez02/riferimenti.rs | uscita | doppio: 14 ; numero: 0
+lez02/riferimento_non_mut.rs | rustc | E0308
+lez02/scrive_con_riferimento_semplice.rs | rustc | E0594
+lez02/niente_null.rs | rustc | E0308
+
+lez03/sizeof_parametro.c | avviso | -Wsizeof-array-argument
+lez03/sizeof_array.c | uscita | 20
+lez03/somma.c | uscita | 10
+lez03/aritmetica.c | uscita | 10 20 30
+lez03/passo.c | esegue |
+lez03/matrice_parametro.c | uscita | anna ; bruno ; carla
+lez03/oltre_array.c | asan | stack-buffer-overflow
+lez03/slice.rs | uscita | 10 ; 4 ; 5
+lez03/cerca.rs | uscita | trovato in 1 ; assente
+lez03/oltre_slice.rs | panico | index out of bounds
+lez03/lunghezza_sbagliata.c | asan | stack-buffer-overflow
+
+lez04/terminatore.c | uscita | 5 4
+lez04/lunghezza_a_mano.c | uscita | 4
+lez04/senza_terminatore.c | asan | stack-buffer-overflow
+lez04/overflow_strcpy.c | asan | stack-buffer-overflow
+lez04/parola_troppo_lunga.c | asan | stack-buffer-overflow
+lez04/fgets.c | uscita | ciao mondo ; 10
+lez04/array_di_puntatori.c | uscita | anna ; bruno
+lez04/riga_in_due.c | uscita | GET ; colore
+lez04/byte_e_caratteri.rs | uscita | 7 ; 6
+lez04/str_senza_terminatore.rs | uscita | cia ; 4
+lez04/lunghezza.rs | uscita | 4 ; 7
+lez04/indice_su_str.rs | rustc | E0277
+lez04/sconfina_in_scrittura.rs | panico | index out of bounds
+
+lez05/array_paralleli.c | uscita | anna 17 ; bruno 18
+lez05/struttura.c | uscita | anna 17
+lez05/puntatore_a_struct.c | uscita | anna 18
+lez05/copia_di_struct.c | uscita | anna 17
+lez05/struttura.rs | uscita | 3 ; 13
+lez05/sposta_senza_mut.rs | rustc | E0596
+lez05/array_disallineati.c | uscita | anna 18 ; bruno 17
+lez05/struct_senza_typedef.c | uscita | anna 17
+lez05/dimensione_struct.c | uscita | Alunno: 20 celle, eta alla 16 ; Scheda: 8 celle, eta alla 4
+lez05/metodo_differenza.rs | uscita | 9 ; 5
+
+lez06/indirizzo_locale.c | avviso | -Wreturn-stack-address
+lez06/uso_dopo_ritorno.c | asan_ritorno | stack-use-after-return ; 42
+lez06/ricorsione.c | uscita | 120
+lez06/ambito.rs | uscita | 2 ; 1
+lez06/riferimento_pendente.rs | rustc | E0597
+lez06/restituisce_senza_parametri.rs | rustc | E0106
+lez06/restituisce_con_parametro.rs | rustc | E0515
+lez06/celle_riusate.c | asan_ritorno | stack-use-after-return ; prima 42, dopo 7
+lez06/dove_sta_n.c | esegue |
+lez06/tre_funzioni.c | avviso | -Wreturn-stack-address
+lez06/riferimento_corretto.rs | uscita | 5
+lez06/restituisce_valore.rs | uscita | 5
+
+lez07/heap.c | uscita | 5
+lez07/testo_nell_heap.c | uscita | ciao
+lez07/restituisce_dall_heap.c | uscita | 42
+lez07/perdita.c | perdita |
+lez07/contatore.c | uscita | malloc 2, free 2
+lez07/box.rs | uscita | 6
+lez07/spostamento.rs | rustc | E0382
+lez07/ordine_di_drop.rs | uscita | inizio ; fine ; libero 2 ; libero 1
+lez07/array_nell_heap.c | uscita | 16
+lez07/manca_un_carattere.c | asan | heap-buffer-overflow
+lez07/due_puntatori.c | asan | heap-use-after-free
+lez07/contatore_cieco.c | perdita |
+lez07/copia_intero.rs | uscita | 5 5
+lez07/spostamento_corretto.rs | uscita | 5
+lez07/passa_e_sposta.rs | rustc | E0382
+lez07/riferimento_non_sposta.rs | uscita | 5 ; 5
+lez07/nuovo_intero.rs | uscita | 42
+
+lez08/realloc.c | uscita | 1 2 3 4
+lez08/buffer_che_cresce.c | uscita | ciao mondo
+lez08/vecchio_puntatore.c | asan | heap-use-after-free
+lez08/uso_dopo_free.c | asan | heap-use-after-free
+lez08/doppia_free.c | asan | attempting double-free
+lez08/vec.rs | uscita | 3 ; 1 2 3
+lez08/string.rs | uscita | ciao mondo ; 10
+lez08/prestito.rs | rustc | E0502
+lez08/risultato.rs | uscita | 42 ; non e' un numero
+lez08/perdita_in_rust.rs | uscita | nessun errore
+lez08/cambia_posto.c | esegue |
+lez08/azzera_dopo_free.c | uscita | nessun errore
+lez08/due_malloc.c | perdita |
+lez08/trova_l_errore.c | asan | heap-use-after-free
+lez08/legge_caratteri.c | uscita | ciao
+lez08/doppia_drop.rs | rustc | E0382
+lez08/clone.rs | uscita | 5 5
+lez08/capacita.rs | uscita | lunghezza 1, capacita 4 ; lunghezza 2, capacita 4 ; lunghezza 3, capacita 4 ; lunghezza 4, capacita 4 ; lunghezza 5, capacita 8
+lez08/dimensione_vec.rs | uscita | 24
+lez08/prestito_corretto.rs | uscita | 1 ; 4
+lez08/due_scritture.rs | rustc | E0499
+lez08/righe.rs | uscita | 3 parole: SET ; 2 parole: GET
+lez08/piu_uno.rs | uscita | 42 ; troppo grande
+lez08/primi_quadrati.rs | uscita | 4 16
+lez08/saluto.rs | uscita | ciao anna
+
+lez09/lista.c | uscita | 3 2 1 ; 1 ; 3 1 ; 0
+lez09/lista_non_liberata.c | perdita |
+lez09/lista.rs | uscita | 3 2 1
+lez09/drop_ricorsivo.rs | crollo |
+lez09/drop_iterativo.rs | uscita | lista liberata
+lez09/dimensione_nodo.c | uscita | Nodo: 16 celle, successivo alla 8
+lez09/conta.c | uscita | 3
+lez09/in_testa_array.c | uscita | 9 1 2 3 ; spostati: 3
+lez09/ordine_sbagliato.c | uscita | 7 ; 7 ; 7
+lez09/libera_male.c | asan | heap-use-after-free
+lez09/togli_la_testa.c | asan | SEGV oppure access-violation
+lez09/lista_persa.c | uscita |
+lez09/nodo_senza_box.rs | rustc | E0072
+lez09/take.rs | uscita | a: niente ; b: 5
+lez09/senza_take.rs | rustc | E0507
+lez09/lista_metodi.rs | uscita | 3 ; true ; false ; 2
+lez09/precedente.rs | rustc | E0499
+lez09/libera_male.rs | rustc | E0382
+lez09/prova_lista.rs | prova | 2 passed
+lez09/dimensione_option.rs | uscita | 8 ; 16
+
+lez10/hash.c | uscita | 3105 ; 3135
+lez10/collisione.c | uscita | 3 ; 3
+lez10/bucket.c | uscita | trovato ; assente
+lez10/hash.rs | uscita | 3105 ; 3135
+lez10/bucket.rs | uscita | trovato ; assente
+lez10/hashmap.rs | uscita | 1 ; assente
+lez10/trabocca.c | uscita | 4294967295 ; 0
+lez10/hash_con_int.c | asan | stack-buffer-underflow
+lez10/dove_finiscono.c | uscita | anna: 0 ; bruno: 2 ; carla: 1 ; dario: 3 ; elena: 1
+lez10/raddoppio.c | uscita | anna: da 0 a 0 ; bruno: da 2 a 6 ; carla: da 1 a 1 ; dario: da 3 a 3 ; elena: da 1 a 1
+lez10/non_ricalcola.c | uscita | anna: 1 ; bruno: 0
+lez10/confronti.c | uscita | 1000 chiavi, 1024 bucket: lista 500500, tabella 2256 ; 10000 chiavi, 16384 bucket: lista 50005000, tabella 15803 ; 1000 chiavi, 4 bucket: lista 500500, tabella 125502
+lez10/tempi.c | esegue |
+lez10/hash_senza_wrapping.rs | panico | attempt to multiply with overflow
+lez10/indice_i32.rs | rustc | E0277
+lez10/senza_replace.rs | rustc | E0507
+lez10/replace.rs | uscita | vecchi: 2 ; ora: 1
+lez10/insert_restituisce.rs | uscita | non c'era ; c'era 1 ; 1
+lez10/tempi.rs | esegue |
+lez10/dimensione_bucket.c | uscita | Nodo: 16 celle ; bucket: 32 celle
+lez10/dimensione_bucket.rs | uscita | Nodo: 32 celle ; bucket: 32 celle
+lez10/non_ricalcola.rs | uscita | anna: true ; bruno: false

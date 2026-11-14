@@ -1,0 +1,18 @@
+error[E0507]: cannot move out of `self.bucket` which is behind a mutable reference
+ --> senza_replace.rs:8:22
+  |
+8 |         let vecchi = self.bucket;
+  |                      ^^^^^^^^^^^ move occurs because `self.bucket` has type `Vec<String>`, which does not implement the `Copy` trait
+  |
+help: consider borrowing here
+  |
+8 |         let vecchi = &self.bucket;
+  |                      +
+help: consider cloning the value if the performance cost is acceptable
+  |
+8 |         let vecchi = self.bucket.clone();
+  |                                 ++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0507`.

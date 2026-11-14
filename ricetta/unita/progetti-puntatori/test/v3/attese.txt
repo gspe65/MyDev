@@ -1,0 +1,37 @@
+(nil)
+OK
+rosso
+OK
+verde
+OK
+valore-lungo-esattamente-31-car
+ERR troppo lungo
+ERR troppo lungo
+(nil)
+ERR troppo lungo
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR comando sconosciuto
+ERR comando sconosciuto
+OK
+1
+ERR troppo lungo
+(nil)
+ERR troppo lungo
+1
+OK
+OK
+OK
+OK
+OK
+(nil)
+6
+ERR pieno
+(nil)
+OK
+10
+ERR comando sconosciuto
+ERR comando sconosciuto

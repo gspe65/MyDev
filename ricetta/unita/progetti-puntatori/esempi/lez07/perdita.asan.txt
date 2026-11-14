@@ -1,0 +1,12 @@
+
+=================================================================
+==3559==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 100 byte(s) in 1 object(s) allocated from:
+    #0 0x64d8f8b15908 in malloc (/home/studente/lez07/perdita+0xd1908) (BuildId: 966d1ba553ce338a5306619db4b4f26f6dbd2735)
+    #1 0x64d8f8b59ac8 in main /home/studente/lez07/perdita.c:6:15
+    #2 0x7ad25882a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x7ad25882a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x64d8f8a70364 in _start (/home/studente/lez07/perdita+0x2c364) (BuildId: 966d1ba553ce338a5306619db4b4f26f6dbd2735)
+
+SUMMARY: AddressSanitizer: 100 byte(s) leaked in 1 allocation(s).

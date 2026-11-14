@@ -1,0 +1,13 @@
+diff --git a/primo.c b/primo.c
+index 303f928..1a8e41e 100644
+--- a/primo.c
++++ b/primo.c
+@@ -1,7 +1,7 @@
+ /* Il programma che seguiamo lungo tutta la catena. */
+ #include <stdio.h>
+ 
+-#define VOLTE 3
++#define VOLTE 5
+ 
+ int main(void)
+ {

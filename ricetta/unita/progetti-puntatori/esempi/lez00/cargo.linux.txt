@@ -1,0 +1,3 @@
+   Compiling giri v0.1.0 (/home/studente/lez00/giri)
+     Running `/home/studente/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name giri --
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.78s

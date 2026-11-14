@@ -1,0 +1,7 @@
+indice.c:7:20: warning: array index 3 is past the end of the array (that has type 'int[3]') [-Warray-bounds]
+    7 |     printf("%d\n", voti[3]);
+      |                    ^    ~
+indice.c:6:5: note: array 'voti' declared here
+    6 |     int voti[3] = {7, 8, 6};
+      |     ^
+1 warning generated.

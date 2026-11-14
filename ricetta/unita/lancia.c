@@ -189,9 +189,10 @@ int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
 #elif STRUMENTO == CHROMIUM
     /* Il profilo sta nell'unita': senza --user-data-dir Chromium lo scriverebbe in %LOCALAPPDATA%. Niente
      * --no-first-run: al primo avvio di un profilo Chromium legge chromium\initial_preferences (la ricerca nella barra),
-     * e quell'opzione glielo impedirebbe. Le estensioni sono spente; gli aggiornamenti Chromium non li ha. */
-    componi(comando, L"\"%ls\\chromium\\chrome.exe\" --user-data-dir=\"%ls\\home\\chromium\" --disable-extensions --no-default-browser-check",
-            radice, radice);
+     * e quell'opzione glielo impedirebbe. Le estensioni sono spente; gli aggiornamenti Chromium non li ha. A ogni avvio
+     * apre la pagina dell'unita' (chromium\benvenuto.html), al posto della pagina di benvenuto di ungoogled. */
+    componi(comando, L"\"%ls\\chromium\\chrome.exe\" --user-data-dir=\"%ls\\home\\chromium\" --disable-extensions --no-default-browser-check \"%ls\\chromium\\benvenuto.html\"",
+            radice, radice, radice);
     componi(cartella, L"%ls\\chromium", radice);
 #else
 #error "STRUMENTO sconosciuto"

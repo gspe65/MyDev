@@ -1,0 +1,2 @@
+origin	../deposito.git (fetch)
+origin	../deposito.git (push)

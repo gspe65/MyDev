@@ -1,0 +1,50 @@
+=================================================================
+==3549==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x759cea9e0014 at pc 0x57bbd48f8dfe bp 0x7ffcc9bc90f0 sp 0x7ffcc9bc88a8
+WRITE of size 5 at 0x759cea9e0014 thread T0
+    #0 0x57bbd48f8dfd in strcpy (/home/studente/lez07/manca+0xb7dfd) (BuildId: 735432334bd2054e7c0465e97a9d10def60d2730)
+    #1 0x57bbd4956b02 in main /home/studente/lez07/manca_un_carattere.c:13:5
+    #2 0x797ceb62a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x797ceb62a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x57bbd486d364 in _start (/home/studente/lez07/manca+0x2c364) (BuildId: 735432334bd2054e7c0465e97a9d10def60d2730)
+
+0x759cea9e0014 is located 0 bytes after 4-byte region [0x759cea9e0010,0x759cea9e0014)
+allocated by thread T0 here:
+    #0 0x57bbd4912908 in malloc (/home/studente/lez07/manca+0xd1908) (BuildId: 735432334bd2054e7c0465e97a9d10def60d2730)
+    #1 0x57bbd4956ada in main /home/studente/lez07/manca_un_carattere.c:9:19
+    #2 0x797ceb62a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x797ceb62a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x57bbd486d364 in _start (/home/studente/lez07/manca+0x2c364) (BuildId: 735432334bd2054e7c0465e97a9d10def60d2730)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/home/studente/lez07/manca+0xb7dfd) (BuildId: 735432334bd2054e7c0465e97a9d10def60d2730) in strcpy
+Shadow bytes around the buggy address:
+  0x759cea9dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x759cea9dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x759cea9dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x759cea9dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x759cea9dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x759cea9e0000: fa fa[04]fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x759cea9e0080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x759cea9e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x759cea9e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x759cea9e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x759cea9e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==3549==ABORTING

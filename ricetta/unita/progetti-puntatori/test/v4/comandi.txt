@@ -1,0 +1,78 @@
+GET colore
+SET colore rosso
+GET colore
+   SET  colore 	 verde   
+	GET   colore
+
+     
+SET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+GET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+SET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk wwwwwwwwwwwwwwwwwwww
+GET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+SET a 1                                                                                                                        
+SET b 2                                                                                                                         
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GET a
+GET b
+SET a
+SET
+SET a b c
+GET
+GET a b
+set a 1
+PIPPO a b c d e
+DEL
+DEL a b
+EXISTS
+EXISTS a b
+INCR
+INCR a b
+EXISTS a
+EXISTS assente
+DEL assente
+DEL colore
+GET colore
+DEL colore
+EXISTS colore
+INCR n
+INCR n
+GET n
+SET s abc
+INCR s
+GET s
+SET s 12a
+INCR s
+SET s 99999999999999999999
+INCR s
+SET s -99999999999999999999
+INCR s
+SET s +
+INCR s
+SET s -
+INCR s
+SET massimo 9223372036854775807
+INCR massimo
+GET massimo
+SET oltre 9223372036854775808
+INCR oltre
+SET meno -1
+INCR meno
+SET x 1
+INCR y
+GET y
+SET meno 007
+INCR meno
+GET meno
+SET meno +5
+INCR meno
+DEL oltre
+SET minimo -9223372036854775808
+INCR minimo
+DEL kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+GET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+GET a
+GET n
+GET massimo
+GET minimo
+PIPPO
+get

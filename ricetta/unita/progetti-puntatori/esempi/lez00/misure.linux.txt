@@ -1,0 +1,15 @@
+righe primo.c 12
+righe primo.i 851
+righe primo.s 49
+byte primo.c 202
+byte primo.i 21985
+byte primo.s 1210
+byte primo.o 1288
+byte primo 16000
+linker_clang /usr/bin/ld
+linker_rustc cc
+exit_c 0
+exit_collega 1
+byte_indice_gcc 0
+exit_asan 1
+exit_senza_asan 0

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chromium in MyDev</title>
+<style>
+  :root { color-scheme: light dark; --testo: #1f2328; --tenue: #57606a; --sfondo: #ffffff; --riquadro: #f6f8fa; --bordo: #d0d7de; --link: #0969da; }
+  @media (prefers-color-scheme: dark) {
+    :root { --testo: #e6edf3; --tenue: #9198a1; --sfondo: #0d1117; --riquadro: #161b22; --bordo: #30363d; --link: #4493f8; }
+  }
+  body { margin: 0; background: var(--sfondo); color: var(--testo); font: 16px/1.55 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  h1 { font-size: 1.7rem; margin: 0 0 .3rem; }
+  .sotto { color: var(--tenue); margin: 0 0 1.8rem; }
+  section { background: var(--riquadro); border: 1px solid var(--bordo); border-radius: 8px; padding: .4rem 1.2rem .8rem; margin: 0 0 1rem; }
+  h2 { font-size: 1.15rem; margin: .8rem 0 .4rem; }
+  ul { padding-left: 1.2rem; margin: .3rem 0; }
+  li { margin: .25rem 0; }
+  code { font: .92em Consolas, monospace; background: var(--sfondo); border: 1px solid var(--bordo); border-radius: 4px; padding: 0 .3em; }
+  a { color: var(--link); }
+  .piede { color: var(--tenue); font-size: .92rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Chromium in MyDev</h1>
+<p class="sotto">Questa pagina si apre ogni volta che avvii Chromium da <code>Chromium.exe</code>. Le schede nuove restano vuote.</p>
+
+<section>
+<h2>Cercare</h2>
+<ul>
+<li>Scrivi delle parole nella barra degli indirizzi e premi Invio: cerca con <strong>DuckDuckGo</strong>.</li>
+<li>Il motore si cambia nelle impostazioni, alla pagina «Gestisci motori di ricerca e ricerca nei siti»: per arrivarci scrivi <code>chrome://settings/searchEngines</code> nella barra.</li>
+</ul>
+</section>
+
+<section>
+<h2>Che cosa non funziona, e perché</h2>
+<ul>
+<li><strong>Video H.264 e H.265 e audio AAC non si riproducono</strong>: questo Chromium è costruito senza quei decodificatori, coperti da brevetti. Un sito che offre solo quei formati mostra un errore al posto del video; YouTube in genere funziona, perché usa VP9 o AV1 e l'audio Opus.</li>
+<li><strong>I contenuti protetti non si riproducono</strong> (Netflix, Spotify e simili): manca il modulo che li decifra, che non è libero.</li>
+<li><strong>Non ci sono le estensioni né l'accesso con un account Google</strong>, e Chromium non si aggiorna da solo: la versione è quella provata con l'unità.</li>
+</ul>
+</section>
+
+<section>
+<h2>I tuoi dati</h2>
+<ul>
+<li>La cronologia, i preferiti, le password salvate e i cookie restano nell'unità, nella cartella <code>home\chromium</code>.</li>
+<li><strong>Chi riceve una copia della cartella riceve anche quelli.</strong> Prima di dare l'unità ad altri, togli dalla copia la cartella <code>home</code>.</li>
+<li>I file che scarichi finiscono nella cartella <strong>Download</strong> di Windows, come con ogni browser.</li>
+</ul>
+</section>
+
+<section>
+<h2>La guida completa</h2>
+<p>La guida dell'unità spiega tutti gli strumenti, dove restano i tuoi file e che cosa manca: è il file <a href="../README.md"><code>README.md</code></a> nella cartella dell'unità.</p>
+<p>Qui si apre come testo semplice, con i segni della formattazione. Si legge meglio nell'editor: aprilo in VSCodium e premi <strong>Ctrl+Maiusc+V</strong>.</p>
+</section>
+
+<p class="piede">Questa pagina sta nell'unità e si apre senza rete.</p>
+</main>
+</body>
+</html>

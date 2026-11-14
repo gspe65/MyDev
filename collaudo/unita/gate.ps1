@@ -15,7 +15,7 @@
 # E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore),
 # A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore),
 # A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e il repository del nucleo, come la costruzione),
-# A13 Chromium dal lanciatore col profilo nell'unita' (con le finestre).
+# A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita' all'avvio (con le finestre).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -125,7 +125,9 @@ function Attendi-Editor() {
 function Chiudi-Tutto() {
     foreach ($p in (ProcessiUnita)) {
         $g = Get-Process -Id $p.ProcessId -ErrorAction SilentlyContinue
-        if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() }
+        # Chiusa la finestra principale di Chromium, gli altri suoi processi escono: su uno gia' uscito CloseMainWindow
+        # solleva un'eccezione ("il processo e' terminato"), e un processo uscito e' cio' che si vuole.
+        try { if ($g -and $g.MainWindowHandle -ne [IntPtr]::Zero) { [void]$g.CloseMainWindow() } } catch { }
     }
     $inizio = Get-Date
     while (((Get-Date) - $inizio).TotalSeconds -lt 20) {
@@ -266,11 +268,14 @@ try {
         Start-Sleep -Seconds 15
         AnnotaAscolti 'chromium'
         $Chrome = @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count
+        # La scheda aperta all'avvio e' la pagina dell'unita' (chromium\benvenuto.html), che il lanciatore passa a Chromium.
+        $Titoli = @(Get-Process -Name chrome -ErrorAction SilentlyContinue | Where-Object { $_.Path -and (Sotto $_.Path) -and $_.MainWindowHandle -ne 0 } | ForEach-Object { $_.MainWindowTitle })
+        $Pagina = @($Titoli | Where-Object { $_ -like 'Chromium in MyDev*' }).Count -ge 1
         Chiudi-Tutto
         $Pref = Join-Path $Rad 'home\chromium\Default\Preferences'
         $Motore = ([IO.File]::Exists($Pref)) -and ([IO.File]::ReadAllText($Pref, $Utf8).Contains('duckduckgo.com'))
-        Scrivi "    chromium: processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore"
-        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita''' $(if ($Chrome -ge 1 -and $Motore) { 0 } else { 1 })
+        Scrivi "    chromium: processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore; finestre: $($Titoli -join ' | ')"
+        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita'', la pagina dell''unita'' all''avvio' $(if ($Chrome -ge 1 -and $Motore -and $Pagina) { 0 } else { 1 })
     }
 
     # --- L'ambiente C, dal terminale dell'unita'.

@@ -1,42 +1,38 @@
 # MyDev
 
-Un ambiente di sviluppo portabile per Windows, pensato per i laboratori scolastici e per i PC di casa: si copia su disco o su una chiavetta e non richiede diritti di amministratore. Contiene VSCodium, i compilatori C `gcc` e `clang` con il debugger, Python, l'ambiente POSIX di MSYS2, Neovim, Nginx e AlgoDesign. La variante **estesa** aggiunge Rust, `git` e `gh`.
+Un ambiente di sviluppo portabile per Windows, pensato per i laboratori scolastici e per i PC di casa: si copia su disco o su una chiavetta e non richiede diritti di amministratore. Contiene VSCodium, i compilatori C `gcc` e `clang` con il debugger, Python, l'ambiente POSIX di MSYS2, Neovim, Nginx, AlgoDesign e il browser Chromium, costruito senza i codec coperti da brevetti. La variante **estesa** aggiunge Rust, `git`, `gh` e il codice di un corso sui puntatori.
 
-Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'ambiente stesso: il costruttore scarica ogni componente dalla sua fonte originale, alla versione fissata, e ne confronta l'impronta. La versione pubblicata è la `0.1.0`: è l'etichetta `v0.1.0` di questo repository, con la sua pagina fra le release. La release non contiene file compilati: l'unità si costruisce con la ricetta, come spiegato qui sotto.
+Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'ambiente stesso: il costruttore scarica ogni componente dalla sua fonte originale, alla versione fissata, e ne confronta l'impronta. La versione pubblicata è la `0.2.0`: è l'etichetta `v0.2.0` di questo repository, con la sua pagina fra le release. La release contiene un solo file compilato, il pacchetto dell'estensione per i file `.algo`, che il costruttore scarica con la sua impronta come ogni altro componente; il resto dell'unità si costruisce con la ricetta, come spiegato qui sotto.
 
 ## Che cosa c'è
 
 | Cartella | Contenuto |
 |---|---|
 | `ricetta/` | Il costruttore e la verifica dell'unità, l'elenco dei componenti con versione, fonte e impronta (`componenti.json`, e `componenti-estesa.json` per l'aggiunta dell'estesa), l'indice delle licenze e il comando dei sorgenti |
-| `ricetta/unita/` | I file nostri che entrano nell'unità: il lanciatore, i comandi di `bin`, le impostazioni dell'editor, i progetti di esempio e le guide |
-| `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata e lo verifica per impronta |
+| `ricetta/unita/` | I file nostri che entrano nell'unità: il lanciatore, i comandi di `bin`, le impostazioni dell'editor e di Chromium, i progetti di esempio, le guide e, per l'estesa, la copia del codice del corso sui puntatori |
+| `ricetta/puntatori/` | L'inventario di quella copia e la prova che la confronta con il commit da cui viene |
+| `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata, lo verifica per impronta e dichiara la versione del contratto |
 | `extensions/libreria/` | La libreria sopra il nucleo, con cinque funzioni: apri, controlla, genera, leggi Accademico, aggiungi alla libreria |
 | `extensions/algo/` | Il prototipo dell'estensione per i file `.algo`, che nell'unità è già installata |
-| `collaudo/` | Le prove: della libreria, della conformità al nucleo, dell'estensione, e il kit dell'unità col suo gate |
+| `collaudo/` | Le prove: della libreria, della conformità al nucleo, dell'estensione, del codice generato che si esegue nell'unità, e il kit dell'unità col suo gate |
 
 ## Prerequisiti
 
+Per costruire l'unità:
+
 - Windows 10 o 11 x64, con Windows PowerShell 5.1 e `tar.exe` in `System32` (ci sono già).
 - Git.
-- [Bun](https://bun.sh) 1.4.2 e [Node.js](https://nodejs.org) 24, per il pacchetto dell'estensione e per le prove.
+- La rete, la prima volta: il deposito dei componenti pesa circa 1,1 GB per la base e 1,2 GB per l'estesa. L'unità costruita occupa circa 2,7 GB, l'estesa 3,3 GB.
+
+Per le prove, e per costruire da sé il pacchetto dell'estensione:
+
+- [Bun](https://bun.sh) 1.4.2 e [Node.js](https://nodejs.org) 24.
 - VS Code, solo per installarvi il pacchetto dell'estensione e per la sua prova con `--finestra`.
-- Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`.
-- La rete, la prima volta: il deposito dei componenti pesa circa 1,0 GB per la base e 1,1 GB per l'estesa. L'unità costruita occupa circa 2,4 GB, l'estesa 3,1 GB.
+- Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usano anche il gate dell'unità, per il corpus di esecuzione, e la costruzione dell'estensione.
 
 ## Come si costruisce l'unità
 
-I comandi sono per PowerShell, dalla cartella del repository. Prima il pacchetto dell'estensione, che il costruttore copia nell'unità:
-
-```
-bun install --frozen-lockfile
-bun ricetta/nucleo/estrai.ts
-bun run algo:costruisci
-```
-
-La costruzione dell'estensione prende il pacchetto del nucleo dalla release di AlgoDesign e ne confronta l'impronta: la prima volta serve la rete, poi resta in `ricetta/nucleo/scaricato/`.
-
-Poi l'unità, base o estesa:
+I comandi sono per PowerShell, dalla cartella del repository. L'unità base o l'estesa:
 
 ```
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\costruisci.ps1 -Destinazione C:\MyDev
@@ -45,15 +41,27 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\costruisci.ps1 -
 
 La destinazione deve essere vuota o non esistere. I componenti scaricati restano in un deposito accanto alla destinazione (`C:\MyDev-deposito`, `C:\MyDev-estesa-deposito`; si cambia con `-Deposito`), e la volta dopo si costruisce anche senza rete con `-SenzaRete`. Ogni variante vuole il proprio deposito.
 
-Dal deposito pieno la costruzione dura circa 15 minuti, per la base come per l'estesa. Gran parte del tempo la prende l'antivirus, che esamina decine di migliaia di file piccoli: con la cartella esclusa dall'analisi in tempo reale si scende a circa 4 minuti.
+Dal deposito pieno la costruzione dura circa 10 minuti per la base e 16 per l'estesa. Gran parte del tempo la prende l'antivirus, che esamina decine di migliaia di file piccoli: con la cartella esclusa dall'analisi in tempo reale si scende a circa 4 minuti.
 
-La destinazione non può essere la radice di un disco, e i file dei componenti si leggono dall'albero di lavoro: con un file modificato o nuovo sotto `ricetta\` o `extensions\` la costruzione si ferma, perché l'unità dichiarerebbe un commit che non è il suo (con `-AlberoModificato` procede, e `unita.json` lo dice).
+La destinazione non può essere la radice di un disco, e i file nostri si leggono dall'albero di lavoro: con un file modificato o nuovo sotto `ricetta\` o `extensions\` la costruzione si ferma, perché l'unità dichiarerebbe un commit che non è il suo (con `-AlberoModificato` procede, e `unita.json` lo dice).
 
 L'unità finita si sposta e si copia come una cartella qualsiasi, anche in un percorso con spazi o su una chiavetta, purché il percorso della cartella non superi i 65 caratteri: alcuni file stanno 193 caratteri più in fondo, e molti programmi di Windows non aprono i percorsi oltre i 259. Come si usa lo dice il suo `README.md`, alla radice.
 
+### Il pacchetto dell'estensione
+
+Il costruttore installa nell'unità il pacchetto dell'estensione per i file `.algo` della release di questo repository (`algo-codice-0.0.1.vsix`), con byte e impronta scritti nella ricetta. Chi vuole costruirlo dai sorgenti:
+
+```
+bun install --frozen-lockfile
+bun ricetta/nucleo/estrai.ts
+bun run algo:costruisci
+```
+
+La costruzione prende il pacchetto del nucleo dalla release di AlgoDesign e ne confronta l'impronta: la prima volta serve la rete, poi resta in `ricetta/nucleo/scaricato/`. Il pacchetto che esce in `extensions/algo/dist/` ha lo stesso contenuto di quello della release, file per file, ma un'impronta diversa, perché lo zip porta le date in cui i file sono stati scritti: per questo la ricetta installa quello della release. `bun collaudo/algo/prova.ts` confronta i due, voce per voce.
+
 ## Se una fonte sparisce
 
-Ogni componente si scarica dalla sua fonte originale (l'archivio dei pacchetti di MSYS2, PyPI, Open VSX, le release dei progetti su GitHub, i siti dei progetti), e una fonte può sparire: un pacchetto vecchio esce dall'archivio, un progetto toglie una release, cambia indirizzo o chiude. Questo repository non tiene una copia dei componenti. Se una fonte non risponde, il costruttore si ferma prima di scrivere la destinazione e nomina il componente, con la versione, l'indirizzo, il file atteso nel deposito e la sua impronta:
+Ogni componente si scarica dalla sua fonte originale (l'archivio dei pacchetti di MSYS2, PyPI, Open VSX, le release dei progetti su GitHub, compresi questo repository e quello di Chromium, i siti dei progetti), e una fonte può sparire: un pacchetto vecchio esce dall'archivio, un progetto toglie una release, cambia indirizzo o chiude. Questo repository non tiene una copia dei componenti. Se una fonte non risponde, il costruttore si ferma prima di scrivere la destinazione e nomina il componente, con la versione, l'indirizzo, il file atteso nel deposito e la sua impronta:
 
 ```
 FERMO: scaricamento non riuscito: editor/vscodium 1.143.17232, da https://github.com/VSCodium/...: ... (404) ... -- se la fonte non c'e' piu', il file editor/VSCodium-win32-x64-1.143.17232.zip (sha256 a1090868...) si copia nel deposito da una sua copia, poi si costruisce con -SenzaRete
@@ -99,7 +107,9 @@ robocopy C:\MyDev "C:\Temp\MyDev  prova" /E /R:1 /W:1 /NFL /NDL /NJH /NJS
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita "C:\Temp\MyDev  prova"
 ```
 
-`robocopy` esce con 1 quando ha copiato dei file: non è un errore; da 8 in su sì (un file non copiato, per esempio perché l'editor dell'unità era aperto). Il gate cerca i percorsi assoluti anche della cartella in cui l'unità è stata costruita, che legge dalla copia; altre cartelle si aggiungono con `-Altro "<cartella>;<cartella>"`. Con `-Finestre` apre anche l'editor, due volte, tre nell'estesa; la finestra può prendere la tastiera mentre scrivi. Su un PC di sviluppo, con le finestre, il gate ha richiesto circa 18 minuti per la base e 16 per l'estesa; senza finestre si risparmiano le aperture dell'editor.
+`robocopy` esce con 1 quando ha copiato dei file: non è un errore; da 8 in su sì (un file non copiato, per esempio perché l'editor dell'unità era aperto). Il gate cerca i percorsi assoluti anche della cartella in cui l'unità è stata costruita, che legge dalla copia; altre cartelle si aggiungono con `-Altro "<cartella>;<cartella>"`. Con `-Finestre` apre anche l'editor, due volte, tre nell'estesa, e Chromium una volta; la finestra può prendere la tastiera mentre scrivi. Su un PC di sviluppo, con le finestre, il gate ha richiesto fra 16 e 29 minuti per la base e fra 20 e 37 per l'estesa, secondo quanto altro lavorava sul PC; senza finestre si risparmiano le aperture.
+
+Il gate prova anche il **corpus di esecuzione**: il codice C e Python che l'estensione dell'unità genera dai 192 file `.algo` di prova di AlgoDesign si compila coi due compilatori dell'unità, si esegue col suo Python e si confronta con gli attesi dei casi d'uso, 1506 esiti; le differenze ammesse sono dichiarate una per una, col motivo, in `collaudo/esecuzione/prova.ts`. Quel passo vuole Bun e il repository di AlgoDesign, come le prove (vedi i prerequisiti): senza Bun il gate si ferma, con l'uscita 2.
 
 Ogni comando finisce con una riga `ESITO:`. Le uscite sono 0 verde, 1 rosso, 2 fermo (non si è potuto misurare). Un parametro sbagliato lo rifiuta PowerShell prima che il comando parta: esce con 1 e senza la riga `ESITO:`.
 
@@ -108,7 +118,8 @@ Ogni comando finisce con una riga `ESITO:`. Le uscite sono 0 verde, 1 rosso, 2 f
 Dai pacchetti ufficiali il costruttore toglie i file che non si possono ridistribuire o che portano codec proprietari, e `unita.json` li elenca uno per uno (`tolti`, `sostituiti`):
 
 - da VSCodium: `d3dcompiler_47.dll`, `dxcompiler.dll`, `dxil.dll` (Microsoft), `bin/codium-tunnel.exe`, l'estensione di accesso con un account Microsoft (con `msalruntime.dll`), `Microsoft.PowerShell.Pager.dll`, e `ffmpeg.dll`, sostituito da quello di Electron 43.7.7 coi soli formati liberi (senza un `ffmpeg.dll` la finestra dell'editor non parte);
-- da Neovim: `bin/DbgHelp.dll` (Microsoft): Neovim usa quella di Windows.
+- da Neovim: `bin/DbgHelp.dll` (Microsoft): Neovim usa quella di Windows;
+- da Chromium: `d3dcompiler_47.dll` e `dxcompiler.dll` (Microsoft): Chromium usa quello di Windows.
 
 Che cosa vuol dire per chi usa l'editor:
 
@@ -118,6 +129,35 @@ Che cosa vuol dire per chi usa l'editor:
 
 `collaudo/unita/editor.ps1` controlla i file (quelli tolti, l'impronta di `ffmpeg.dll`, la riga di `argv.json`), non che cosa l'editor decodifica: quello si misura con l'editor aperto, a ogni versione nuova di VSCodium.
 
+## Chromium
+
+Il browser dell'unità è ungoogled-chromium 157.0.8103.38-1.1, cioè Chromium senza i servizi di Google, costruito **senza i codec coperti da brevetti** nel repository [`gspe65/chromium-senza-codec`](https://github.com/gspe65/chromium-senza-codec) con le GitHub Actions: la procedura di ungoogled-chromium per Windows, con le opzioni che tolgono H.264, H.265, AAC e il modulo che decifra i contenuti protetti. Lo zip sta fra le release di quel repository, con un'attestazione di provenienza che lo lega alla corsa che l'ha costruito; il costruttore ne confronta l'impronta, e l'attestazione si controlla con:
+
+```
+gh attestation verify ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip -R gspe65/chromium-senza-codec
+```
+
+Che cosa vuol dire per chi lo usa:
+
+- **H.264, H.265 e AAC non si riproducono**, nemmeno attraverso la scheda video; VP9, AV1 e Opus sì. Un sito che offre solo quei formati mostra un errore al posto del video.
+- **I contenuti protetti non si riproducono** (Netflix, Spotify e simili), e **non c'è l'accesso con un account Google**.
+- **Le estensioni sono spente**, e Chromium non si aggiorna: la versione è quella della ricetta.
+- Il lanciatore gli dà un profilo dentro l'unità e apre a ogni avvio la pagina «Chromium in MyDev», che spiega queste cose; la barra degli indirizzi cerca con DuckDuckGo, dalle preferenze iniziali (`ricetta/unita/chromium/`).
+
+**Una scrittura fuori dall'unità, dichiarata.** Ogni Chromium su Windows scrive nel registro, sotto `HKCU\Software\Chromium`, i codici di controllo delle sue impostazioni e lo stato dell'ultima chiusura, e nessuna opzione lo spegne: il gate ammette quelle sole chiavi, misurate, e dà rosso su ogni altra scrittura.
+
+**La FFmpeg**, la libreria che decodifica audio e video (licenza LGPL), in questa versione è collegata dentro `chrome.dll`; un `chrome.dll` con la FFmpeg in un file a parte, `ffmpeg.dll`, è previsto per la `0.3.0`. I sorgenti della FFmpeg e della procedura di costruzione stanno fra quelli che `ricetta/sorgenti.ps1` scarica; per il sorgente completo di Chromium, circa 2 GB, l'indice delle licenze rimanda a quello di Google, alla stessa versione.
+
+## Il corso sui puntatori, nell'estesa
+
+L'unità estesa porta in `progetti/puntatori` il codice di un corso sui puntatori, in C e in Rust, con i due programmi che lo verificano. Nella ricetta è una copia fissata a un commit del repository del corso, in `ricetta/unita/progetti-puntatori/`: `ricetta/puntatori/inventario.json` dice il commit, i file lasciati fuori col motivo e l'impronta di ogni file.
+
+```
+python -B ricetta/puntatori/uguaglianza.py --solo-copia
+```
+
+confronta la copia con l'inventario, nei due versi; con `--repo <repository del corso>` al posto di `--solo-copia` confronta anche l'inventario con il commit. Il kit dell'estesa fa lo stesso confronto sulla cartella dell'unità e lancia i due verificatori del corso. La copia non si corregge qui: un difetto si corregge nel repository del corso, e la copia si rifissa al commit nuovo con `--scrivi --commit <commit>`.
+
 ## Se dai l'unità ad altri
 
 Alcuni componenti hanno licenze che chiedono di dare anche i sorgenti a chi riceve una copia. La nota in testa a `LICENZE.txt`, nell'unità, spiega le due strade: i sorgenti accanto alla copia, oppure un'offerta scritta. Questo comando li scarica tutti, alla versione esatta e con l'impronta confrontata:
@@ -126,11 +166,11 @@ Alcuni componenti hanno licenze che chiedono di dare anche i sorgenti a chi rice
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\sorgenti.ps1 -Destinazione D:\sorgenti -Variante estesa
 ```
 
-Per l'estesa sono 74 archivi, circa 765 MB; con `-Variante base` solo quelli della base, 72, circa 745 MB. Un file già presente non si riscarica, si verifica.
+Per l'estesa sono 77 archivi, circa 785 MB; con `-Variante base` solo quelli della base, 75, circa 765 MB. Un file già presente non si riscarica, si verifica.
 
 ## L'estensione per i file `.algo`
 
-Nell'unità è già installata. In VS Code si installa dal pacchetto:
+Nell'unità è già installata. In VS Code si installa dal pacchetto, quello della release oppure quello costruito qui:
 
 ```
 code --install-extension extensions/algo/dist/algo-codice.vsix
@@ -139,6 +179,8 @@ code --install-extension extensions/algo/dist/algo-codice.vsix
 Apri un file `.algo` e dalla riga di comando dell'editor scegli «Mostra il codice generato». Il linguaggio e la lingua si scelgono nelle impostazioni `algo.linguaggio` e `algo.lingua`. I file `.algo` hanno l'icona di AlgoDesign.
 
 Il documento è in sola lettura e si aggiorna rilanciando il comando, non da solo. Viene dal file salvato: se ci sono modifiche non salvate, il comando lo dice. Se il codice non si può generare, il documento dice perché. L'estensione non compila e non esegue. Il pacchetto porta i testi delle sue licenze ed è ancora un prototipo.
+
+L'estensione usa il nucleo di AlgoDesign attraverso cinque funzioni, quelle della libreria: è il **contratto 1.0**, il punto d'ingresso di AlgoDesign `v1.0.0`. `ricetta/nucleo/pacchetto.json` ne tiene il numero accanto all'impronta del punto d'ingresso, e `bun ricetta/nucleo/pacchetto.ts` dà rosso se a un'etichetta nuova di AlgoDesign il punto d'ingresso cambia e il numero no. Un campo o un valore nuovo porta il contratto alla 1.1; una funzione in più o in meno non è ammessa.
 
 ## Come si provano il nucleo e le estensioni
 
@@ -162,6 +204,8 @@ bun collaudo/algo/prova.ts --unita C:\MyDev
 
 La prima apre VS Code per pochi secondi, con un profilo temporaneo; la seconda apre l'editor dell'unità, con l'estensione installata lì e coi dati dell'unità: le impostazioni che la prova cambia si rimettono come erano alla fine, anche se la si interrompe. In tutte e due la finestra può prendere la tastiera mentre scrivi. Senza `--finestra` né `--unita` l'esito dice che il documento nell'editor non è stato provato.
 
+`bun collaudo/algo/prova.ts` cerca il pacchetto della release in `extensions/algo/scaricato/`, e se non c'è lo scarica dalla release.
+
 ## Licenza
 
 © 2026 Giuseppe Lancellotti. Due licenze, secondo il tipo di contenuto:
@@ -170,6 +214,8 @@ La prima apre VS Code per pochi secondi, con un profilo temporaneo; la seconda a
 |---|---|---|
 | **Codice**: sorgenti, script, configurazioni di costruzione e di prova | [MIT](https://opensource.org/license/mit) | [`LICENSE`](LICENSE) |
 | **Documentazione**: i file Markdown (`*.md`) del repository | [Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) | [`LICENSE-DOCS`](LICENSE-DOCS) |
+
+Fa eccezione `ricetta/unita/progetti-puntatori/terzi/sds/`, codice di terzi incluso nel corso sui puntatori, con la sua licenza BSD (il `LICENSE` e la `PROVENIENZA.md` nella sua cartella).
 
 L'icona dell'estensione (`extensions/algo/icona.png`) è quella di AlgoDesign, dello stesso autore, e ne segue la licenza MIT (`extensions/algo/LICENZA-ALGODESIGN.txt`); la licenza copre il file, non il nome.
 

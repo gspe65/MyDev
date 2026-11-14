@@ -1,0 +1,15 @@
+array: 649 ms, trovate 20000
+lista: 825 ms, trovate 20000
+tabella: 0 ms, trovate 20000
+array: 632 ms, trovate 20000
+lista: 928 ms, trovate 20000
+tabella: 1 ms, trovate 20000
+array: 636 ms, trovate 20000
+lista: 929 ms, trovate 20000
+tabella: 1 ms, trovate 20000
+array: 657 ms, trovate 20000
+lista: 921 ms, trovate 20000
+tabella: 0 ms, trovate 20000
+array: 649 ms, trovate 20000
+lista: 877 ms, trovate 20000
+tabella: 0 ms, trovate 20000

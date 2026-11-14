@@ -1,0 +1,4 @@
+hash_con_int.c:8:31: runtime error: signed integer overflow: 94842723 * 31 cannot be represented in type 'int'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior hash_con_int.c:8:31 
+hash_con_int.c:19:5: runtime error: index -2 out of bounds for type 'int[4]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior hash_con_int.c:19:5 

@@ -1,0 +1,4 @@
+lista creata
+
+thread 'main' (8080) has overflowed its stack
+fatal runtime error: stack overflow, aborting

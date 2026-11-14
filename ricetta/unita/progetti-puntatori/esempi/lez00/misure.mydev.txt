@@ -1,0 +1,26 @@
+data 2026-11-10
+unita 0.1.0 estesa
+rustc rustc 1.99.1 (58cf8f9c3 2026-10-13) (Rev2, Built by MSYS2 project)
+host_rustc x86_64-pc-cygwin
+linker_rustc x86_64-pc-cygwin-gcc
+linker_clang C:/MyDev-estesa/llvm/bin/ld.lld
+clang clang version 23.1.0 (https://github.com/llvm/llvm-project.git ea7d852a70e8bdfaf601d6626a760f9771b2c4b4)
+gcc gcc (GCC) 15.3.0
+gcc_macchina x86_64-pc-cygwin
+exit_gcc_asan 1
+exit_asan 1
+exit_senza_asan 0
+exit_rust_dot_slash 0
+exit_rust_solo_system32 127
+dipendenze_rust msys-2.0.dll msys-gcc_s-seh-1.dll
+valgrind assente
+git git version 2.56.0
+git_autocrlf non impostato
+git_pull_rebase non impostato
+git_pull_rifiutato 1
+gh gh version 2.103.3 (2026-10-26)
+gh_login non provato
+banco_esempi 155
+banco_problemi 0
+archivio_rust_righe 1177
+contatore 33 738 1051 1058

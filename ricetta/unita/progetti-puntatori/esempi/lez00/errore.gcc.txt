@@ -1,0 +1,9 @@
+errore.c: In function ‘main’:
+errore.c:7:20: error: ‘soma’ undeclared (first use in this function); did you mean ‘somma’?
+    7 |     printf("%d\n", soma);
+      |                    ^~~~
+      |                    somma
+errore.c:7:20: note: each undeclared identifier is reported only once for each function it appears in
+errore.c:6:9: warning: unused variable ‘somma’ [-Wunused-variable]
+    6 |     int somma = 0;
+      |         ^~~~~

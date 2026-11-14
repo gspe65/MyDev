@@ -1,0 +1,1 @@
+Inizializzato repository Git vuoto in /home/studente/mio-archivio/.git/

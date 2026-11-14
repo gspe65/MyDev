@@ -1,0 +1,19 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==6618==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x5cadffdadbc0 bp 0x7ffc7695f880 sp 0x7ffc7695f830 T0)
+==6618==The signal is caused by a WRITE memory access.
+==6618==Hint: address points to the zero page.
+    #0 0x5cadffdadbc0 in togli /home/studente/lez09m/togli_la_testa.c:19:32
+    #1 0x5cadffdadc90 in main /home/studente/lez09m/togli_la_testa.c:33:13
+    #2 0x74ca5662a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x74ca5662a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x5cadffcc4364 in _start (/home/studente/lez09m/togli_la_testa+0x2c364) (BuildId: fd329bc97f30219e5d93d695f590594417ea50f0)
+
+==6618==Register values:
+rax = 0x0000000000000008  rbx = 0x0000000000000000  rcx = 0x0000000000000000  rdx = 0x000070ea557e0000  
+rdi = 0x000070ea557e0010  rsi = 0x0000000000000001  rbp = 0x00007ffc7695f880  rsp = 0x00007ffc7695f830  
+ r8 = 0x0000000000000001   r9 = 0x00007fffffffff01  r10 = 0x00007fffffffff01  r11 = 0xafffff00000fff01  
+r12 = 0x00007ffc7695f9f8  r13 = 0x0000000000000001  r14 = 0x000074ca56b28000  r15 = 0x00005cadffde75b0  
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV /home/studente/lez09m/togli_la_testa.c:19:32 in togli
+==6618==ABORTING

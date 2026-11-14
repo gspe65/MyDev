@@ -1,0 +1,25 @@
+=================================================================
+==4286==ERROR: AddressSanitizer: attempting double-free on 0x73f77f7e0010 in thread T0:
+    #0 0x6114800ba66a in free (/home/studente/lez08m/doppia_free+0xd166a) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+    #1 0x6114800feade in main /home/studente/lez08m/doppia_free.c:8:5
+    #2 0x77d78042a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x77d78042a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x611480015364 in _start (/home/studente/lez08m/doppia_free+0x2c364) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+
+0x73f77f7e0010 is located 0 bytes inside of 4-byte region [0x73f77f7e0010,0x73f77f7e0014)
+freed by thread T0 here:
+    #0 0x6114800ba66a in free (/home/studente/lez08m/doppia_free+0xd166a) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+    #1 0x6114800fead5 in main /home/studente/lez08m/doppia_free.c:7:5
+    #2 0x77d78042a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x77d78042a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x611480015364 in _start (/home/studente/lez08m/doppia_free+0x2c364) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+
+previously allocated by thread T0 here:
+    #0 0x6114800ba908 in malloc (/home/studente/lez08m/doppia_free+0xd1908) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+    #1 0x6114800feac8 in main /home/studente/lez08m/doppia_free.c:6:14
+    #2 0x77d78042a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #3 0x77d78042a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x611480015364 in _start (/home/studente/lez08m/doppia_free+0x2c364) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56)
+
+SUMMARY: AddressSanitizer: double-free (/home/studente/lez08m/doppia_free+0xd166a) (BuildId: 0d916fa30a042829e97f3737282a66a6d5d0ef56) in free
+==4286==ABORTING
