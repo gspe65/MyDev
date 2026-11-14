@@ -10,7 +10,8 @@ Tre rilevatori:
 - R3, registro dell'utente: una chiave o un valore nuovi o cambiati che portano un nome degli strumenti o la radice dell'unita'.
   Le chiavi di RUMORE sono di Explorer e portano il nome di ogni finestra: lì il nome e' ammesso.
   Le scritture di Chromium in Software\\Chromium sono dichiarate (CHROMIUM_CHIAVI, CHROMIUM_VALORI): si stampano e non
-  decidono, salvo un valore che nomini la radice; ogni altra chiave o valore sotto Software\\Chromium e' un colpo.
+  decidono, salvo un valore che nomini la radice (cercata con lo stesso riconoscitore dei colpi: in chiaro, ROT13, hex:);
+  ogni altra chiave o valore sotto Software\\Chromium e' un colpo.
   Le altre chiavi cambiate si stampano, non decidono: sul PC in uso cambiano per conto di altri programmi.
 
 Che cosa NON guarda: le scritture dentro cartelle condivise gia' esistenti (un file riscritto sul posto, senza figli
@@ -36,7 +37,6 @@ NOMI = ["vscodium", "codium", "vscode-oss", "nvim", "nginx", "clangd", "mkcert",
         "cargo", "rustc", "rust-analyzer", "github cli", "virtualenv", "python_history", "chromium"]
 # Nomi corti che stanno dentro parole comuni («pip» in «pipe»): valgono solo come nome intero di una voce del profilo.
 NOMI_ESATTI = ["pip", "pypa"]
-ROT13 = [codecs.encode(n, "rot13") for n in NOMI]
 RADICE = []
 SPECIALI = [".vscode", ".vscode-oss"]
 
@@ -65,8 +65,10 @@ CHROMIUM_VALORI = {'"UsageStatsInSample"', '"usagestats"', '"metricsid"', '"metr
 
 
 def dichiarata(k, v=None, w=""):
-    """Una scrittura di Chromium dichiarata: la chiave dell'elenco, o un valore dell'elenco alla radice della sua chiave."""
-    if any(n in (w or "").lower() for n in RADICE):
+    """Una scrittura di Chromium dichiarata: la chiave dell'elenco, o un valore dell'elenco alla radice della sua chiave.
+    Un valore che porti la radice non e' dichiarato, cercata con lo stesso riconoscitore dei colpi (in chiaro, in ROT13,
+    nei byte di un valore hex: in UTF-16 e latin-1): un riconoscitore piu' debole ammetterebbe cio' che R3 vede."""
+    if porta(f"{v or ''}={w or ''}", RADICE):
         return False
     if any(re.match(p, k) for p in CHROMIUM_CHIAVI):
         return True
@@ -110,22 +112,27 @@ def leggi_reg(percorso):
     return chiavi
 
 
-def porta_nome(testo):
-    """Solo per il registro: la radice dell'unita' non vale per R1, che vedrebbe la cartella della prova stessa."""
+def porta(testo, nomi):
+    """Il riconoscitore del registro: uno dei nomi in chiaro, in ROT13 (come li scrive Explorer) o nei byte di un valore
+    hex: letti in UTF-16 e in latin-1. Lo stesso per i colpi (porta_nome) e per le scritture dichiarate (dichiarata)."""
     basso = testo.lower()
-    if any(n in basso for n in NOMI + RADICE) or any(n in basso for n in ROT13):
+    if any(n in basso for n in nomi) or any(codecs.encode(n, "rot13") in basso for n in nomi):
         return True
-    if "hex" in basso:
-        cifre = re.sub(r"[^0-9a-f]", "", re.sub(r"hex(\([0-9a-f]+\))?:", "", basso))
-        try:
-            b = bytes.fromhex(cifre if len(cifre) % 2 == 0 else cifre[:-1])
-        except ValueError:
-            return False
+    # Le cifre solo dai dati dopo «hex:» o «hex(<tipo>):»: le lettere a-f del nome del valore («homepage») sposterebbero
+    # l'allineamento dei byte, e l'UTF-16 non si leggerebbe piu'.
+    for m in re.finditer(r"hex(?:\([0-9a-f]+\))?:([0-9a-f,\s\\]*)", basso):
+        cifre = re.sub(r"[^0-9a-f]", "", m.group(1))
+        b = bytes.fromhex(cifre[:len(cifre) // 2 * 2])
         for cod in ("utf-16-le", "latin-1"):
             d = b.decode(cod, "ignore").lower()
-            if any(n in d for n in NOMI + RADICE):
+            if any(n in d for n in nomi):
                 return True
     return False
+
+
+def porta_nome(testo):
+    """Solo per il registro: la radice dell'unita' non vale per R1, che vedrebbe la cartella della prova stessa."""
+    return porta(testo, NOMI + RADICE)
 
 
 def differenze(A, B, ra, rb):
@@ -250,6 +257,9 @@ def confronta(lavoro, a, b, con_sonde):
         if RADICE:
             casi.append(("R3 valore con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Sonda4", "x", "C:\\" + RADICE[0] + "\\x")]), {}))
             casi.append(("R3 Chromium dichiarata con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', "C:\\" + RADICE[0] + "\\x")]), {}))
+            # La stessa radice nei byte di un valore hex: (UTF-16), come la scrive il registro: il riconoscitore dei colpi.
+            casi.append(("R3 Chromium dichiarata con la radice in hex", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"',
+                         "hex(1):" + ",".join(f"{c:02x}" for c in ("C:\\" + RADICE[0] + "\\x").encode("utf-16-le")))]), {}))
         for nome, (a1, a2, a3, a4), val in casi:
             if rosso(giudica(a1, a2, a3, a4, val)):
                 accese += 1
@@ -259,8 +269,8 @@ def confronta(lavoro, a, b, con_sonde):
         valori_ch = {nuove_ch[0]: {'"usagestats"': "dword:00000000"}, nuove_ch[1]: {'"state"': "dword:00000001"}}
         ammessa = not rosso(giudica([], ["TEMP\\01234567-89ab-cdef-0123-456789abcdef.tmp"], nuove_ch, [("HKEY_CURRENT_USER\\X\\Explorer\\UserAssist\\Y", '"IFPbqvhz.rkr"', "1"), ("HKEY_CURRENT_USER\\Software\\Sconosciuta", "z", "1"), ("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', '"ABC"')], valori_ch))
         catena, di = sonde_della_catena(lavoro)
-        print(f"sonde: {accese} accese su {len(casi)}, attese 9; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
-        if accese != len(casi) or len(casi) != 9 or catena != di or not ammessa:
+        print(f"sonde: {accese} accese su {len(casi)}, attese 10; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
+        if accese != len(casi) or len(casi) != 10 or catena != di or not ammessa:
             print("ESITO: FERMO")
             return 2
     if rosso(v):

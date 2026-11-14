@@ -255,10 +255,18 @@ try {
             $wc = New-Object Net.WebClient
             $wc.Headers['User-Agent'] = 'mydev-costruttore'
             # Una fonte che non risponde piu': si nomina il componente, e la strada e' una copia del deposito.
-            try { $wc.DownloadFile($v.fonte, $parte) }
+            $Arrivato = $false
+            try { $wc.DownloadFile($v.fonte, $parte); $Arrivato = $true }
             catch { Fermo "scaricamento non riuscito: $($v.nome) $($v.versione), da $($v.fonte): $($_.Exception.Message) -- se la fonte non c'e' piu', il file $rel (sha256 $($v.sha256)) si copia nel deposito da una sua copia, poi si costruisce con -SenzaRete" }
-            finally { $wc.Dispose() }
-            Move-Item -LiteralPath $parte -Destination $p
+            finally {
+                $wc.Dispose()
+                # Uno scaricamento non riuscito o interrotto (anche con Ctrl+C) non lascia il .parte, che il rilancio con
+                # -SenzaRete troverebbe come file estraneo. Il finally gira anche dopo l'exit di Fermo (misurato in 5.1).
+                if (-not $Arrivato -and (Test-Path -LiteralPath $parte)) { Remove-Item -LiteralPath $parte -Force -ErrorAction SilentlyContinue }
+            }
+            # Lo spostamento ha il suo messaggio: il file e' arrivato intero, e non e' la fonte a mancare.
+            try { Move-Item -LiteralPath $parte -Destination $p }
+            catch { Fermo "scaricato ma non spostato: $parte in $p ($($_.Exception.Message)) -- il file arrivato resta col nome .parte: si rinomina a mano togliendo .parte, poi si rilancia" }
             $Scaricati++
         }
         $n = (Get-Item -LiteralPath $p).Length
@@ -267,7 +275,11 @@ try {
         if ($s -ne $v.sha256) { Rosso "$($v.nome): impronta $s invece di $($v.sha256): $rel" }
     }
     $Estranei = @([IO.Directory]::EnumerateFiles($Dep, '*', [IO.SearchOption]::AllDirectories) | ForEach-Object { $_.Substring($Dep.Length + 1).Replace('\', '/') } | Where-Object { -not $Attesi.ContainsKey($_) })
-    if ($Estranei.Count -gt 0) { Rosso "file estraneo nel deposito: $($Estranei[0]) (totale $($Estranei.Count))" }
+    if ($Estranei.Count -gt 0) {
+        # Un .parte resta solo se il processo e' stato ucciso a meta' scaricamento: si dice che cosa e'.
+        $Resto = if ($Estranei[0].EndsWith('.parte')) { ': resto di uno scaricamento interrotto, si cancella' } else { '' }
+        Rosso "file estraneo nel deposito: $($Estranei[0])$Resto (totale $($Estranei.Count))"
+    }
     Scrivi "deposito verificato: voci $(@($Dati.scaricati).Count) piu' $($Release.Count) della release, scaricate ora $Scaricati"
 
     # --- I componenti.

@@ -11,6 +11,9 @@ Si confrontano, col campo "estensioni" di unita.json:
   segnato in .obsolete (una disinstallazione lascia la cartella fino all'avvio dopo);
 - l'impronta sha256 di vscodium\\resources\\app\\product.json;
 - extensions.allowed nelle impostazioni dell'utente dell'editor, che deve dire le stesse estensioni alle stesse versioni.
+  Le impostazioni si leggono come le legge l'editor, che accetta commenti (// e /* */) e virgole finali: tolti gli uni
+  e le altre fuori dalle stringhe, il resto deve essere JSON. Impostazioni che non si leggono e impostazione tolta sono
+  due differenze diverse, con due frasi diverse.
 Se qualcosa non torna, all'avvio una finestra dice che cosa e' cambiato, che MyDev non garantisce piu' l'unita' e come
 tornare a quella garantita; l'editor parte lo stesso. Sull'unita' intatta, nessuna finestra.
 La radice si ricava dalla posizione di questo file, mai dalla cartella di lavoro. Nulla si scrive fuori dall'unita'.
@@ -72,14 +75,77 @@ def impronta(p):
     return hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else None
 
 
-def consentite(radice):
-    """extensions.allowed delle impostazioni, None se manca o non si legge."""
-    f = radice / "vscodium" / "data" / "user-data" / "User" / "settings.json"
+def salta(testo, i):
+    """La posizione del primo carattere da i in poi che non sia spazio o commento."""
+    n = len(testo)
+    while i < n:
+        if testo[i] in " \t\r\n":
+            i += 1
+        elif testo.startswith("//", i):
+            j = testo.find("\n", i)
+            i = n if j < 0 else j
+        elif testo.startswith("/*", i):
+            j = testo.find("*/", i + 2)
+            i = n if j < 0 else j + 2
+        else:
+            break
+    return i
+
+
+def leggi_jsonc(testo):
+    """Il testo come lo legge l'editor: commenti // e /* */ e virgole finali prima di } e ] tolti fuori dalle stringhe,
+    il resto letto come JSON stretto (ValueError se non lo e')."""
+    fuori, i, n = [], 0, len(testo)
+    while i < n:
+        c = testo[i]
+        if c == '"':
+            j = i + 1
+            while j < n and testo[j] != '"':
+                j += 2 if testo[j] == "\\" else 1
+            fuori.append(testo[i:j + 1])
+            i = j + 1
+        elif testo.startswith("//", i):
+            j = testo.find("\n", i)
+            i = n if j < 0 else j
+        elif testo.startswith("/*", i):
+            j = testo.find("*/", i + 2)
+            if j < 0:
+                raise ValueError("commento /* senza chiusura")
+            fuori.append(" ")
+            i = j + 2
+        elif c == "," and salta(testo, i + 1) < n and testo[salta(testo, i + 1)] in "}]":
+            i += 1
+        else:
+            fuori.append(c)
+            i += 1
+    return json.loads("".join(fuori))
+
+
+# Le impostazioni dell'utente che non si leggono: una differenza diversa da extensions.allowed tolta.
+ILLEGGIBILI = "illeggibili"
+
+
+def consentite_da_testo(testo):
+    """extensions.allowed dal testo delle impostazioni: il valore, None se tolta, ILLEGGIBILI se il testo non si legge."""
     try:
-        v = leggi_json(f).get("extensions.allowed")
-    except (OSError, ValueError, AttributeError):
+        imp = leggi_jsonc(testo)
+    except ValueError:
+        return ILLEGGIBILI
+    if not isinstance(imp, dict):
+        return ILLEGGIBILI
+    return imp.get("extensions.allowed")
+
+
+def consentite(radice):
+    """extensions.allowed delle impostazioni dell'unita': None se il file o la chiave mancano, ILLEGGIBILI se non si legge."""
+    f = radice / "vscodium" / "data" / "user-data" / "User" / "settings.json"
+    if not f.is_file():
         return None
-    return v if isinstance(v, dict) else None
+    try:
+        testo = f.read_text(encoding="utf-8-sig")
+    except (OSError, ValueError):
+        return ILLEGGIBILI
+    return consentite_da_testo(testo)
 
 
 def giudica(dichiarato, viste, prodotto, ammesse):
@@ -97,9 +163,13 @@ def giudica(dichiarato, viste, prodotto, ammesse):
             d.append(f"estensione {k}: versione {viste[k]} invece di {att[k]}")
     if prodotto != dichiarato["prodotto"]:
         d.append("vscodium\\resources\\app\\product.json e' cambiato" if prodotto else "manca vscodium\\resources\\app\\product.json")
-    if ammesse != {k: [v] for k, v in att.items()}:
-        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata tolta o cambiata "
-                 "(o settings.json non si legge piu' come JSON)")
+    if ammesse is ILLEGGIBILI:
+        d.append("le impostazioni dell'utente (vscodium\\data\\user-data\\User\\settings.json) non si leggono: "
+                 "non si puo' controllare l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme")
+    elif ammesse is None:
+        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata tolta")
+    elif ammesse != {k: [v] for k, v in att.items()}:
+        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata cambiata")
     return d
 
 
@@ -135,7 +205,9 @@ def verifica(radice):
     print(f"estensioni nelle cartelle: {len(viste)} ({', '.join(f'{k}@{v}' for k, v in viste.items())})")
     print(f"product.json: {impronta(radice / 'vscodium' / 'resources' / 'app' / 'product.json')}")
     a = consentite(radice)
-    print(f"extensions.allowed: {'assente' if a is None else f'{len(a)} voci'}")
+    stato = ("assente" if a is None else "impostazioni illeggibili" if a is ILLEGGIBILI
+             else f"{len(a)} voci" if isinstance(a, dict) else "non e' un oggetto")
+    print(f"extensions.allowed: {stato}")
     for x in diff:
         print(f"DIVERSO: {x}")
     print(f"differenze: {len(diff)}")
@@ -182,15 +254,30 @@ def sonde():
     att = {"a.uno": "1.0.0", "b.due": "2.0.0"}
     dich = {"insieme": att, "prodotto": "abc"}
     amm = {k: [v] for k, v in att.items()}
+    # Le impostazioni come testo, lette dallo stesso lettore del dato vero.
+    a_json = json.dumps(amm)
+    con_commento = '{\n  // nota di chi usa l\'unita\'\n  /* un blocco\n     di due righe */ "editor.fontSize": 14,\n  "extensions.allowed": ' + a_json + "\n}\n"
+    con_virgole = '{\n  "extensions.allowed": {"a.uno": ["1.0.0"], "b.due": ["2.0.0"],},\n  "editor.fontSize": 14,\n}\n'
+    con_stringa = '{"workbench.colorTheme": "x // non e\' un commento /* nemmeno questo", "extensions.allowed": ' + a_json + "}"
+    senza_chiave = '{\n  // tolta\n  "editor.fontSize": 14,\n}\n'
+    rotto = '{\n  "editor.fontSize": 14\n  "extensions.allowed": ' + a_json + "\n}\n"
+    tolta = giudica(dich, dict(att), "abc", consentite_da_testo(senza_chiave))
+    illeggibile = giudica(dich, dict(att), "abc", consentite_da_testo(rotto))
     casi = [
+        ("impostazioni con commenti: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_commento)) == []),
+        ("impostazioni con virgole finali: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_virgole)) == []),
+        ("// e /* dentro una stringa: non sono commenti", giudica(dich, dict(att), "abc", consentite_da_testo(con_stringa)) == []),
+        ("extensions.allowed tolta dal testo", len(tolta) == 1 and "e' stata tolta" in tolta[0]),
+        ("impostazioni illeggibili, con una frase diversa da tolta",
+         len(illeggibile) == 1 and "non si leggono" in illeggibile[0] and illeggibile != tolta),
         ("intatta: nessuna differenza", giudica(dich, dict(att), "abc", amm) == []),
         ("estensione in piu'", any("in piu': c.tre" in x for x in giudica(dich, {**att, "c.tre": "1"}, "abc", amm))),
         ("estensione mancante", any("manca l'estensione b.due" in x for x in giudica(dich, {"a.uno": "1.0.0"}, "abc", amm))),
         ("versione cambiata", any("b.due: versione 2.0.1" in x for x in giudica(dich, {"a.uno": "1.0.0", "b.due": "2.0.1"}, "abc", amm))),
         ("product.json cambiato", any("product.json e' cambiato" in x for x in giudica(dich, dict(att), "abd", amm))),
         ("product.json mancante", any("manca vscodium" in x for x in giudica(dich, dict(att), None, amm))),
-        ("extensions.allowed tolta", any("extensions.allowed" in x for x in giudica(dich, dict(att), "abc", None))),
-        ("extensions.allowed allargata", any("extensions.allowed" in x for x in giudica(dich, dict(att), "abc", {**amm, "c.tre": ["1"]}))),
+        ("extensions.allowed tolta", any("extensions.allowed" in x and "tolta" in x for x in giudica(dich, dict(att), "abc", None))),
+        ("extensions.allowed allargata", any("extensions.allowed" in x and "cambiata" in x for x in giudica(dich, dict(att), "abc", {**amm, "c.tre": ["1"]}))),
         ("unita.json senza il campo", any("unita.json" in x for x in giudica(None, dict(att), "abc", amm))),
     ]
     for nome, ok in casi:

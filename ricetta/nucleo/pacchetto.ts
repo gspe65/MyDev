@@ -9,8 +9,10 @@
 // uguali, perché i tipi siano quelli del file che si usa.
 //
 // Il contratto ha un numero (`contratto` in pacchetto.json, una voce per etichetta, l'ultima è quella in uso) legato all'impronta del punto
-// d'ingresso a quell'etichetta: un campo o un valore nuovo porta il numero da 1.0 a 1.1. Rosso se l'impronta misurata non è quella
-// dell'ultima voce, e se fra due voci consecutive l'impronta cambia e il numero no (o il numero cambia e l'impronta no).
+// d'ingresso a quell'etichetta: un campo o un valore nuovo porta il numero da 1.0 a 1.1. Rosso se un numero non è nella forma
+// maggiore.minore (cifre senza zeri in testa), se due voci hanno la stessa etichetta, se l'impronta misurata non è quella dell'ultima
+// voce, se fra due voci consecutive il numero scende, e se l'impronta cambia e il numero no (o il numero cambia e l'impronta no).
+// Delle voci prima dell'ultima l'impronta non si misura: la lista storica si legge com'è scritta.
 //
 // Che cosa NON guarda:
 // - che il pacchetto si comporti come i sorgenti: lo dice la prova di conformità;
@@ -56,13 +58,18 @@ console.log(`adattatore uguale al punto d'ingresso: ${trovato.split("\n").length
 // --- Il contratto: il numero e l'impronta del punto d'ingresso, voce per voce.
 const contratto = descrizione.contratto ?? [];
 const ultima = contratto.at(-1) ?? rosso("pacchetto.json non dichiara il contratto");
-for (const v of contratto) if (!/^\d+\.\d+$/.test(v.versione)) rosso(`il numero del contratto non è nella forma maggiore.minore: ${v.versione}`);
+for (const v of contratto) if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(v.versione)) rosso(`il numero del contratto non è nella forma maggiore.minore: ${v.versione}`);
+const etichetteRipetute = contratto.map((v) => v.etichetta).filter((e, i, tutte) => tutte.indexOf(e) !== i);
+if (etichetteRipetute.length > 0) rosso(`il contratto ha più voci per la stessa etichetta: ${[...new Set(etichetteRipetute)].join(", ")}`);
+const numeroDi = (v: VoceDelContratto): [number, number] => v.versione.split(".").map(Number) as [number, number];
 if (ultima.etichetta !== descrizione.etichetta) rosso(`l'ultima voce del contratto è per l'etichetta ${ultima.etichetta}, il pacchetto per ${descrizione.etichetta}`);
 const improntaIngresso = impronta(git(repo, "show", `${inventario.commit}:app/entrypoint/index.ts`));
 if (improntaIngresso !== ultima.punto_ingresso_sha256)
   rosso(`il punto d'ingresso all'etichetta ${ultima.etichetta} ha l'impronta ${improntaIngresso}, il contratto ${ultima.versione} dichiara ${ultima.punto_ingresso_sha256}`);
 for (let i = 1; i < contratto.length; i++) {
   const [a, b] = [contratto[i - 1]!, contratto[i]!];
+  const [[am, an], [bm, bn]] = [numeroDi(a), numeroDi(b)];
+  if (bm < am || (bm === am && bn < an)) rosso(`contratto, da ${a.etichetta} a ${b.etichetta}: il numero scende da ${a.versione} a ${b.versione}`);
   const cambiaImpronta = a.punto_ingresso_sha256 !== b.punto_ingresso_sha256;
   if (cambiaImpronta !== (a.versione !== b.versione))
     rosso(`contratto, da ${a.etichetta} a ${b.etichetta}: ${cambiaImpronta ? `l'impronta del punto d'ingresso cambia e il numero resta ${b.versione}` : `il numero passa da ${a.versione} a ${b.versione} e l'impronta del punto d'ingresso non cambia`}`);

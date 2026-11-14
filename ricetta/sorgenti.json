@@ -136,6 +136,8 @@
   {
    "file": "chromium-senza-codec-dda9e2e48b9f.tar.gz",
    "fonte": "https://codeload.github.com/gspe65/chromium-senza-codec/tar.gz/dda9e2e48b9fa5fa6a003e4dfe3b3b2a2b5402fc",
+   "byte": 408721,
+   "sha256": "2ee8691ddfc27930ca36a43cef746716197ce5e61aa71d403f07ab0b2620bbcc",
    "componenti": [
     "browser/chromium"
    ]
@@ -143,6 +145,8 @@
   {
    "file": "ungoogled-chromium-de09e0c70c6b.tar.gz",
    "fonte": "https://codeload.github.com/ungoogled-software/ungoogled-chromium/tar.gz/de09e0c70c6bc1ac83d4ecdfd0e82c7e250c9a3c",
+   "byte": 686205,
+   "sha256": "96126ab76549e78468e06b6508b37bd3f9b975673d438692e69d3e95ec5494e2",
    "componenti": [
     "browser/chromium"
    ]

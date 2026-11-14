@@ -29,6 +29,7 @@ Per le prove, e per costruire da sé il pacchetto dell'estensione:
 - [Bun](https://bun.sh) 1.4.2 e [Node.js](https://nodejs.org) 24.
 - VS Code, solo per installarvi il pacchetto dell'estensione e per la sua prova con `--finestra`.
 - Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usano anche il gate dell'unità, per il corpus di esecuzione, e la costruzione dell'estensione.
+- Python 3, per i comandi `python` di questa pagina (il confronto del corso sui puntatori, l'indice delle licenze): va bene anche quello di un'unità costruita, `<unità>\python\python.exe`.
 
 ## Come si costruisce l'unità
 
@@ -88,7 +89,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\costruisci.ps1 -
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ricetta\costruisci.ps1 -Destinazione C:\Temp\MyDev-estesa-dalla-copia -Deposito E:\MyDev-copia\MyDev-estesa-deposito -Variante estesa -SenzaRete
 ```
 
-Un sorgente non ha impronta, perché il server lo genera al volo a ogni richiesta: per quello la verifica controlla che l'archivio sia intero, e lo dice.
+Due sorgenti non hanno impronta, gli archivi della FFmpeg di Chromium presi da googlesource, perché quel server li genera al volo a ogni richiesta: sono ammessi solo per nome, e per loro la verifica controlla che l'archivio sia intero, e lo dice. Gli archivi di GitHub a un commit fissato hanno byte e impronta come gli altri: misurati stabili nel novembre 2026, ma GitHub non lo garantisce; se uno cambia impronta, la verifica lo dice in rosso e il commento in testa a `ricetta/sorgenti.ps1` spiega come rimisurarlo.
 
 ## Come si verifica
 
@@ -107,9 +108,9 @@ robocopy C:\MyDev "C:\Temp\MyDev  prova" /E /R:1 /W:1 /NFL /NDL /NJH /NJS
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita "C:\Temp\MyDev  prova"
 ```
 
-`robocopy` esce con 1 quando ha copiato dei file: non è un errore; da 8 in su sì (un file non copiato, per esempio perché l'editor dell'unità era aperto). Il gate cerca i percorsi assoluti anche della cartella in cui l'unità è stata costruita, che legge dalla copia; altre cartelle si aggiungono con `-Altro "<cartella>;<cartella>"`. Con `-Finestre` apre anche l'editor, due volte, tre nell'estesa, e Chromium una volta; la finestra può prendere la tastiera mentre scrivi. Su un PC di sviluppo, con le finestre, il gate ha richiesto fra 16 e 29 minuti per la base e fra 20 e 37 per l'estesa, secondo quanto altro lavorava sul PC; senza finestre si risparmiano le aperture.
+`robocopy` esce con 1 quando ha copiato dei file: non è un errore; da 8 in su sì (un file non copiato, per esempio perché l'editor dell'unità era aperto). Il gate cerca i percorsi assoluti anche della cartella in cui l'unità è stata costruita, che legge dalla copia; altre cartelle si aggiungono con `-Altro "<cartella>;<cartella>"`. Con `-Finestre` apre anche l'editor, due volte, tre nell'estesa, e Chromium due volte, dal lanciatore e senza; la finestra può prendere la tastiera mentre scrivi. Con `-Finestre` l'unità non deve essere mai stata aperta: se Chromium vi ha già creato il suo profilo (`home\chromium`), il passo di Chromium si ferma, perché non potrebbe dire se le preferenze iniziali funzionano; si copia un'unità appena costruita o scaricata, in una destinazione vuota. Su un PC di sviluppo, con le finestre, il gate ha richiesto fra 16 e 29 minuti per la base e fra 20 e 37 per l'estesa, secondo quanto altro lavorava sul PC; senza finestre si risparmiano le aperture.
 
-Il gate prova anche il **corpus di esecuzione**: il codice C e Python che l'estensione dell'unità genera dai 192 file `.algo` di prova di AlgoDesign si compila coi due compilatori dell'unità, si esegue col suo Python e si confronta con gli attesi dei casi d'uso, 1506 esiti; le differenze ammesse sono dichiarate una per una, col motivo, in `collaudo/esecuzione/prova.ts`. Quel passo vuole Bun e il repository di AlgoDesign, come le prove (vedi i prerequisiti): senza Bun il gate si ferma, con l'uscita 2.
+Il gate prova anche il **corpus di esecuzione**: il codice C e Python che l'estensione dell'unità genera dai 192 file `.algo` di prova di AlgoDesign si compila coi due compilatori dell'unità (il Python con il controllo di sintassi del suo Python), si esegue e si confronta con gli attesi dei casi d'uso: 1506 esiti, di cui 1392 da un programma eseguito e 114 decisi dall'errore statico del caso, senza eseguire nulla; le differenze ammesse sono dichiarate una per una, col motivo, in `collaudo/esecuzione/prova.ts`. Quel passo vuole Bun e il repository di AlgoDesign, come le prove (vedi i prerequisiti): senza Bun il gate si ferma, con l'uscita 2.
 
 Ogni comando finisce con una riga `ESITO:`. Le uscite sono 0 verde, 1 rosso, 2 fermo (non si è potuto misurare). Un parametro sbagliato lo rifiuta PowerShell prima che il comando parta: esce con 1 e senza la riga `ESITO:`.
 
@@ -123,7 +124,7 @@ Dai pacchetti ufficiali il costruttore toglie i file che non si possono ridistri
 
 Che cosa vuol dire per chi usa l'editor:
 
-- **H.264, H.265 e AAC non si riproducono**. Lo `ffmpeg.dll` libero da solo non basta: Electron è compilato coi codec proprietari e passa H.264 e H.265 alla scheda video del PC. Per questo `vscodium\data\argv.json` spegne l'accelerazione della scheda video (`"disable-hardware-acceleration": true`), e l'editor disegna senza. Chi toglie quella riga riaccende H.264 e H.265 attraverso la scheda video; la verifica lo segnala come file cambiato.
+- **H.264, H.265 e AAC non si riproducono**. Lo `ffmpeg.dll` libero da solo non basta: Electron è compilato coi codec proprietari e passa H.264 e H.265 alla scheda video del PC. Per questo `vscodium\data\argv.json` spegne l'accelerazione della scheda video (`"disable-hardware-acceleration": true`), e l'editor disegna senza. Chi toglie quella riga riaccende H.264 e H.265 attraverso la scheda video; `ricetta/verifica.ps1` lo segnala come file cambiato, ma nell'unità nessuna finestra lo avvisa (il controllo all'apertura guarda le estensioni).
 - **Alle domande sui formati** (`canPlayType`, `MediaSource.isTypeSupported`, `MediaCapabilities`) l'editor risponde ancora «sì» per H.264 e AAC, anche se poi non li decodifica: le risposte sono fissate in Electron alla compilazione, e per cambiarle servirebbe ricostruire l'editor. VP9, AV1 e Opus si riproducono.
 - **Non c'è l'accesso con un account Microsoft.**
 
@@ -144,6 +145,8 @@ Che cosa vuol dire per chi lo usa:
 - **Le estensioni sono spente**, e Chromium non si aggiorna: la versione è quella della ricetta.
 - Il lanciatore gli dà un profilo dentro l'unità e apre a ogni avvio la pagina «Chromium in MyDev», che spiega queste cose; la barra degli indirizzi cerca con DuckDuckGo, dalle preferenze iniziali (`ricetta/unita/chromium/`).
 
+Il gate dell'unità apre Chromium dal lanciatore e controlla il profilo, la pagina e le scritture fuori dall'unità, non che cosa Chromium decodifica: quello si misura con una pagina di prova dei codec, a ogni versione nuova di Chromium.
+
 **Una scrittura fuori dall'unità, dichiarata.** Ogni Chromium su Windows scrive nel registro, sotto `HKCU\Software\Chromium`, i codici di controllo delle sue impostazioni e lo stato dell'ultima chiusura, e nessuna opzione lo spegne: il gate ammette quelle sole chiavi, misurate, e dà rosso su ogni altra scrittura.
 
 **La FFmpeg**, la libreria che decodifica audio e video (licenza LGPL), in questa versione è collegata dentro `chrome.dll`; un `chrome.dll` con la FFmpeg in un file a parte, `ffmpeg.dll`, è previsto per la `0.3.0`. I sorgenti della FFmpeg e della procedura di costruzione stanno fra quelli che `ricetta/sorgenti.ps1` scarica; per il sorgente completo di Chromium, circa 2 GB, l'indice delle licenze rimanda a quello di Google, alla stessa versione.
@@ -156,7 +159,7 @@ L'unità estesa porta in `progetti/puntatori` il codice di un corso sui puntator
 python -B ricetta/puntatori/uguaglianza.py --solo-copia
 ```
 
-confronta la copia con l'inventario, nei due versi; con `--repo <repository del corso>` al posto di `--solo-copia` confronta anche l'inventario con il commit. Il kit dell'estesa fa lo stesso confronto sulla cartella dell'unità e lancia i due verificatori del corso. La copia non si corregge qui: un difetto si corregge nel repository del corso, e la copia si rifissa al commit nuovo con `--scrivi --commit <commit>`.
+confronta la copia con l'inventario, nei due versi; con `--repo <repository del corso>` al posto di `--solo-copia` confronta anche l'inventario con il commit. Il kit dell'estesa fa lo stesso confronto sulla cartella dell'unità e lancia i due verificatori del corso. La copia non si corregge qui: un difetto si corregge nel repository del corso, e la copia si rifissa al commit nuovo con `--repo <repository del corso> --scrivi --commit <commit>`.
 
 ## Se dai l'unità ad altri
 
