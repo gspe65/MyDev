@@ -49,7 +49,7 @@ VSCodium riconosce i file di AlgoDesign dall'icona. Con un file `.algo` aperto, 
 
 `Chromium.exe` apre Chromium, nella versione di ungoogled-chromium senza i servizi di Google. Va aperto da qui, non da `chromium\chrome.exe`: aperto direttamente, Chromium scrive il suo profilo fuori dall'unità, nella cartella dell'utente di Windows, e la barra degli indirizzi non cerca.
 
-- **La prima volta** compare una pagina in inglese di ungoogled-chromium, che spiega che cosa lo distingue da Chrome: si chiude come una scheda qualsiasi, e non torna più.
+- **A ogni avvio** si apre la pagina «Chromium in MyDev», che sta nell'unità e si legge senza rete: come si cerca, che cosa non funziona, dove restano i tuoi dati. Le schede nuove sono vuote.
 - **La barra degli indirizzi cerca con DuckDuckGo**: scrivi delle parole e premi Invio. Il motore si cambia nelle impostazioni, alla pagina «Gestisci motori di ricerca e ricerca nei siti»: per arrivarci scrivi `chrome://settings/searchEngines` nella barra.
 - **Le estensioni sono spente**, e Chromium non si aggiorna: la versione è quella provata.
 - I file che scarichi finiscono nella cartella **Download** di Windows, come con ogni browser.

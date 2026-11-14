@@ -1,0 +1,3 @@
+[master (commit radice) 6afa78b] Il programma dei tre giri
+ 1 file changed, 12 insertions(+)
+ create mode 100644 primo.c

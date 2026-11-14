@@ -1,0 +1,76 @@
+(nil)
+OK
+rosso
+OK
+verde
+OK
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+OK
+wwwwwwwwwwwwwwwwwwww
+OK
+ERR troppo lungo
+ERR troppo lungo
+1
+(nil)
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR comando sconosciuto
+ERR comando sconosciuto
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+ERR numero di argomenti
+1
+0
+0
+1
+(nil)
+0
+0
+1
+2
+2
+OK
+ERR intero non valido
+abc
+OK
+ERR intero non valido
+OK
+ERR intero non valido
+OK
+ERR intero non valido
+OK
+ERR intero non valido
+OK
+ERR intero non valido
+OK
+ERR intero non valido
+9223372036854775807
+OK
+ERR intero non valido
+OK
+0
+ERR pieno
+ERR pieno
+(nil)
+OK
+8
+8
+OK
+6
+1
+OK
+-9223372036854775807
+1
+wwwwwwwwwwwwwwwwwwww
+1
+2
+9223372036854775807
+-9223372036854775807
+ERR comando sconosciuto
+ERR comando sconosciuto

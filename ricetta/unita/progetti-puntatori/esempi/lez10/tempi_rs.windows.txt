@@ -1,0 +1,10 @@
+a mano: 4 ms, trovate 200000
+HashMap: 11 ms, trovate 200000
+a mano: 4 ms, trovate 200000
+HashMap: 11 ms, trovate 200000
+a mano: 4 ms, trovate 200000
+HashMap: 12 ms, trovate 200000
+a mano: 4 ms, trovate 200000
+HashMap: 12 ms, trovate 200000
+a mano: 4 ms, trovate 200000
+HashMap: 12 ms, trovate 200000

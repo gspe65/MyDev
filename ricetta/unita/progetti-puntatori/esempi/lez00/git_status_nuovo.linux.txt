@@ -1,0 +1,9 @@
+Sul branch master
+
+Non ci sono ancora commit
+
+File non tracciati:
+  (usa "git add <file>..." per includere l'elemento fra quelli di cui verrà eseguito il commit)
+	primo.c
+
+non è stato aggiunto nulla al commit ma sono presenti file non tracciati (usa "git add" per tracciarli)

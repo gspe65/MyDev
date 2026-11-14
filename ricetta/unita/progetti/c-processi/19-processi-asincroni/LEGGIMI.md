@@ -2,7 +2,7 @@
 
 **Compilatore:** **solo `gcc`**
 
-Tre figli con durate diverse. Il padre non si blocca ad aspettarli: continua a lavorare e li raccoglie man mano che finiscono. E' il gemello del progetto 07, con i processi al posto dei thread.
+Tre figli con durate diverse. Il padre non si blocca ad aspettarli: continua a lavorare e li raccoglie man mano che finiscono. E' il gemello del progetto 08, con i processi al posto dei thread.
 
 ## Comandi
 

@@ -1,0 +1,23 @@
+==3566== Memcheck, a memory error detector
+==3566== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==3566== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==3566== Command: ./perdita_senza
+==3566== 
+==3566== 
+==3566== HEAP SUMMARY:
+==3566==     in use at exit: 100 bytes in 1 blocks
+==3566==   total heap usage: 1 allocs, 0 frees, 100 bytes allocated
+==3566== 
+==3566== 100 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==3566==    at 0x4850858: malloc (vg_replace_malloc.c:447)
+==3566==    by 0x4001158: main (perdita.c:6)
+==3566== 
+==3566== LEAK SUMMARY:
+==3566==    definitely lost: 100 bytes in 1 blocks
+==3566==    indirectly lost: 0 bytes in 0 blocks
+==3566==      possibly lost: 0 bytes in 0 blocks
+==3566==    still reachable: 0 bytes in 0 blocks
+==3566==         suppressed: 0 bytes in 0 blocks
+==3566== 
+==3566== For lists of detected and suppressed errors, rerun with: -s
+==3566== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

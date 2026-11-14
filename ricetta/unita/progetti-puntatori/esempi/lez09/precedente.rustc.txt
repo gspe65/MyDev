@@ -1,0 +1,14 @@
+error[E0499]: cannot borrow `*nodo` as mutable more than once at a time
+  --> precedente.rs:15:27
+   |
+10 |     while let Some(nodo) = corrente {
+   |                            -------- first borrow later used here
+...
+14 |         corrente = nodo.successivo.as_mut();
+   |                    --------------- first mutable borrow occurs here
+15 |         precedente = Some(nodo);
+   |                           ^^^^ second mutable borrow occurs here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0499`.

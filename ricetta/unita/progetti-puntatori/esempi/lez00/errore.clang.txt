@@ -1,0 +1,8 @@
+errore.c:7:20: error: use of undeclared identifier 'soma'; did you mean 'somma'?
+    7 |     printf("%d\n", soma);
+      |                    ^~~~
+      |                    somma
+errore.c:6:9: note: 'somma' declared here
+    6 |     int somma = 0;
+      |         ^
+1 error generated.

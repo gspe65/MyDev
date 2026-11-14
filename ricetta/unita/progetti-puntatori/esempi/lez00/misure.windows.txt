@@ -1,0 +1,19 @@
+righe primo.c 12
+righe primo.i 1780
+righe primo.s 86
+byte primo.c 202
+byte primo.i 89701
+byte primo.s 2303
+byte primo.o 1073
+byte primo.exe 68096
+linker_clang ld.lld
+exit_collega 1
+exit_asan 1
+exit_senza_asan 0
+exit_asan_senza_path -1073741515
+linker_rustc link.exe
+gcc_llvm clang version 23.1.0 (https://github.com/llvm/llvm-project.git ea7d852a70e8bdfaf601d6626a760f9771b2c4b4)
+gcc_msys gcc (GCC) 15.3.0
+gcc_msys_macchina x86_64-pc-cygwin
+exit_gcc_msys_asan 1
+exit_gcc_msys_senza_path -1073741515

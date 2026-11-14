@@ -6,6 +6,6 @@ set "HOME="
 set "XDG_CONFIG_HOME="
 set "XDG_DATA_HOME="
 rem Le stesse opzioni di Chromium.exe alla radice: il profilo nell'unita', le estensioni spente; niente --no-first-run,
-rem che impedirebbe di leggere chromium\initial_preferences al primo avvio.
+rem che impedirebbe di leggere chromium\initial_preferences al primo avvio. A ogni avvio la pagina dell'unita'.
 cd /d "%BASE%\chromium"
-start "" "%BASE%\chromium\chrome.exe" --user-data-dir="%BASE%\home\chromium" --disable-extensions --no-default-browser-check
+start "" "%BASE%\chromium\chrome.exe" --user-data-dir="%BASE%\home\chromium" --disable-extensions --no-default-browser-check "%BASE%\chromium\benvenuto.html"

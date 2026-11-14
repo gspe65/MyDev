@@ -1,0 +1,4 @@
+indirizzo_locale.c:7:13: warning: address of stack memory associated with local variable 'locale' returned [-Wreturn-stack-address]
+    7 |     return &locale;
+      |             ^~~~~~
+1 warning generated.

@@ -147,7 +147,7 @@ In VSCodium, dal menu dei compiti: `Cargo: compila`, `Cargo: esegui`, `Cargo: cl
 ### I progetti in Rust
 **Nell'elenco:** `progetti-rust`
 
-`rust-simple`, `rust-multifile`, `rust-comuni/`, `rust-processi/`: la versione Rust di ogni progetto C. Le uscite sono quelle del C. Ogni `LEGGIMI.md` ha una sezione «Dove sta l'`unsafe`».
+`rust-simple`, `rust-multifile`, `rust-comuni/`, `rust-processi/`: la versione Rust di ogni progetto C. Le uscite sono quelle del C, tranne in due progetti: in `02-argomenti` il nome del programma è il percorso sotto `target/debug`, perché il programma lo lancia `cargo`, e in `13-pipe` la cartella di un progetto `cargo` ha un file in più, quindi le righe sono 6 invece di 5. Ogni `LEGGIMI.md` ha una sezione «Dove sta l'`unsafe`».
 
 ### Il corso sui puntatori
 **Nell'elenco:** `progetti-puntatori`

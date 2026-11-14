@@ -1,0 +1,6 @@
+Da /home/studente/deposito
+   96b146c..454077a  master     -> origin/master
+Aggiornamento di 96b146c..454077a
+Fast-forward
+ primo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)

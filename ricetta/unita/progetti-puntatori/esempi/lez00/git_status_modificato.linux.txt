@@ -1,0 +1,7 @@
+Sul branch master
+Modifiche non nell'area di staging per il commit:
+  (usa "git add <file>..." per aggiornare gli elementi di cui sarà eseguito il commit)
+  (usa "git restore <file>..." per scartare le modifiche nella directory di lavoro)
+	modificato:             primo.c
+
+nessuna modifica aggiunta al commit (usa "git add" e/o "git commit -a")

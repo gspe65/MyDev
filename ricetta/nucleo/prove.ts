@@ -18,7 +18,7 @@ import { pathToFileURL } from "node:url";
 import { git as gitDelNucleo, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, type Inventario } from "./comune";
 
 /** Il denominatore, dichiarato prima della corsa e confrontato alla fine. */
-const PROVE_ATTESE = 37;
+const PROVE_ATTESE = 43;
 
 const QUI = import.meta.dir;
 const cartella = mkdtempSync(join(tmpdir(), "nucleo  prova-"));
@@ -155,7 +155,8 @@ writeFileSync(rotto, "{ non è JSON");
 fermoCon("un inventario che non è JSON", corsa("estrai.ts", "--inventario", rotto), "eccezione non catturata");
 
 // --- Il pacchetto della release: il deposito vero per il caso buono, depositi finti per i guasti. L'uscita non è mai quella vera.
-type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string } };
+type VoceDelContratto = { versione: string; etichetta: string; punto_ingresso_sha256: string };
+type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; contratto: VoceDelContratto[] };
 const descrizioneVera = JSON.parse(readFileSync(join(QUI, "pacchetto.json"), "utf8")) as Descrizione;
 const pacchetti = join(cartella, "pacchetti");
 mkdirSync(pacchetti);
@@ -200,6 +201,21 @@ const adattatoreAlterato = join(pacchetti, "adattatore.ts");
 copyFileSync(join(RADICE, "extensions", "libreria", "src", "index.ts"), adattatoreAlterato);
 writeFileSync(adattatoreAlterato, `// riga in più\n${readFileSync(adattatoreAlterato, "utf8")}`);
 rossoCon("un adattatore diverso dal punto d'ingresso", corsa("pacchetto.ts", "--adattatore", adattatoreAlterato, "--uscita", uscitaFinta()), "ROSSO: l'adattatore non è quello di AlgoDesign alla riga 1");
+
+// Il contratto: il numero legato all'impronta del punto d'ingresso. Una voce vecchia inventata (etichetta v0.9.0) fa da storia.
+const voceVera = descrizioneVera.contratto.at(-1)!;
+const zeri = "0".repeat(64);
+const conStoria = (vecchia: Partial<VoceDelContratto>) => descrizioneFinta((d) => void (d.contratto = [{ ...voceVera, etichetta: "v0.9.0", ...vecchia }, voceVera]));
+rossoCon("un'impronta del punto d'ingresso mutata a numero fermo", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.punto_ingresso_sha256 = zeri)), "--uscita", uscitaFinta()),
+  `ROSSO: il punto d'ingresso all'etichetta ${voceVera.etichetta} ha l'impronta ${voceVera.punto_ingresso_sha256}, il contratto ${voceVera.versione} dichiara ${zeri}`);
+rossoCon("un'etichetta nuova con l'impronta cambiata e il numero fermo", corsa("pacchetto.ts", "--descrizione", conStoria({ punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: l'impronta del punto d'ingresso cambia e il numero resta ${voceVera.versione}`);
+rossoCon("un'etichetta nuova col numero cambiato e l'impronta ferma", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9" }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero passa da 0.9 a ${voceVera.versione} e l'impronta del punto d'ingresso non cambia`);
+verde("un'etichetta nuova con l'impronta e il numero cambiati", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()));
+rossoCon("l'ultima voce del contratto per un'altra etichetta", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.etichetta = "v0.0.0")), "--uscita", uscitaFinta()),
+  `ROSSO: l'ultima voce del contratto è per l'etichetta v0.0.0, il pacchetto per ${voceVera.etichetta}`);
+rossoCon("un contratto non dichiarato", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto = [])), "--uscita", uscitaFinta()), "ROSSO: pacchetto.json non dichiara il contratto");
 
 // Senza deposito e senza rete non si è potuto misurare: un fermo, mai un rosso.
 fermoCon("un indirizzo irraggiungibile", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.indirizzo = "http://127.0.0.1:9/assente.zip")), "--deposito", depositoFinto(), "--uscita", uscitaFinta()), "non si è potuto scaricare");

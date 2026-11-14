@@ -1,0 +1,23 @@
+==4311== Memcheck, a memory error detector
+==4311== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==4311== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==4311== Command: ./uso_nudo
+==4311== 
+==4311== Invalid read of size 4
+==4311==    at 0x40011A4: main (uso_dopo_free.c:13)
+==4311==  Address 0x4a96040 is 0 bytes inside a block of size 4 free'd
+==4311==    at 0x48538BF: free (vg_replace_malloc.c:990)
+==4311==    by 0x400119F: main (uso_dopo_free.c:12)
+==4311==  Block was alloc'd at
+==4311==    at 0x4850858: malloc (vg_replace_malloc.c:447)
+==4311==    by 0x4001178: main (uso_dopo_free.c:7)
+==4311== 
+==4311== 
+==4311== HEAP SUMMARY:
+==4311==     in use at exit: 0 bytes in 0 blocks
+==4311==   total heap usage: 2 allocs, 2 frees, 4,100 bytes allocated
+==4311== 
+==4311== All heap blocks were freed -- no leaks are possible
+==4311== 
+==4311== For lists of detected and suppressed errors, rerun with: -s
+==4311== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

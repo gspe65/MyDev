@@ -1,0 +1,23 @@
+==8037== Memcheck, a memory error detector
+==8037== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==8037== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==8037== Command: ./lista_persa_nog
+==8037== 
+==8037== 
+==8037== HEAP SUMMARY:
+==8037==     in use at exit: 48 bytes in 3 blocks
+==8037==   total heap usage: 3 allocs, 0 frees, 48 bytes allocated
+==8037== 
+==8037== 48 (16 direct, 32 indirect) bytes in 1 blocks are definitely lost in loss record 2 of 2
+==8037==    at 0x4850858: malloc (vg_replace_malloc.c:447)
+==8037==    by 0x4001175: main (lista_persa.c:14)
+==8037== 
+==8037== LEAK SUMMARY:
+==8037==    definitely lost: 16 bytes in 1 blocks
+==8037==    indirectly lost: 32 bytes in 2 blocks
+==8037==      possibly lost: 0 bytes in 0 blocks
+==8037==    still reachable: 0 bytes in 0 blocks
+==8037==         suppressed: 0 bytes in 0 blocks
+==8037== 
+==8037== For lists of detected and suppressed errors, rerun with: -s
+==8037== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

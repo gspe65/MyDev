@@ -1,0 +1,25 @@
+error[E0382]: borrow of moved value: `a`
+ --> passa_e_sposta.rs:9:20
+  |
+7 |     let a = Box::new(5);
+  |         - move occurs because `a` has type `Box<i32>`, which does not implement the `Copy` trait
+8 |     mostra(a);
+  |            - value moved here
+9 |     println!("{}", a);
+  |                    ^ value borrowed here after move
+  |
+note: consider changing this parameter type in function `mostra` to borrow instead if owning the value isn't necessary
+ --> passa_e_sposta.rs:2:14
+  |
+2 | fn mostra(b: Box<i32>) {
+  |    ------    ^^^^^^^^ this parameter takes ownership of the value
+  |    |
+  |    in this function
+help: consider cloning the value if the performance cost is acceptable
+  |
+8 |     mostra(a.clone());
+  |             ++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0382`.

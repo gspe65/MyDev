@@ -1,0 +1,4 @@
+
+thread 'main' (4185) panicked at hash_senza_wrapping.rs:5:21:
+attempt to multiply with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

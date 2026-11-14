@@ -1,0 +1,13 @@
+Reading symbols from primo_nog...
+(No debugging symbols found in primo_nog)
+(gdb) break 9
+Nessun simbolo di tabella è stato caricato. Usa il comando "file"
+(gdb) run
+Starting program: /home/studente/lez00/primo_nog
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/x86_64-linux-gnu/libthread_db.so.1".
+giro 1
+giro 2
+giro 3
+[Inferior 1 (process 3716) exited normally]
+(gdb) quit

@@ -5,8 +5,8 @@
 #            -Variante base|estesa  -Aggiunta <file>  -AlberoModificato
 #
 # L'unita' dichiara in unita.json il commit da cui viene: con un file modificato o nuovo sotto ricetta\, extensions\
-# o fra LICENSE e LICENSE-DOCS, o un file ignorato sotto ricetta\unita\ (il .vsix ignorato di extensions\ resta: si
-# prende come lo trova), la costruzione si ferma; con -AlberoModificato procede scrivendo "albero": "modificato".
+# o fra LICENSE e LICENSE-DOCS, o un file ignorato sotto ricetta\unita\, la costruzione si ferma; con -AlberoModificato
+# procede scrivendo "albero": "modificato".
 # -Commit, -Elenco e -Aggiunta si prendono come sono dati: servono alle prove; un -Commit diverso da HEAD si scrive
 # "albero": "non verificato".
 #
@@ -20,14 +20,15 @@
 #
 # Il deposito predefinito sta accanto alla destinazione. Ogni file del deposito si confronta con byte e
 # impronta dell'elenco: un'impronta sbagliata e' un rosso e non fa riscaricare nulla; un file che manca
-# si scarica dalla fonte, o con -SenzaRete e' un fermo che lo nomina.
+# si scarica dalla fonte, o con -SenzaRete e' un fermo che lo nomina. Vale anche per il .vsix nostro (stato release):
+# e' un file della release di questo repository, e si installa dal deposito.
 #
 # Uscite: 0 verde, 1 rosso, 2 fermo (non si e' potuto misurare o costruire).
 #
 # Che cosa NON guarda:
 # - che i programmi costruiti funzionino: lo dicono le prove dell'unita';
 # - i file nostri ancora da scrivere: si elencano e si saltano; quelli presenti si copiano dal repository;
-# - che il .vsix del prototipo corrisponda ai sorgenti: si prende come lo trova, lo prova la sua prova.
+# - che il .vsix della release corrisponda ai sorgenti: si confronta la sua impronta con quella dell'elenco.
 
 [CmdletBinding()]
 param(
@@ -44,7 +45,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2
 
-$Numero = '0.1.0'
+$Numero = '0.2.0'
 # File che cambiano a ogni costruzione: stanno nell'elenco dell'unita' senza impronta.
 $Variabili = @(
     'msys64/var/log/pacman.log',
@@ -238,16 +239,12 @@ try {
         $Albero = 'modificato'
         Scrivi "albero modificato: $($Sporchi.Count) file, lo dice unita.json"
     }
-    # Il pacchetto dell'estensione si cerca subito: dopo, la destinazione e' gia' piena e va tolta a mano.
-    foreach ($v in @($Dati.nostri | Where-Object { $_.stato -eq 'prototipo' })) {
-        if (-not (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $Qui) $v.vsix))) { Fermo "$($v.nome): manca $($v.vsix), si costruisce con: bun run algo:costruisci" }
-    }
-
-    # --- Il deposito.
+    # --- Il deposito: le voci scaricate e i file nostri della release (il .vsix), con byte e impronta.
+    $Release = @($Dati.nostri | Where-Object { $_.stato -eq 'release' })
     CreaCartella $Dep
     $Attesi = @{}
     $Scaricati = 0
-    foreach ($v in $Dati.scaricati) {
+    foreach ($v in (@($Dati.scaricati) + $Release)) {
         $rel = "$($v.gruppo)/$($v.file)"
         $Attesi[$rel] = 1
         $p = Unisci $Dep $rel
@@ -271,7 +268,7 @@ try {
     }
     $Estranei = @([IO.Directory]::EnumerateFiles($Dep, '*', [IO.SearchOption]::AllDirectories) | ForEach-Object { $_.Substring($Dep.Length + 1).Replace('\', '/') } | Where-Object { -not $Attesi.ContainsKey($_) })
     if ($Estranei.Count -gt 0) { Rosso "file estraneo nel deposito: $($Estranei[0]) (totale $($Estranei.Count))" }
-    Scrivi "deposito verificato: voci $(@($Dati.scaricati).Count), scaricate ora $Scaricati"
+    Scrivi "deposito verificato: voci $(@($Dati.scaricati).Count) piu' $($Release.Count) della release, scaricate ora $Scaricati"
 
     # --- I componenti.
     CreaCartella $Dest
@@ -396,11 +393,7 @@ try {
     $AmbienteEditor = @{ ELECTRON_RUN_AS_NODE = '1'; VSCODE_DEV = $null }
     foreach ($k in [Environment]::GetEnvironmentVariables().Keys) { if ($k -like 'VSCODE_*') { $AmbienteEditor[$k] = $null } }
     $DaInstallare = @($Dati.scaricati | Where-Object { $_.modo -eq 'vsix' } | ForEach-Object { New-Object PSObject -Property @{ nome = $_.nome; vsix = (Unisci $Dep "$($_.gruppo)/$($_.file)") } })
-    foreach ($v in @($Dati.nostri | Where-Object { $_.stato -eq 'prototipo' })) {
-        $p = Unisci $Repo $v.vsix
-        if (-not (Test-Path -LiteralPath $p)) { Fermo "$($v.nome): manca $($v.vsix), si costruisce con: bun run algo:costruisci" }
-        $DaInstallare += New-Object PSObject -Property @{ nome = $v.nome; vsix = $p }
-    }
+    foreach ($v in $Release) { $DaInstallare += New-Object PSObject -Property @{ nome = $v.nome; vsix = (Unisci $Dep "$($v.gruppo)/$($v.file)") } }
     foreach ($e in $DaInstallare) { InstallaVsix $e.vsix $e.nome }
     $Installate = @([IO.Directory]::GetDirectories($CartellaEstensioni))
     if ($Installate.Count -ne $DaInstallare.Count) { Rosso "estensioni installate: $($Installate.Count) invece di $($DaInstallare.Count)" }
@@ -449,14 +442,11 @@ try {
     if ($r.Uscita -ne 0) { Rosso "lingua dell'editor non preparata, uscita $($r.Uscita): $($r.Testo)" }
     Scrivi $r.Testo.Trim()
     # L'insieme garantito delle estensioni: le cartelle installate devono essere le voci dell'elenco alle loro versioni
-    # (piu' il prototipo, alla versione del suo package.json); vscodium/insieme.py scrive extensions.allowed nelle
+    # (piu' il .vsix nostro, col nome della sua voce); vscodium/insieme.py scrive extensions.allowed nelle
     # impostazioni, dopo le installazioni da riga di comando che altrimenti rifiuterebbe, e da' il campo estensioni di
     # unita.json, che il lanciatore confronta a ogni avvio.
     $Attese = @($Dati.scaricati | Where-Object { $_.modo -eq 'vsix' } | ForEach-Object { $_.nome.Substring($_.nome.IndexOf('/') + 1) + '=' + $_.versione })
-    foreach ($v in @($Dati.nostri | Where-Object { $_.stato -eq 'prototipo' })) {
-        $pj = [IO.File]::ReadAllText((Unisci $Repo ($v.percorso.TrimEnd('/') + '/package.json')), (New-Object Text.UTF8Encoding($false))) | ConvertFrom-Json
-        $Attese += "$($pj.publisher).$($pj.name)=$($pj.version)"
-    }
+    foreach ($v in $Release) { $Attese += "$($v.estensione)=$($v.versione)" }
     $r = Lancia (Unisci $Dest 'python/python.exe') ('-I -B ' + (Virgolette (Unisci $Dest 'vscodium/insieme.py')) + ' --scrivi ' + ($Attese -join ' ')) $null
     if ($r.Uscita -ne 0) { Rosso "insieme delle estensioni non scritto, uscita $($r.Uscita): $($r.Testo)" }
     $RigaInsieme = @($r.Testo -split "`r?`n" | Where-Object { $_.StartsWith('ESTENSIONI: ') })

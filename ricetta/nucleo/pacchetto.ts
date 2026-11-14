@@ -8,6 +8,10 @@
 // L'adattatore resta in questo repository per i tipi: qui si confronta col punto d'ingresso di AlgoDesign al commit dell'etichetta, a specificatori
 // uguali, perché i tipi siano quelli del file che si usa.
 //
+// Il contratto ha un numero (`contratto` in pacchetto.json, una voce per etichetta, l'ultima è quella in uso) legato all'impronta del punto
+// d'ingresso a quell'etichetta: un campo o un valore nuovo porta il numero da 1.0 a 1.1. Rosso se l'impronta misurata non è quella
+// dell'ultima voce, e se fra due voci consecutive l'impronta cambia e il numero no (o il numero cambia e l'impronta no).
+//
 // Che cosa NON guarda:
 // - che il pacchetto si comporti come i sorgenti: lo dice la prova di conformità;
 // - che il file sia stato costruito davvero da quell'etichetta: si confronta con l'impronta dichiarata;
@@ -19,7 +23,8 @@ import { parseArgs } from "node:util";
 import { inflateRawSync } from "node:zlib";
 import { fermo, fermoSeEtichettaSpostata, git, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, rosso } from "./comune";
 
-type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string } };
+type VoceDelContratto = { versione: string; etichetta: string; punto_ingresso_sha256: string };
+type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; contratto?: VoceDelContratto[] };
 
 const { values: opzioni } = parseArgs({
   args: Bun.argv.slice(2),
@@ -47,6 +52,22 @@ if (trovato !== atteso) {
   rosso(`l'adattatore non è quello di AlgoDesign alla riga ${prima + 1}`);
 }
 console.log(`adattatore uguale al punto d'ingresso: ${trovato.split("\n").length} righe`);
+
+// --- Il contratto: il numero e l'impronta del punto d'ingresso, voce per voce.
+const contratto = descrizione.contratto ?? [];
+const ultima = contratto.at(-1) ?? rosso("pacchetto.json non dichiara il contratto");
+for (const v of contratto) if (!/^\d+\.\d+$/.test(v.versione)) rosso(`il numero del contratto non è nella forma maggiore.minore: ${v.versione}`);
+if (ultima.etichetta !== descrizione.etichetta) rosso(`l'ultima voce del contratto è per l'etichetta ${ultima.etichetta}, il pacchetto per ${descrizione.etichetta}`);
+const improntaIngresso = impronta(git(repo, "show", `${inventario.commit}:app/entrypoint/index.ts`));
+if (improntaIngresso !== ultima.punto_ingresso_sha256)
+  rosso(`il punto d'ingresso all'etichetta ${ultima.etichetta} ha l'impronta ${improntaIngresso}, il contratto ${ultima.versione} dichiara ${ultima.punto_ingresso_sha256}`);
+for (let i = 1; i < contratto.length; i++) {
+  const [a, b] = [contratto[i - 1]!, contratto[i]!];
+  const cambiaImpronta = a.punto_ingresso_sha256 !== b.punto_ingresso_sha256;
+  if (cambiaImpronta !== (a.versione !== b.versione))
+    rosso(`contratto, da ${a.etichetta} a ${b.etichetta}: ${cambiaImpronta ? `l'impronta del punto d'ingresso cambia e il numero resta ${b.versione}` : `il numero passa da ${a.versione} a ${b.versione} e l'impronta del punto d'ingresso non cambia`}`);
+}
+console.log(`contratto ${ultima.versione}: punto d'ingresso all'etichetta ${ultima.etichetta}, impronta ${improntaIngresso.slice(0, 12)}; voci ${contratto.length}`);
 
 // --- Lo zip: dal deposito se c'è, altrimenti dalla rete. Nel deposito entra soltanto ciò che ha l'impronta giusta.
 async function scarica(indirizzo: string): Promise<Buffer> {

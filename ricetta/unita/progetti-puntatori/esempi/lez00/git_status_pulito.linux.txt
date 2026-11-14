@@ -1,0 +1,2 @@
+Sul branch master
+non c'è nulla di cui eseguire il commit, l'albero di lavoro è pulito

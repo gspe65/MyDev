@@ -1,0 +1,7 @@
+tre_funzioni.c:11:13: warning: address of stack memory associated with parameter 'a' returned [-Wreturn-stack-address]
+   11 |     return &a;
+      |             ^
+tre_funzioni.c:17:12: warning: address of stack memory associated with local variable 's' returned [-Wreturn-stack-address]
+   17 |     return s;
+      |            ^
+2 warnings generated.

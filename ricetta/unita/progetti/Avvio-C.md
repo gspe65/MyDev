@@ -1,4 +1,4 @@
-# Progetti C (e C++)
+# Progetti C
 
 Ambiente portabile con **GCC 15** (MSYS2), **clang 23** (llvm-mingw) e **GNU Make**, eseguiti dentro bash (mintty).
 
@@ -27,7 +27,7 @@ progetti/
 |---------------|--------------------------------------|
 | `make`        | compila il progetto                  |
 | `make clean`  | rimuove gli eseguibili e i `.o`      |
-| `./main.exe`  | esegue il programma compilato        |
+| `./main.exe`  | esegue il programma compilato di `simple`; negli altri progetti il nome sta in `TARGET` del `Makefile` |
 
 ---
 

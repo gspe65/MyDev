@@ -1,0 +1,8 @@
+Sul branch master
+
+Non ci sono ancora commit
+
+Modifiche di cui verrà eseguito il commit:
+  (usa "git rm --cached <file>..." per rimuovere gli elementi dall'area di staging)
+	nuovo file:             primo.c
+

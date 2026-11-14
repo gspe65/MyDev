@@ -1,0 +1,13 @@
+    Creating binary (application) `prova` package
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+Sul branch master
+
+Non ci sono ancora commit
+
+File non tracciati:
+  (usa "git add <file>..." per includere l'elemento fra quelli di cui verrà eseguito il commit)
+	.gitignore
+	Cargo.toml
+	src/
+
+non è stato aggiunto nulla al commit ma sono presenti file non tracciati (usa "git add" per tracciarli)

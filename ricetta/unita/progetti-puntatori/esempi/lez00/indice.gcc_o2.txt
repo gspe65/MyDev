@@ -1,0 +1,7 @@
+indice.c: In function ‘main’:
+indice.c:7:5: warning: array subscript 3 is above array bounds of ‘int[3]’ [-Warray-bounds=]
+    7 |     printf("%d\n", voti[3]);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
+indice.c:6:9: note: while referencing ‘voti’
+    6 |     int voti[3] = {7, 8, 6};
+      |         ^~~~

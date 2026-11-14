@@ -1,0 +1,3 @@
+96b146c Non seguire gli eseguibili
+284013a Cinque giri invece di tre
+6afa78b Il programma dei tre giri

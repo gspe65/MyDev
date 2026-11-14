@@ -1,0 +1,6 @@
+Sul branch master
+File non tracciati:
+  (usa "git add <file>..." per includere l'elemento fra quelli di cui verrà eseguito il commit)
+	.gitignore
+
+non è stato aggiunto nulla al commit ma sono presenti file non tracciati (usa "git add" per tracciarli)

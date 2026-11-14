@@ -1,0 +1,22 @@
+(nil)
+OK
+rosso
+OK
+verde
+OK
+valore-lungo-esattamente-31-car
+OK
+OK
+OK
+OK
+OK
+OK
+1
+(nil)
+6
+ERR pieno
+(nil)
+OK
+10
+ERR comando sconosciuto
+ERR comando sconosciuto

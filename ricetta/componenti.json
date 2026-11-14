@@ -2787,13 +2787,19 @@
     {
       "nome": "estensione-algo",
       "percorso": "extensions/algo/",
-      "vsix": "extensions/algo/dist/algo-codice.vsix",
+      "gruppo": "estensioni",
+      "fonte": "https://github.com/gspe65/MyDev/releases/download/v0.2.0/algo-codice-0.0.1.vsix",
+      "file": "algo-codice-0.0.1.vsix",
+      "byte": 139730,
+      "sha256": "12c4740f80acb9f17c4ec34ea6a4cfe03a571a481c2dd2ea438facda08057fb1",
+      "versione": "0.0.1",
+      "estensione": "prototipo.algo-codice",
       "destinazioni": [
         "vscodium/data/extensions"
       ],
-      "stato": "prototipo",
+      "stato": "release",
       "licenza": "MIT",
-      "motivo": "Il prototipo per i file .algo, col nucleo descritto da ricetta/nucleo/pacchetto.json."
+      "motivo": "Il prototipo per i file .algo, col nucleo descritto da ricetta/nucleo/pacchetto.json: il pacchetto costruito da extensions/algo/ e caricato nella release; collaudo/algo/prova.ts confronta il suo contenuto, voce per voce, con quello costruito dai sorgenti."
     },
     {
       "nome": "licenze",

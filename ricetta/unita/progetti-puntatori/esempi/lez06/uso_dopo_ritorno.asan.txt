@@ -1,0 +1,48 @@
+=================================================================
+==3189==ERROR: AddressSanitizer: stack-use-after-return on address 0x6f2b98100020 at pc 0x5961ece43c1d bp 0x7ffd7532c350 sp 0x7ffd7532c348
+READ of size 4 at 0x6f2b98100020 thread T0
+    #0 0x5961ece43c1c in main /home/studente/lez06/uso_dopo_ritorno.c:14:20
+    #1 0x732b9a42a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #2 0x732b9a42a717 in __libc_start_main csu/../csu/libc-start.c:360:3
+    #3 0x5961ecd5a364 in _start (/home/studente/lez06/uso_dopo_ritorno+0x2c364) (BuildId: 6c1465819cd21787fb05e23506df087384245e3e)
+
+Address 0x6f2b98100020 is located in stack of thread T0 at offset 32 in frame
+    #0 0x5961ece43abf in indirizzo_locale /home/studente/lez06/uso_dopo_ritorno.c:5
+
+  This frame has 1 object(s):
+    [32, 36) 'locale' (line 6) <== Memory access at offset 32 is inside this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-use-after-return /home/studente/lez06/uso_dopo_ritorno.c:14:20 in main
+Shadow bytes around the buggy address:
+  0x6f2b980ffd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b980ffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b980ffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b980fff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b980fff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x6f2b98100000: f5 f5 f5 f5[f5]f5 f5 f5 00 00 00 00 00 00 00 00
+  0x6f2b98100080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b98100100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b98100180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b98100200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x6f2b98100280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==3189==ABORTING

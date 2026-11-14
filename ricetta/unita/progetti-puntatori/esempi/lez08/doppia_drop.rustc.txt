@@ -1,0 +1,18 @@
+error[E0382]: use of moved value: `a`
+ --> doppia_drop.rs:5:10
+  |
+3 |     let a = Box::new(5);
+  |         - move occurs because `a` has type `Box<i32>`, which does not implement the `Copy` trait
+4 |     drop(a);
+  |          - value moved here
+5 |     drop(a);
+  |          ^ value used here after move
+  |
+help: consider cloning the value if the performance cost is acceptable
+  |
+4 |     drop(a.clone());
+  |           ++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0382`.

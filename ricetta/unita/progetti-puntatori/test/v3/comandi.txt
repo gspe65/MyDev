@@ -1,0 +1,39 @@
+GET colore
+SET colore rosso
+GET colore
+   SET  colore 	 verde   
+	GET   colore
+
+     
+SET chiave-lunga-esattamente-31-car valore-lungo-esattamente-31-car
+GET chiave-lunga-esattamente-31-car
+SET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk v
+SET b vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+GET b
+GET kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+SET a
+SET
+SET a b c
+GET
+GET a b
+set a 1
+PIPPO a b c d e
+SET a 1                                                                                                                        
+GET a
+SET b 2                                                                                                                         
+GET b
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GET a
+SET b 2
+SET c 3
+SET d 4
+SET e 5
+SET f 6
+GET ab
+GET f
+SET g 7
+GET g
+SET a 10
+GET a
+PIPPO
+get

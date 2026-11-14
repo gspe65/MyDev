@@ -1,0 +1,4 @@
+n = 3 alla cella 00000030736FF9A0
+n = 2 alla cella 00000030736FF960
+n = 1 alla cella 00000030736FF920
+6

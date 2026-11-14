@@ -1,0 +1,7 @@
+Da /home/studente/deposito
+   454077a..7ea7e81  master     -> origin/master
+error: Le tue modifiche locali ai seguenti file sarebbero sovrascritte con il merge:
+	primo.c
+Esegui il commit o lo stash delle modifiche prima di eseguire il merge.
+Interrompo l'operazione
+Aggiornamento di 454077a..7ea7e81

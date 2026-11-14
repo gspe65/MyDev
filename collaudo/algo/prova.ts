@@ -28,9 +28,9 @@ const UNITA = POSIZIONE_UNITA >= 0 ? (process.argv[POSIZIONE_UNITA + 1] ?? fermo
 const CON_FINESTRA = process.argv.includes("--finestra") || UNITA !== undefined;
 
 /** I denominatori, dichiarati prima della corsa. */
-const PROVE_SENZA_FINESTRA = 24;
-const PROVE_CON_FINESTRA = 43;
-const PROVE_NELL_UNITA = 45;
+const PROVE_SENZA_FINESTRA = 27;
+const PROVE_CON_FINESTRA = 46;
+const PROVE_NELL_UNITA = 48;
 const TEST_ATTESI = 15;
 
 /** Ciò che il pacchetto contiene, e nient'altro. */
@@ -121,6 +121,51 @@ if (apertura.uscita !== 0) fermo(`la licenza del nucleo non si estrae:\n${apertu
 // Un testo che manca è un rosso di questa prova, non un'eccezione.
 const stessoTesto = (nome: string, atteso: string): boolean => existsSync(join(estratto, "extension", nome)) && stessoFile(join(estratto, "extension", nome), atteso);
 prova("i testi delle licenze sono quelli del repository e del file della release", stessoTesto("LICENSE.txt", join(RADICE, "LICENSE")) && stessoTesto("LICENZA-ALGODESIGN.txt", join(licenzaDelNucleo, voceLicenza)));
+
+// Il pacchetto della release, quello che la ricetta installa nell'unità: byte e impronta della sua voce, e il contenuto uguale, voce per
+// voce, al pacchetto costruito ora dai sorgenti (le date dello zip cambiano a ogni costruzione, il contenuto no). Si prende da
+// extensions/algo/scaricato/ (ignorata) o dalla fonte; un'impronta sbagliata è un rosso, e il file scaricato non vi entra.
+type VoceRelease = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string };
+const voceRelease = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: VoceRelease[] }).nostri.find((v) => v.nome === "estensione-algo" && v.stato === "release") ?? fermo("in ricetta/componenti.json non c'è la voce estensione-algo con stato release");
+const fileRelease = join(ESTENSIONE, "scaricato", voceRelease.file);
+let release: Buffer;
+if (existsSync(fileRelease)) release = readFileSync(fileRelease);
+else {
+  try {
+    const r = await fetch(voceRelease.fonte);
+    if (!r.ok) fermo(`non si è potuto scaricare ${voceRelease.fonte}: risposta ${r.status}; prima della release il file si copia in ${fileRelease} dal deposito dell'unità`);
+    release = Buffer.from(await r.arrayBuffer());
+  } catch (e) {
+    fermo(`non si è potuto scaricare ${voceRelease.fonte}: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  if (impronta(release) === voceRelease.sha256) {
+    mkdirSync(dirname(fileRelease), { recursive: true });
+    writeFileSync(fileRelease, release);
+  }
+}
+console.log(`pacchetto della release: ${release.length} byte, impronta ${impronta(release).slice(0, 12)}; nella ricetta ${voceRelease.byte} byte, ${voceRelease.sha256.slice(0, 12)}`);
+prova("il pacchetto della release ha i byte e l'impronta della sua voce nella ricetta", release.length === voceRelease.byte && impronta(release) === voceRelease.sha256);
+const dallaRelease = join(cartella, "dalla  release");
+mkdirSync(dallaRelease);
+const copiaRelease = join(cartella, "release.vsix");
+writeFileSync(copiaRelease, release);
+const aperturaRelease = esegui([tar, "-xf", copiaRelease, "-C", dallaRelease]);
+if (aperturaRelease.uscita !== 0) fermo(`il pacchetto della release non si apre:\n${aperturaRelease.testo}`);
+/** Le voci il cui contenuto differisce fra due pacchetti estratti: una funzione sola, per il vero e per la mutazione. */
+const vociDiverse = (a: string, b: string): string[] =>
+  NEL_PACCHETTO.filter((v) => !existsSync(join(a, v)) || !existsSync(join(b, v)) || !stessoFile(join(a, v), join(b, v)));
+const diverse = vociDiverse(dallaRelease, estratto);
+prova("il pacchetto della release ha, voce per voce, il contenuto di quello costruito dai sorgenti", diverse.length === 0, `diverse: ${diverse.join(", ")}`);
+// Controllo positivo: una voce alterata in una copia dell'estratto è nominata, lei sola.
+const alterato = join(cartella, "release  alterata");
+mkdirSync(join(alterato, "extension", "dist"), { recursive: true });
+for (const v of NEL_PACCHETTO) {
+  mkdirSync(dirname(join(alterato, v)), { recursive: true });
+  copyFileSync(join(dallaRelease, v), join(alterato, v));
+}
+writeFileSync(join(alterato, "extension", "package.json"), Buffer.concat([readFileSync(join(alterato, "extension", "package.json")), Buffer.from(" ")]));
+const nominate = vociDiverse(alterato, estratto);
+prova("controllo positivo: una voce alterata nel pacchetto della release è nominata, lei sola", nominate.length === 1 && nominate[0] === "extension/package.json", `nominate: ${nominate.join(", ")}`);
 
 // L'icona: lo stesso file di AlgoDesign al commit dell'etichetta, nel pannello e accanto ai file del linguaggio.
 const inventarioDelNucleo = leggiInventario(INVENTARIO);

@@ -10,6 +10,7 @@
     "make_chrome_default": false,
     "make_chrome_default_for_user": false
   },
+  "hide_web_store_icon": true,
   "default_search_provider_data": {
     "template_url_data": {
       "short_name": "DuckDuckGo",

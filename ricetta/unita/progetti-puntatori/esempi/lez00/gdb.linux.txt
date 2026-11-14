@@ -1,0 +1,32 @@
+Reading symbols from primo...
+(gdb) break 9
+Breakpoint 1 at 0x115c: file primo.c, line 9.
+(gdb) run
+Starting program: /home/studente/lez00/primo
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, main () at primo.c:9
+9           printf("giro %d\n", i);
+(gdb) print i
+$1 = 1
+(gdb) next
+giro 1
+8       for (int i = 1; i <= VOLTE; i++) {
+(gdb) next
+
+Breakpoint 1, main () at primo.c:9
+9           printf("giro %d\n", i);
+(gdb) print i
+$2 = 2
+(gdb) continue
+Continuing.
+giro 2
+
+Breakpoint 1, main () at primo.c:9
+9           printf("giro %d\n", i);
+(gdb) continue
+Continuing.
+giro 3
+[Inferior 1 (process 3701) exited normally]
+(gdb) quit

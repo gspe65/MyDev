@@ -1,0 +1,11 @@
+commit 284013abef3c8b9b9bd910fef2e43fccd63d4fee
+Author: Anna Esempio <anna@example.com>
+Date:   Mon Nov 9 20:08:37 2026 +0100
+
+    Cinque giri invece di tre
+
+commit 6afa78b4c0ec7dd7ed4423a47dc53e309664c79f
+Author: Anna Esempio <anna@example.com>
+Date:   Mon Nov 9 20:08:37 2026 +0100
+
+    Il programma dei tre giri

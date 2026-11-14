@@ -1,0 +1,4 @@
+ld.lld: error: undefined symbol: triplo
+>>> referenced by usa_triplo.c:8
+>>>               C:/Temp/usa_triplo-1d8c12.o:(main)
+clang-23: error: linker command failed with exit code 1 (use -v to see invocation)
