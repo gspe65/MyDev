@@ -381,7 +381,7 @@ def componi(elenco: dict, dati: dict, difetti: list[str]) -> str:
             if t in dettagli:
                 r.append(f"    testo: {t} [{dettagli[t][0]}]{' ' + ', '.join(sorted(dettagli[t][1])) if dettagli[t][1] else ''}")
         for s in sorgenti:
-            r.append(f"    sorgente: {s['fonte']} [{'sha256 ' + s['sha256'] if 'sha256' in s else 'senza impronta: il server genera l archivio al volo'}]")
+            r.append(f"    sorgente: {s['fonte']} [{'sha256 ' + s['sha256'] if 'sha256' in s else 'senza impronta: il server genera l archivio al volo; sorgenti.ps1 lo ammette solo per nome e ne verifica l interezza'}]")
         if voce.get("senza_sorgente"):
             r.append(f"    sorgente: {voce['senza_sorgente']}")
         righe.append("\n".join(r))
