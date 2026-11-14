@@ -18,7 +18,7 @@ import { pathToFileURL } from "node:url";
 import { git as gitDelNucleo, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, type Inventario } from "./comune";
 
 /** Il denominatore, dichiarato prima della corsa e confrontato alla fine. */
-const PROVE_ATTESE = 47;
+const PROVE_ATTESE = 48;
 
 const QUI = import.meta.dir;
 const cartella = mkdtempSync(join(tmpdir(), "nucleo  prova-"));
@@ -226,6 +226,9 @@ rossoCon("due voci del contratto con la stessa etichetta", corsa("pacchetto.ts",
   `ROSSO: il contratto ha più voci per la stessa etichetta: ${voceVera.etichetta}`);
 rossoCon("un numero del contratto che scende", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "1.1", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
   `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero scende da 1.1 a ${voceVera.versione}`);
+// Il confronto ha due termini (la parte maggiore che scende, oppure la stessa maggiore e la minore che scende): uno per sonda.
+rossoCon("un numero del contratto che scende nella parte maggiore", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "2.0", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero scende da 2.0 a ${voceVera.versione}`);
 
 // Senza deposito e senza rete non si è potuto misurare: un fermo, mai un rosso.
 fermoCon("un indirizzo irraggiungibile", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.indirizzo = "http://127.0.0.1:9/assente.zip")), "--deposito", depositoFinto(), "--uscita", uscitaFinta()), "non si è potuto scaricare");

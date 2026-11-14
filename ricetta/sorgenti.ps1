@@ -17,7 +17,10 @@
 #   byte diversi): si prendono dall'indirizzo col commit, si legge che siano un gzip intero e si nominano in uscita.
 #   Possono non avere l'impronta solo le voci elencate per nome in $SenzaImpronta, confrontato coi sorgenti nei due
 #   versi: una voce senza impronta che non vi compare, o una che vi compare e ha l'impronta o non esiste, da' rosso.
-#   Un archivio di GitHub a un commit fissato e' stabile e porta byte e impronta come gli altri.
+#   Un archivio di GitHub a un commit fissato porta byte e impronta come gli altri: misurato stabile nel novembre 2026 (tre
+#   scaricamenti uguali), ma GitHub non lo garantisce. Se un giorno l'impronta cambia, si confronta il contenuto
+#   dell'archivio nuovo con quello vecchio e, se e' lo stesso, si rimisurano byte e impronta in sorgenti.json;
+# - un .parte lasciato da un processo ucciso (Ctrl+C e gli errori lo tolgono): si vede per nome nella cartella.
 
 [CmdletBinding()]
 param(
@@ -101,15 +104,18 @@ try {
             $parte = "$p.parte"
             $wc = New-Object Net.WebClient
             $wc.Headers['User-Agent'] = 'mydev-sorgenti'
-            try { $wc.DownloadFile($s.fonte, $parte); Move-Item -LiteralPath $parte -Destination $p }
+            $Arrivato = $false
+            try { $wc.DownloadFile($s.fonte, $parte); $Arrivato = $true }
             catch { Fermo "scaricamento non riuscito: $($s.fonte): $($_.Exception.Message)" }
             finally {
                 $wc.Dispose()
-                # Uno scaricamento non riuscito o interrotto non lascia il .parte nella cartella che si da' via: dopo
-                # lo spostamento il .parte non c'e' piu', quindi qui resta solo da un errore o da Ctrl+C. Il finally
-                # gira anche dopo l'exit di Fermo.
-                if (Test-Path -LiteralPath $parte) { Remove-Item -LiteralPath $parte -Force -ErrorAction SilentlyContinue }
+                # Uno scaricamento non riuscito o interrotto (anche con Ctrl+C) non lascia il .parte nella cartella che si
+                # da' via. Il finally gira anche dopo l'exit di Fermo (misurato in 5.1).
+                if (-not $Arrivato -and (Test-Path -LiteralPath $parte)) { Remove-Item -LiteralPath $parte -Force -ErrorAction SilentlyContinue }
             }
+            # Lo spostamento ha il suo messaggio: il file e' arrivato intero, e non e' la fonte a mancare.
+            try { Move-Item -LiteralPath $parte -Destination $p }
+            catch { Fermo "scaricato ma non spostato: $parte in $p ($($_.Exception.Message)) -- il file arrivato resta col nome .parte: si rinomina a mano togliendo .parte, poi si rilancia" }
             $Ora++
         }
         $n = (Get-Item -LiteralPath $p).Length

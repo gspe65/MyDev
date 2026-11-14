@@ -3,7 +3,9 @@
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
-# Con -Finestre apre l'editor due volte, tre nell'estesa, e fotografa cartelle e registro: la finestra puo' prendere la tastiera.
+# Con -Finestre apre l'editor due volte, tre nell'estesa, e Chromium due volte (dal lanciatore e, per il controllo negativo,
+# senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
+# stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
 # Senza, i percorsi si cercano a file fermi e tracce e ascolti dell'editor non si misurano: l'esito lo dice.
 # Il lavoro sta accanto all'unita', in una cartella che finisce con spazi doppi, e il kit gira da una sua copia li' dentro.
 # Su una copia, la cartella in cui l'unita' e' stata costruita si legge da extensions.json e si cerca anche quella.
@@ -12,15 +14,18 @@
 #
 # Le sigle dei passi sono le clausole del collaudo dell'unita': U12 nessun percorso assoluto dopo l'uso, U13 il kit da una
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
-# E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore),
-# A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il silenzio del lanciatore),
-# A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e il repository del nucleo, come la costruzione),
-# A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita' all'avvio (con le finestre).
+# E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore; sempre
+# le sonde dello script della lingua), A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il
+# silenzio del lanciatore), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
+# il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
+# all'avvio, con un controllo negativo senza lanciatore (con le finestre).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
 # temporanea del PC, che compiti e debug dell'editor usano come ogni programma; un figlio appeso, che non ha un tempo massimo;
-# che cosa Chromium decodifica (la pagina dei codec e' una misura a parte, fuori dal kit: qui solo l'avvio, il profilo e la pagina).
+# che cosa Chromium decodifica (la pagina dei codec e' una misura a parte, fuori dal kit: qui solo l'avvio, il profilo e la pagina);
+# nel silenzio di A9, un controllo dell'insieme che il lanciatore non ha avviato (zero processi vale anche per "mai partito":
+# l'avviso vero lo prova insieme.py --sonde, non il lanciatore).
 
 [CmdletBinding()]
 param(
@@ -63,7 +68,7 @@ function Passo([string]$clausola, [string]$nome, [string]$exe, [string]$argoment
     [IO.File]::WriteAllText((Join-Path $Lav "$nome.log"), $r.Testo, $Utf8)
     foreach ($riga in ($r.Testo -split "`r?`n")) {
         # Il rientro non nasconde un rosso: alcune prove lo elencano con due spazi davanti.
-        if ($riga -match '^\s*(ESITO|FERMO|ROSSO|NON COMPILA|FAIL|tipi: |esiti: |SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
+        if ($riga -match '^\s*(ESITO|FERMO|ROSSO|NON COMPILA|FAIL|DIVERSO|differenze|sonda ROTTA|SONDA SPENTA|tipi: |esiti: |SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
     }
     Annota $clausola $nome $r.Uscita
     return $r
@@ -213,15 +218,14 @@ try {
         function AgoRadice([string]$r) { return ($r.TrimEnd('\') + '\vscodium\data\').ToLower().Replace('\', '\\') }
         $Esc = AgoRadice $Rad
         # La sonda del predicato: una cache scritta da una radice che contiene questa ("unita' spostata un livello piu' su")
-        # non la nomina; una scritta da questa si'.
+        # non la nomina. Il caso positivo e' il dato vero qui sotto: una cache scritta da questa radice.
         $SondaSu = ('{"x":"' + (AgoRadice ($Rad + '\MyDev')) + 'extensions"}').ToLower().Contains($Esc)
-        $SondaQui = ('{"x":"' + (AgoRadice $Rad) + 'extensions"}').ToLower().Contains($Esc)
         $Clp = Join-Path $Rad 'vscodium\data\user-data\clp'
         $Tcf = @()
         if ([IO.Directory]::Exists($Clp)) { $Tcf = @(Get-ChildItem -LiteralPath $Clp -Directory -Filter '*.it' | ForEach-Object { Join-Path $_.FullName 'tcf.json' } | Where-Object { [IO.File]::Exists($_) }) }
         $Nominano = @($Tcf | Where-Object { [IO.File]::ReadAllText($_, $Utf8).ToLower().Contains($Esc) }).Count
-        Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano; sonda radice discendente $SondaSu (atteso False), questa radice $SondaQui (atteso True)"
-        Annota 'A7' 'editor in italiano dal lanciatore' $(if ($SondaSu -or -not $SondaQui) { 2 } elseif ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
+        Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano; sonda radice discendente $SondaSu (atteso False)"
+        Annota 'A7' 'editor in italiano dal lanciatore' $(if ($SondaSu) { 2 } elseif ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
         Scrivi '=== apertura 2, con una cartella e un file'
         # Lo stesso ambiente che da' il lanciatore, che non accetta una cartella da aprire: senza il PATH clangd sarebbe un altro.
         # Nell'estesa anche le sue variabili, come prepara_estesa di lancia.c: progetti contiene i progetti Rust, rust-analyzer si
@@ -289,7 +293,8 @@ try {
         $Pref = Join-Path $Rad 'home\chromium\Default\Preferences'
         $Motore = ([IO.File]::Exists($Pref)) -and ([IO.File]::ReadAllText($Pref, $Utf8).Contains('duckduckgo.com'))
         Scrivi "    chromium: profilo assente prima del passo: $(-not $ProfiloPrima); processi accesi $Chrome; profilo nell'unita' col motore della barra: $Motore; finestre: $($Titoli -join ' | ')"
-        Annota 'A13' 'chromium dal lanciatore, profilo nell''unita'', la pagina dell''unita'' all''avvio' $(if ($ProfiloPrima) { 2 } elseif ($Chrome -ge 1 -and $Motore -and $Pagina) { 0 } else { 1 })
+        $CosaA13 = if ($ProfiloPrima) { 'chromium dal lanciatore: home\chromium esisteva gia'', serve un''unita'' mai aperta' } else { 'chromium dal lanciatore, profilo nell''unita'', la pagina dell''unita'' all''avvio' }
+        Annota 'A13' $CosaA13 $(if ($ProfiloPrima) { 2 } elseif ($Chrome -ge 1 -and $Motore -and $Pagina) { 0 } else { 1 })
         # A13, controllo negativo: lo stesso chrome.exe senza il lanciatore, senza la pagina, con un profilo nuovo nella cartella
         # di lavoro e senza primo avvio (cosi' le preferenze iniziali non si leggono): pagina e motore devono uscire falsi.
         # Premessa: Chromium acceso, una finestra e le preferenze scritte; senza, due falsi non direbbero nulla (fermo).
@@ -300,7 +305,8 @@ try {
         while (((Get-Date) - $Inizio).TotalSeconds -lt 60 -and @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count -lt 1) { Start-Sleep -Seconds 2 }
         Start-Sleep -Seconds 15
         $ChromeS = @(ProcessiUnita | Where-Object { $_.Name -eq 'chrome.exe' }).Count
-        $TitoliS = @(Get-Process -Name chrome -ErrorAction SilentlyContinue | Where-Object { $_.Path -and (Sotto $_.Path) -and $_.MainWindowHandle -ne 0 } | ForEach-Object { $_.MainWindowTitle })
+        # Solo finestre con un titolo: una scheda senza titolo farebbe "pagina falsa" per una ragione banale.
+        $TitoliS = @(Get-Process -Name chrome -ErrorAction SilentlyContinue | Where-Object { $_.Path -and (Sotto $_.Path) -and $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle } | ForEach-Object { $_.MainWindowTitle })
         $PaginaS = @($TitoliS | Where-Object { $_ -like 'Chromium in MyDev*' }).Count -ge 1
         Chiudi-Tutto
         $PrefS = Join-Path $ProfSonda 'Default\Preferences'

@@ -23,8 +23,9 @@
 // prima dal `compile` del Python dell'unità, in un processo solo e senza scrivere nulla accanto ai sorgenti, e solo ciò che compila
 // si esegue.
 //
-// Gli esiti sono 1506, (213 + 38) casi per 6 esecutori: 1392 vengono da un programma compilato ed eseguito, 114 (i 19 casi dei file
-// con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del caso.
+// Gli esiti sono `ESITI_ATTESI`, i casi per 6 esecutori: `DA_UN_PROGRAMMA` vengono da un programma compilato ed eseguito, gli altri
+// (i casi dei file con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del
+// caso. Le costanti sono controllate a ogni corsa e i numeri si stampano (all'etichetta v1.0.0: 1506, 1392 e 114).
 //
 // Il motore dell'editor che genera ha un tempo massimo: oltre, il motore si ferma e la prova è rossa, con il suo nome.
 //
@@ -34,7 +35,9 @@
 // - il pseudocodice, «Accademico» e il TypeScript, che l'unità non esegue;
 // - l'editor: l'esempio dall'editor è una prova con la finestra, a parte;
 // - che i casi siano quelli giusti: li scrive AlgoDesign;
-// - un ingresso con una riga vuota: il corpus non ne ha (il conteggio si stampa); gli ingressi con spazi sì, e sono una prova.
+// - un ingresso con una riga vuota: il corpus non ne ha (il conteggio si stampa); gli ingressi con spazi sì, e sono una prova;
+// - la forma di una differenza dichiarata: una voce di `DICHIARATE` ammette qualunque esito non verde del suo caso e dei suoi
+//   esecutori (salvo «non compila», sempre rosso), non solo quello del motivo scritto.
 
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -111,7 +114,7 @@ console.log(`tipi: tsc uscita ${tipi.exitCode}, errori ${[...testoDeiTipi.matchA
 prova("tsc sulla prova", tipi.exitCode === 0, testoDeiTipi.slice(0, 1500));
 
 // --- Le premesse.
-const argomento =(nome: string): string | undefined => {
+const argomento = (nome: string): string | undefined => {
   const i = process.argv.indexOf(nome);
   return i >= 0 ? (process.argv[i + 1] ?? fermo(`${nome} vuole un valore`)) : undefined;
 };

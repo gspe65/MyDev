@@ -117,7 +117,8 @@ def esamina(percorso, forme, togli=None):
                 break
             dati = (coda + blocco).lower()
             if togli:
-                dati = dati.replace(togli, b"")
+                # Una copia sola: una seconda occorrenza identica resta e conta come colpo.
+                dati = dati.replace(togli, b"", 1)
             for nome, pp in forme:
                 if nome not in trovati and any(p in dati for p in pp):
                     trovati.add(nome)
@@ -175,8 +176,8 @@ def scandisci(radice, forme):
 
 def sonde(radice, forme):
     """Un file vero per ogni forma, fuori dalle specie, e uno dentro una specie: la prima specie deve dare rosso, la seconda no.
-    Per ogni specie di NOMINATE quattro file veri: l'occorrenza ammessa nel suo file, rossa in un altro, rossa con un
-    altro colpo accanto (della stessa radice o della radice dell'unita')."""
+    Per ogni specie di NOMINATE cinque file veri: l'occorrenza ammessa nel suo file, rossa in un altro, rossa con un
+    altro colpo accanto (della stessa radice o della radice dell'unita'), rossa ripetuta due volte."""
     cartella = pathlib.Path(radice) / "progetti" / "sonda-u12"
     cartella.mkdir(parents=True, exist_ok=False)
     dentro = pathlib.Path(radice) / "vscodium" / "data" / "user-data" / "logs" / "sonda-u12.log"
@@ -206,6 +207,7 @@ def sonde(radice, forme):
                 ("rossa in un altro file", b"prima\n" + occ + b"\ndopo", altro_rel, [altro_rel]),
                 ("rossa con un'altra occorrenza della stessa radice", occ + b"\n" + fs[-1][1][0], percorso, [percorso]),
                 ("rossa con la radice dell'unita' accanto", occ + b"\n" + forme[0][1][0], percorso, [percorso]),
+                ("rossa con la stessa occorrenza due volte", occ + b"\n" + occ, percorso, [percorso]),
             ]
             for titolo, dati, r, atteso in prove:
                 f = cartella / f"f{tot}.bin"

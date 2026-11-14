@@ -255,15 +255,18 @@ try {
             $wc = New-Object Net.WebClient
             $wc.Headers['User-Agent'] = 'mydev-costruttore'
             # Una fonte che non risponde piu': si nomina il componente, e la strada e' una copia del deposito.
-            try { $wc.DownloadFile($v.fonte, $parte); Move-Item -LiteralPath $parte -Destination $p }
+            $Arrivato = $false
+            try { $wc.DownloadFile($v.fonte, $parte); $Arrivato = $true }
             catch { Fermo "scaricamento non riuscito: $($v.nome) $($v.versione), da $($v.fonte): $($_.Exception.Message) -- se la fonte non c'e' piu', il file $rel (sha256 $($v.sha256)) si copia nel deposito da una sua copia, poi si costruisce con -SenzaRete" }
             finally {
                 $wc.Dispose()
-                # Uno scaricamento non riuscito o interrotto non lascia il .parte, che il rilancio con -SenzaRete
-                # troverebbe come file estraneo: dopo lo spostamento il .parte non c'e' piu', quindi qui resta solo da
-                # un errore o da Ctrl+C. Il finally gira anche dopo l'exit di Fermo.
-                if (Test-Path -LiteralPath $parte) { Remove-Item -LiteralPath $parte -Force -ErrorAction SilentlyContinue }
+                # Uno scaricamento non riuscito o interrotto (anche con Ctrl+C) non lascia il .parte, che il rilancio con
+                # -SenzaRete troverebbe come file estraneo. Il finally gira anche dopo l'exit di Fermo (misurato in 5.1).
+                if (-not $Arrivato -and (Test-Path -LiteralPath $parte)) { Remove-Item -LiteralPath $parte -Force -ErrorAction SilentlyContinue }
             }
+            # Lo spostamento ha il suo messaggio: il file e' arrivato intero, e non e' la fonte a mancare.
+            try { Move-Item -LiteralPath $parte -Destination $p }
+            catch { Fermo "scaricato ma non spostato: $parte in $p ($($_.Exception.Message)) -- il file arrivato resta col nome .parte: si rinomina a mano togliendo .parte, poi si rilancia" }
             $Scaricati++
         }
         $n = (Get-Item -LiteralPath $p).Length
