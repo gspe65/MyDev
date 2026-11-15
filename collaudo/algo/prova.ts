@@ -1,10 +1,11 @@
-// La prova del pacchetto dell'estensione che la ricetta installa: il file della release del suo repository, riscaricato a ogni corsa,
-// legato alla voce `estensione-algo` di ricetta/componenti.json, all'etichetta, all'attestazione della corsa che l'ha costruito, ai
-// sorgenti all'etichetta e al file del nucleo che la conformità prova. Il pacchetto non si costruisce qui: lo costruisce e lo prova
-// con l'editor, su tre sistemi, il repository dell'estensione.
+// La prova del pacchetto di un'estensione che la ricetta installa da una release: il file della release del suo repository,
+// riscaricato a ogni corsa, legato alla sua voce di ricetta/componenti.json, all'etichetta, all'attestazione della corsa che l'ha
+// costruito, ai sorgenti all'etichetta e, per l'estensione `.algo`, al file del nucleo che la conformità prova. Il pacchetto non si
+// costruisce qui: lo costruisce e lo prova con l'editor, su tre sistemi, il repository dell'estensione. Le voci hanno un profilo
+// ciascuna (PROFILI): che cosa c'è nel pacchetto, quali voci sono file del repository, se porta il nucleo.
 //
-//   bun collaudo/algo/prova.ts                    atteso: ESITO: VERDE, prove N/N
-//   bun collaudo/algo/prova.ts --unita <cartella> lo stesso, e l'estensione installata nell'unità è il pacchetto, file per file
+//   bun collaudo/algo/prova.ts [--voce <nome>]                    atteso: ESITO: VERDE, prove N/N (senza --voce: estensione-algo)
+//   bun collaudo/algo/prova.ts [--voce <nome>] --unita <cartella> lo stesso, e l'estensione installata nell'unità è il pacchetto
 //
 // Serve la rete (release, etichetta, sorgenti all'etichetta) e `gh` (l'attestazione; basta un account qualunque).
 // Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare).
@@ -23,15 +24,34 @@ import { differenzeDegliElenchi, fermo, impronta, RADICE } from "../../ricetta/n
 
 const POSIZIONE_UNITA = process.argv.indexOf("--unita");
 const UNITA = POSIZIONE_UNITA >= 0 ? (process.argv[POSIZIONE_UNITA + 1] ?? fermo("--unita vuole la cartella")) : undefined;
+const POSIZIONE_VOCE = process.argv.indexOf("--voce");
+const NOME_DELLA_VOCE = POSIZIONE_VOCE >= 0 ? (process.argv[POSIZIONE_VOCE + 1] ?? fermo("--voce vuole il nome della voce")) : "estensione-algo";
 
-/** I denominatori, dichiarati prima della corsa: le chiamate a `prova`, e quella in più con `--unita`. */
-const PROVE = 17;
-const PROVE_NELL_UNITA = 18;
-
-/** Ciò che il pacchetto contiene, e nient'altro. */
-const NEL_PACCHETTO = ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/icona.png", "extension/package.json", "extension/readme.md"];
-/** Le voci che sono file del repository dell'estensione così come sono, all'etichetta. */
-const DAI_SORGENTI: Record<string, string> = { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md" };
+/** Per ogni voce: ciò che il pacchetto contiene, e nient'altro; le voci che sono file del repository dell'estensione così come
+ *  sono, all'etichetta; le immagini (confrontate per contenuto, non lette come testo); se porta il nucleo di AlgoDesign; e il
+ *  denominatore, cioè le chiamate a `prova` (una in più con `--unita`), dichiarato prima della corsa. */
+type Profilo = { pacchetto: string[]; daiSorgenti: Record<string, string>; immagini: string[]; nucleo: boolean; prove: number };
+const PROFILI: Record<string, Profilo> = {
+  "estensione-algo": {
+    pacchetto: ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/icona.png", "extension/package.json", "extension/readme.md"],
+    daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md" },
+    immagini: ["extension/icona.png"],
+    nucleo: true,
+    prove: 17,
+  },
+  "estensione-c": {
+    pacchetto: ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/dist/extension.cjs", "extension/dist/terminale.cjs", "extension/package.json", "extension/readme.md"],
+    daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/readme.md": "README.md" },
+    immagini: [],
+    nucleo: false,
+    prove: 16,
+  },
+};
+const PROFILO = PROFILI[NOME_DELLA_VOCE] ?? fermo(`nessun profilo per la voce ${NOME_DELLA_VOCE}: ${Object.keys(PROFILI).join(", ")}`);
+const PROVE = PROFILO.prove;
+const PROVE_NELL_UNITA = PROFILO.prove + 1;
+const NEL_PACCHETTO = PROFILO.pacchetto;
+const DAI_SORGENTI = PROFILO.daiSorgenti;
 const PERCORSO_ASSOLUTO = /(?<![A-Za-z])[A-Za-z]:[\\/]/;
 /** Stringhe che nel pacchetto non devono esserci: il nome e la struttura di questo repository (come le conta il controllo di confine),
  *  e il motore con cui si costruisce. */
@@ -91,7 +111,7 @@ prova("tsc sulla prova", tipi.exitCode === 0, `${tipi.stdout.toString()}${tipi.s
 
 // --- La voce della ricetta, e da lì il repository e l'etichetta.
 type Voce = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string; versione: string; estensione: string; commit: string };
-const voce = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === "estensione-algo" && v.stato === "release") ?? fermo("in ricetta/componenti.json non c'è la voce estensione-algo con stato release");
+const voce = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === NOME_DELLA_VOCE && v.stato === "release") ?? fermo(`in ricetta/componenti.json non c'è la voce ${NOME_DELLA_VOCE} con stato release`);
 const fonte = /^https:\/\/github\.com\/([^/]+\/[^/]+)\/releases\/download\/([^/]+)\/([^/]+)$/.exec(voce.fonte) ?? fermo(`la fonte non è un file di una release di GitHub: ${voce.fonte}`);
 const [, repository, etichetta, nomeDelFile] = fonte as unknown as [string, string, string, string];
 if (nomeDelFile !== voce.file) fermo(`la fonte nomina ${nomeDelFile}, la voce ${voce.file}`);
@@ -115,12 +135,16 @@ writeFileSync(fileRelease, release);
 console.log(`file della release riscaricato: ${release.length} byte, impronta ${impronta(release)}`);
 const sorgenti = new Map<string, Uint8Array>();
 for (const f of new Set(Object.values(DAI_SORGENTI))) sorgenti.set(f, await scarica(`https://raw.githubusercontent.com/${repository}/${voce.commit}/${f}`));
+// Il nucleo, solo per il profilo che lo porta: il file della conformità e la sua licenza, dallo zip del deposito.
 const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string } };
-const zipDelNucleo = join(RADICE, "ricetta", "nucleo", "scaricato", nucleo.zip.nome);
-if (!existsSync(zipDelNucleo)) fermo(`manca ${zipDelNucleo}: si fa prima bun run libreria:costruisci`);
-const vociDelNucleo = vociDelloZip(readFileSync(zipDelNucleo));
-if (impronta(readFileSync(zipDelNucleo)) !== nucleo.zip.sha256) fermo("lo zip del nucleo nel deposito non ha l'impronta di pacchetto.json");
-const licenzaDelNucleo = vociDelNucleo.get(`${nucleo.file.percorso.split("/")[0]}/LICENSE`) ?? fermo("la licenza non è nello zip del nucleo");
+let licenzaDelNucleo: Uint8Array = new Uint8Array();
+if (PROFILO.nucleo) {
+  const zipDelNucleo = join(RADICE, "ricetta", "nucleo", "scaricato", nucleo.zip.nome);
+  if (!existsSync(zipDelNucleo)) fermo(`manca ${zipDelNucleo}: si fa prima bun run libreria:costruisci`);
+  const vociDelNucleo = vociDelloZip(readFileSync(zipDelNucleo));
+  if (impronta(readFileSync(zipDelNucleo)) !== nucleo.zip.sha256) fermo("lo zip del nucleo nel deposito non ha l'impronta di pacchetto.json");
+  licenzaDelNucleo = vociDelNucleo.get(`${nucleo.file.percorso.split("/")[0]}/LICENSE`) ?? fermo("la licenza non è nello zip del nucleo");
+}
 
 // --- Il verdetto sul pacchetto: una funzione sola, per il vero e per le mutazioni. Vuoto è verde; ogni motivo nomina la voce.
 // Uno zip che non si legge è un rosso col suo motivo, come ogni altro: una politica sola.
@@ -143,17 +167,19 @@ function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa): string[] {
     const d = voci.get(v);
     if (d !== undefined && impronta(d) !== impronta(sorgenti.get(f)!)) motivi.push(`${v}: non è ${f} all'etichetta`);
   }
-  const libreria = voci.get("extension/dist/libreria.cjs");
-  if (libreria !== undefined && impronta(libreria) !== nucleo.file.sha256) motivi.push(`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(libreria).slice(0, 12)})`);
-  const licenza = voci.get("extension/LICENZA-ALGODESIGN.txt");
-  if (licenza !== undefined && impronta(licenza) !== impronta(licenzaDelNucleo)) motivi.push("extension/LICENZA-ALGODESIGN.txt: non è la licenza dello zip del nucleo");
-  // Ogni voce tranne l'icona, che è un'immagine confrontata qui sopra per contenuto: anche le voci in più.
-  for (const [v, d] of voci) if (v !== "extension/icona.png") for (const c of colpiIn(Buffer.from(d).toString("utf8"))) motivi.push(`${v}: ${c}`);
+  if (PROFILO.nucleo) {
+    const libreria = voci.get("extension/dist/libreria.cjs");
+    if (libreria !== undefined && impronta(libreria) !== nucleo.file.sha256) motivi.push(`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(libreria).slice(0, 12)})`);
+    const licenza = voci.get("extension/LICENZA-ALGODESIGN.txt");
+    if (licenza !== undefined && impronta(licenza) !== impronta(licenzaDelNucleo)) motivi.push("extension/LICENZA-ALGODESIGN.txt: non è la licenza dello zip del nucleo");
+  }
+  // Ogni voce tranne le immagini, confrontate qui sopra per contenuto: anche le voci in più.
+  for (const [v, d] of voci) if (!PROFILO.immagini.includes(v)) for (const c of colpiIn(Buffer.from(d).toString("utf8"))) motivi.push(`${v}: ${c}`);
   return motivi;
 }
 const motiviVeri = motiviDellaRelease(release, voce);
 console.log(`motivi sul file della release: ${motiviVeri.length}`);
-prova("il file della release: byte e impronta della voce, le voci attese nei due versi, i file del repository all'etichetta, il nucleo e la sua licenza, nessun percorso assoluto né stringa vietata", motiviVeri.length === 0, motiviVeri.join("; "));
+prova(`il file della release: byte e impronta della voce, le voci attese nei due versi, i file del repository all'etichetta,${PROFILO.nucleo ? " il nucleo e la sua licenza," : ""} nessun percorso assoluto né stringa vietata`, motiviVeri.length === 0, motiviVeri.join("; "));
 
 // --- Il lettore dello zip contro il `tar` di System32, SUL FILE DELLA RELEASE: stesso elenco nei due versi, stessi byte.
 const tar = join(process.env.SystemRoot ?? fermo("manca SystemRoot"), "System32", "tar.exe");
@@ -260,8 +286,10 @@ const senza = ricomposto((m) => Number(m.delete("extension/LICENSE.txt")));
 mutazione("una voce mancante", senza.zip, senza.toccate, attesaDi(senza.zip), ["voce mancante: extension/LICENSE.txt"]);
 const diverso = ricomposto((m) => (m.set("extension/package.json", Buffer.concat([m.get("extension/package.json") ?? new Uint8Array(), Buffer.from(" ")])), 1));
 mutazione("una voce diversa dal file del repository all'etichetta", diverso.zip, diverso.toccate, attesaDi(diverso.zip), ["extension/package.json: non è package.json all'etichetta"]);
-const altroNucleo = ricomposto((m) => (m.set("extension/dist/libreria.cjs", Buffer.concat([m.get("extension/dist/libreria.cjs") ?? new Uint8Array(), Buffer.from("\n")])), 1));
-mutazione("un altro file del nucleo", altroNucleo.zip, altroNucleo.toccate, attesaDi(altroNucleo.zip), [`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(Buffer.concat([vociRelease.get("extension/dist/libreria.cjs")!, Buffer.from("\n")])).slice(0, 12)})`]);
+if (PROFILO.nucleo) {
+  const altroNucleo = ricomposto((m) => (m.set("extension/dist/libreria.cjs", Buffer.concat([m.get("extension/dist/libreria.cjs") ?? new Uint8Array(), Buffer.from("\n")])), 1));
+  mutazione("un altro file del nucleo", altroNucleo.zip, altroNucleo.toccate, attesaDi(altroNucleo.zip), [`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(Buffer.concat([vociRelease.get("extension/dist/libreria.cjs")!, Buffer.from("\n")])).slice(0, 12)})`]);
+}
 const vietato = ricomposto((m) => (m.set(EXTRA, new TextEncoder().encode(String.raw`module.exports = "C:\MyDev";`)), 1));
 mutazione("una voce in più con un percorso assoluto e il nome del progetto", vietato.zip, vietato.toccate, attesaDi(vietato.zip), [`voce in più: ${EXTRA}`, `${EXTRA}: C:\\`, `${EXTRA}: MyDev`]);
 // Sul file vero, contro la voce vera. L'impronta: un bit dell'ora della prima testata locale, che nessun lettore usa, a byte uguali.

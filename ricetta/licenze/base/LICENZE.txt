@@ -1136,6 +1136,9 @@ nostro/configurazione-chromium
 nostro/estensione-algo
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/estensione-c
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
 nostro/licenze
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
