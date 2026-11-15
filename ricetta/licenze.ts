@@ -99,7 +99,7 @@ function componi(): { testo: string; pacchetti: Pacchetto[]; senzaTesto: string[
     "",
     "Il nucleo incorporato",
     "",
-    `AlgoDesign, etichetta ${inventario.etichetta}, commit ${inventario.commit}, © 2026 Giuseppe Lancellotti: https://www.lancellotti.info/AlgoDesign/`,
+    `AlgoDesign, ${inventario.etichetta !== undefined ? `etichetta ${inventario.etichetta}, ` : ""}commit ${inventario.commit}, © 2026 Giuseppe Lancellotti: https://www.lancellotti.info/AlgoDesign/`,
     "Il codice ha la licenza MIT: testo [1]. La documentazione ha la licenza CC BY 4.0: testo [2].",
     "Le librerie dell'interfaccia e del programma di AlgoDesign non entrano in MyDev: il loro elenco è nel pacchetto di AlgoDesign, nel file LICENZE-DI-TERZE-PARTI.txt.",
     "",

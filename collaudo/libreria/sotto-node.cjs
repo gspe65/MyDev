@@ -1,5 +1,5 @@
 // Ciò che la prova della libreria esegue sotto Node, il motore dello studente: carica il pacchetto indicato e stampa, in
-// JSON, le esportazioni e l'esito di ogni funzione. Non giudica nulla: i confronti stanno in `prova.ts`.
+// JSON, le esportazioni e l'esito di ogni funzione (le sette del contratto 1.1). Non giudica nulla: i confronti stanno in `prova.ts`.
 //
 //   node collaudo/libreria/sotto-node.cjs <pacchetto> <file .algo>
 
@@ -58,5 +58,26 @@ const nonLibreria = m.aggiungiAllaLibreria(aperto.progetto, letta, false);
 esiti.nonLibreria = nonLibreria.ok ? "accettata" : nonLibreria.rifiuto?.motivo;
 const nomeCattivo = m.aggiungiAllaLibreria({ nome: "" }, letta, false);
 esiti.nomeCattivo = nomeCattivo.ok ? "accettato" : nomeCattivo.rifiuto?.motivo;
+
+// Il contratto 1.1: la misura del testo la dà chi chiama (qui una regola fissa, come nella conformità).
+const misura = (t, stile) => t.length * 7 + (stile === "grassetto" ? t.length : stile === "corsivo" ? t.length / 2 : 0);
+const prima = aperto.progetto.functions[0].id;
+const d = m.disegna(aperto.progetto, prima, "it", misura, "system-ui, sans-serif", { errori: m.controlla(aperto.progetto) });
+esiti.disegno = d.svg.startsWith("<svg ") && d.larghezza > 0 && d.altezza > 0 && d.svg.includes(`width="${d.larghezza}" height="${d.altezza}"`);
+const rifiuto = (f) => {
+  try {
+    f();
+    return "nessuna eccezione";
+  } catch (e) {
+    return e.message;
+  }
+};
+esiti.disegnaRifiuta = [
+  rifiuto(() => m.disegna(aperto.progetto, "nessuna", "it", misura, "sans-serif")),
+  rifiuto(() => m.disegna(aperto.progetto, prima, "IT", misura, "sans-serif")),
+  rifiuto(() => m.disegna(aperto.progetto, prima, "it", misura, "sans-serif", { colori: "verde" })),
+];
+esiti.segnalazioni = Array.isArray(m.segnalazioni(aperto.progetto, "it"));
+esiti.segnalazioniRifiuta = rifiuto(() => m.segnalazioni(aperto.progetto, "IT"));
 
 console.log(JSON.stringify({ esportazioni, esiti }));

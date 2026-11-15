@@ -12,7 +12,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { parseArgs } from "node:util";
-import { commitDellEtichetta, differenzeDegliElenchi, ESTRATTO, fermo, git, impronta, improntaDellInsieme, INVENTARIO, leggiInventario, repoDelNucleo, rosso } from "./comune";
+import { commitDelRiferimento, differenzeDegliElenchi, ESTRATTO, fermo, git, impronta, improntaDellInsieme, INVENTARIO, leggiInventario, repoDelNucleo, rosso } from "./comune";
 
 const { values: opzioni } = parseArgs({
   args: Bun.argv.slice(2),
@@ -22,7 +22,7 @@ const { values: opzioni } = parseArgs({
 
 const inventario = leggiInventario(opzioni.inventario ?? INVENTARIO);
 const cartella = opzioni.cartella ?? ESTRATTO;
-console.log(`etichetta ${inventario.etichetta}, commit ${inventario.commit}, file ${inventario.file.length}`);
+console.log(`${inventario.etichetta !== undefined ? `etichetta ${inventario.etichetta}, ` : "senza etichetta, "}commit ${inventario.commit}, file ${inventario.file.length}`);
 console.log(`forma dell'impronta: ${inventario.forma}`);
 if (inventario.file.length === 0) fermo("l'inventario non ha file");
 
@@ -30,7 +30,8 @@ if (opzioni.verifica) {
   if (!existsSync(cartella)) fermo(`non c'è nulla da verificare: ${cartella}`);
 } else {
   const repo = repoDelNucleo(opzioni.repo);
-  const commit = commitDellEtichetta(repo, inventario.etichetta);
+  // Un'etichetta dà il commit; senza etichetta il commit è il riferimento, e deve esserci (se no è un fermo).
+  const commit = commitDelRiferimento(repo, inventario);
   if (commit !== inventario.commit) rosso(`il commit dell'inventario (${inventario.commit}) non è quello dell'etichetta ${inventario.etichetta} (${commit})`);
   // Prima i byte nuovi: se git non li dà, l'estratto che c'è resta intero.
   const archivio = git(repo, "archive", "--format=tar", commit, "--", ...inventario.file.map((v) => v.percorso));

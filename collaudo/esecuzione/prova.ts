@@ -43,7 +43,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, rosso } from "../../ricetta/nucleo/comune";
+import { fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, riferimentoDi, rosso } from "../../ricetta/nucleo/comune";
 
 /** I denominatori, dichiarati prima della corsa e confrontati con ciò che si misura. Cambiare etichetta è rimisurarli. */
 const FILE_ATTESI = 192;
@@ -144,7 +144,7 @@ fermoSeEtichettaSpostata(repo, inventario);
 const sha = (f: string): string => createHash("sha256").update(readFileSync(f)).digest("hex");
 console.log(`unità: ${radice}`);
 console.log(`lavoro: ${lavoro}`);
-console.log(`nucleo: ${inventario.etichetta}, commit ${inventario.commit.slice(0, 7)}; pacchetto del .vsix: ${pacchetti[0]}, sha256 ${sha(pacchetto).slice(0, 16)}…`);
+console.log(`nucleo: ${riferimentoDi(inventario)}; pacchetto del .vsix: ${pacchetti[0]}, sha256 ${sha(pacchetto).slice(0, 16)}…`);
 console.log(`dichiarato prima della corsa: file ${FILE_ATTESI}, casi ${CASI_DEL_PROGRAMMA} del programma + ${CASI_DI_FUNZIONI} di funzioni (con l'errore statico ${CASI_CON_ERRORE_STATICO}), esecutori ${ESECUTORI.length}, esiti ${ESITI_ATTESI}; esempi ${ESEMPI_ATTESI}`);
 
 // --- AlgoDesign al commit: il corpus e le funzioni del confronto.
