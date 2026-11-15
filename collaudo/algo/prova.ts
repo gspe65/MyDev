@@ -1,59 +1,43 @@
-// La prova dell'estensione: costruisce il pacchetto, ne guarda il contenuto e prova la logica, senza aprire nulla. Con `--finestra` apre
-// l'editor installato per pochi secondi, e la finestra prende la tastiera: si lancia solo quando serve, avvisando prima.
+// La prova del pacchetto dell'estensione che la ricetta installa: il file della release del suo repository, riscaricato a ogni corsa,
+// legato alla voce `estensione-algo` di ricetta/componenti.json, all'etichetta, all'attestazione della corsa che l'ha costruito, ai
+// sorgenti all'etichetta e al file del nucleo che la conformità prova. Il pacchetto non si costruisce qui: lo costruisce e lo prova
+// con l'editor, su tre sistemi, il repository dell'estensione.
 //
-//   bun collaudo/algo/prova.ts              atteso: ESITO: VERDE, prove N/N
-//   bun collaudo/algo/prova.ts --finestra   atteso: lo stesso, con le prove nell'editor
-//   bun collaudo/algo/prova.ts --unita <cartella>   atteso: lo stesso, nell'editor di quella cartella e con l'estensione installata lì
+//   bun collaudo/algo/prova.ts                    atteso: ESITO: VERDE, prove N/N
+//   bun collaudo/algo/prova.ts --unita <cartella> lo stesso, e l'estensione installata nell'unità è il pacchetto, file per file
 //
+// Serve la rete (release, etichetta, sorgenti all'etichetta) e `gh` (l'attestazione; basta un account qualunque).
 // Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare).
 //
 // Che cosa NON guarda:
-// - l'identità su tutto il corpus: è la prova di conformità, e qui si controlla che il pacchetto dentro l'estensione sia lo stesso file;
-// - un valore di linguaggio o di lingua scritto a mano nelle impostazioni, fuori dall'elenco del manifesto: nell'editor no, l'errore col nome lo prova la logica;
-// - l'aggiornamento del documento senza rilanciare il comando, che non c'è;
-// - la condizione del comando nella palette: chiama il comando direttamente, e quella condizione distingue le maiuscole (`.ALGO` non lo vede);
-// - un altro editor derivato: gira su quello installato sulla macchina, o su quello dato con `--unita`;
-// - la costruzione in una radice con spazi doppi: gli spazi doppi stanno nelle cartelle temporanee, non nel repository;
-// - il primo piano del sistema: lo misura e lo stampa, non è un verde né un rosso. Il fuoco dentro l'editor invece è una prova.
+// - il comportamento dell'estensione nell'editor: lo prova la corsa del suo repository, e qui conta che il file sia quello;
+// - `extension/dist/extension.cjs` contro i sorgenti: è costruito, e lo lega ai sorgenti l'attestazione (repository, commit, corsa);
+// - i metadati dello zip (date, ordine delle voci): si guardano byte e impronta del file, e il contenuto voce per voce;
+// - la fotografia di un'etichetta spostata DOPO la corsa: si confrontano l'etichetta di adesso, il commit della voce e quello attestato.
 
-import { dlopen, FFIType } from "bun:ffi";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { inflateRawSync } from "node:zlib";
-import { documento, testoDelRifiuto, type Libreria, type Rifiuto } from "../../extensions/algo/src/documento";
-import { differenzeDegliElenchi, fermo, fermoSeEtichettaSpostata, git, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo } from "../../ricetta/nucleo/comune";
+import { differenzeDegliElenchi, fermo, impronta, RADICE } from "../../ricetta/nucleo/comune";
 
 const POSIZIONE_UNITA = process.argv.indexOf("--unita");
 const UNITA = POSIZIONE_UNITA >= 0 ? (process.argv[POSIZIONE_UNITA + 1] ?? fermo("--unita vuole la cartella")) : undefined;
-const CON_FINESTRA = process.argv.includes("--finestra") || UNITA !== undefined;
 
-/** I denominatori, dichiarati prima della corsa: le chiamate a `prova` senza finestra, più le 19 della finestra, più le 2 dell'unità. */
-const PROVE_SENZA_FINESTRA = 33;
-const PROVE_CON_FINESTRA = 52;
-const PROVE_NELL_UNITA = 54;
-const TEST_ATTESI = 15;
+/** I denominatori, dichiarati prima della corsa: le chiamate a `prova`, e quella in più con `--unita`. */
+const PROVE = 17;
+const PROVE_NELL_UNITA = 18;
 
 /** Ciò che il pacchetto contiene, e nient'altro. */
-const NEL_PACCHETTO = ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/icona.png", "extension/package.json"];
-/** L'icona di AlgoDesign, nel repository del nucleo: l'estensione ne porta una copia, che deve essere lo stesso file. */
-const ICONA_NEL_NUCLEO = "app/shell/icons/128x128.png";
-const IMPORT_ATTESI = ["./libreria.cjs", "vscode"];
+const NEL_PACCHETTO = ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/icona.png", "extension/package.json", "extension/readme.md"];
+/** Le voci che sono file del repository dell'estensione così come sono, all'etichetta. */
+const DAI_SORGENTI: Record<string, string> = { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md" };
 const PERCORSO_ASSOLUTO = /(?<![A-Za-z])[A-Za-z]:[\\/]/;
-/** Stringhe che nel pacchetto non devono esserci: il nome e la struttura del repo ospite (come le conta il controllo di confine sui
- *  sorgenti), e il motore con cui si costruisce. */
+/** Stringhe che nel pacchetto non devono esserci: il nome e la struttura di questo repository (come le conta il controllo di confine),
+ *  e il motore con cui si costruisce. */
 const VIETATE = [/my[-_\s]*dev/i, /ricetta[\\/]/, /estratto[\\/]/, /collaudo[\\/]/, /bun:/, /Bun\./];
 
-/** Un file vero del corpus, e le combinazioni che la finestra guarda: un testo in due lingue, e un rifiuto. */
-const FILE = "tappa-1/arrotonda-meta";
-const CASI = [["python", "en"], ["python", "it"], ["accademico", "en"]] as const;
-
-const ESTENSIONE = join(RADICE, "extensions", "algo");
-const VSIX = join(ESTENSIONE, "dist", "algo-codice.vsix");
-const LIBRERIA = join(RADICE, "extensions", "libreria", "dist", "libreria.cjs");
-const CONFORMITA_ATTESI = join(RADICE, "collaudo", "conformita", "attesi.ts");
-
-const cartella = mkdtempSync(join(tmpdir(), "algo  prova-"));
+const cartella = mkdtempSync(join(tmpdir(), "algo  release-"));
 process.on("exit", () => rmSync(cartella, { recursive: true, force: true }));
 
 let fatte = 0;
@@ -64,15 +48,17 @@ function prova(nome: string, buona: boolean, dettaglio = ""): void {
   if (!buona) fallite.push(nome);
 }
 
-function esegui(comando: string[], cwd = RADICE): { uscita: number; testo: string } {
-  const p = Bun.spawnSync(comando, { cwd, stdout: "pipe", stderr: "pipe" });
-  return { uscita: p.exitCode, testo: `${p.stdout.toString()}${p.stderr.toString()}` };
+async function scarica(indirizzo: string): Promise<Uint8Array> {
+  const r = await fetch(indirizzo).catch((e: unknown) => fermo(`non si è potuto scaricare ${indirizzo}: ${String(e)}`));
+  if (!r.ok) fermo(`non si è potuto scaricare ${indirizzo}: risposta ${r.status}`);
+  return new Uint8Array(await r.arrayBuffer());
 }
 
-/** Le voci di uno zip lette dal suo indice in coda al file, coi contenuti: il nome di ogni file (le cartelle no) e i suoi byte. Uno
- *  zip che non si legge è un'eccezione, con il motivo. */
+/** Le voci di uno zip lette dal suo indice in coda al file, coi contenuti (le cartelle no). Uno zip che non si legge è un'eccezione,
+ *  col motivo: il verdetto la trasforma in un rosso. */
 function vociDelloZip(archivio: Uint8Array): Map<string, Uint8Array> {
   const z = Buffer.from(archivio.buffer, archivio.byteOffset, archivio.byteLength);
+  if (z.length < 22) throw new Error(`troppo corto per uno zip: ${z.length} byte`);
   let fine = z.length - 22;
   while (fine >= Math.max(0, z.length - 22 - 0xffff) && z.readUInt32LE(fine) !== 0x06054b50) fine--;
   if (fine < 0 || z.readUInt32LE(fine) !== 0x06054b50) throw new Error("manca la fine dell'indice");
@@ -80,13 +66,15 @@ function vociDelloZip(archivio: Uint8Array): Map<string, Uint8Array> {
   const voci = new Map<string, Uint8Array>();
   let p = z.readUInt32LE(fine + 16);
   for (let i = 0; i < quante; i++) {
-    if (z.readUInt32LE(p) !== 0x02014b50) throw new Error(`voce ${i} dell'indice senza la sua firma`);
+    if (p + 46 > z.length || z.readUInt32LE(p) !== 0x02014b50) throw new Error(`voce ${i} dell'indice senza la sua firma`);
     const lunghezzaNome = z.readUInt16LE(p + 28);
     const nome = z.toString("utf8", p + 46, p + 46 + lunghezzaNome);
     const testata = z.readUInt32LE(p + 42);
-    if (z.readUInt32LE(testata) !== 0x04034b50) throw new Error(`${nome}: testata locale senza la sua firma`);
+    if (testata + 30 > z.length || z.readUInt32LE(testata) !== 0x04034b50) throw new Error(`${nome}: testata locale senza la sua firma`);
     const inizio = testata + 30 + z.readUInt16LE(testata + 26) + z.readUInt16LE(testata + 28);
-    const dati = z.subarray(inizio, inizio + z.readUInt32LE(p + 20));
+    const grandezza = z.readUInt32LE(p + 20);
+    if (inizio + grandezza > z.length) throw new Error(`${nome}: i dati escono dal file`);
+    const dati = z.subarray(inizio, inizio + grandezza);
     const metodo = z.readUInt16LE(p + 10);
     if (metodo !== 0 && metodo !== 8) throw new Error(`${nome}: metodo di compressione sconosciuto ${metodo}`);
     if (voci.has(nome)) throw new Error(`${nome}: voce ripetuta nell'indice`);
@@ -96,7 +84,125 @@ function vociDelloZip(archivio: Uint8Array): Map<string, Uint8Array> {
   return voci;
 }
 
-/** Uno zip senza compressione con le voci date: serve solo a comporre le mutazioni del pacchetto della release. */
+// --- I tipi di questa prova: il suo tsconfig non lo fa girare nessun altro.
+const tsc = Bun.which("tsc", { PATH: join(RADICE, "node_modules", ".bin") }) ?? fermo("tsc non c'è: bun install alla radice");
+const tipi = Bun.spawnSync([tsc, "-p", join(RADICE, "collaudo", "algo", "tsconfig.json")], { stdout: "pipe", stderr: "pipe" });
+prova("tsc sulla prova", tipi.exitCode === 0, `${tipi.stdout.toString()}${tipi.stderr.toString()}`);
+
+// --- La voce della ricetta, e da lì il repository e l'etichetta.
+type Voce = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string; versione: string; estensione: string; commit: string };
+const voce = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === "estensione-algo" && v.stato === "release") ?? fermo("in ricetta/componenti.json non c'è la voce estensione-algo con stato release");
+const fonte = /^https:\/\/github\.com\/([^/]+\/[^/]+)\/releases\/download\/([^/]+)\/([^/]+)$/.exec(voce.fonte) ?? fermo(`la fonte non è un file di una release di GitHub: ${voce.fonte}`);
+const [, repository, etichetta, nomeDelFile] = fonte as unknown as [string, string, string, string];
+if (nomeDelFile !== voce.file) fermo(`la fonte nomina ${nomeDelFile}, la voce ${voce.file}`);
+if (!/^[0-9a-f]{40}$/.test(voce.commit ?? "")) fermo(`la voce non ha il commit dell'etichetta: ${voce.commit}`);
+console.log(`voce: ${voce.file}, ${voce.byte} byte, ${voce.sha256.slice(0, 12)}; repository ${repository}, etichetta ${etichetta}, commit ${voce.commit.slice(0, 12)}`);
+
+// --- L'etichetta riletta adesso: deve puntare al commit della voce.
+const ref = (await (await fetch(`https://api.github.com/repos/${repository}/git/ref/tags/${etichetta}`).catch((e: unknown) => fermo(`etichetta non letta: ${String(e)}`))).json()) as { object?: { type: string; sha: string } };
+let commitDellEtichetta = ref.object?.sha ?? fermo(`l'etichetta ${etichetta} non c'è su ${repository}: ${JSON.stringify(ref).slice(0, 200)}`);
+if (ref.object?.type === "tag") {
+  const t = (await (await fetch(`https://api.github.com/repos/${repository}/git/tags/${commitDellEtichetta}`)).json()) as { object?: { sha: string } };
+  commitDellEtichetta = t.object?.sha ?? fermo("etichetta annotata senza oggetto");
+}
+console.log(`etichetta ${etichetta}: ${ref.object?.type}, commit ${commitDellEtichetta}`);
+prova("l'etichetta punta al commit della voce", commitDellEtichetta === voce.commit, `${commitDellEtichetta} contro ${voce.commit}`);
+
+// --- Il file della release, riscaricato, e i sorgenti all'etichetta che il pacchetto porta così come sono.
+const release = await scarica(voce.fonte);
+const fileRelease = join(cartella, voce.file);
+writeFileSync(fileRelease, release);
+console.log(`file della release riscaricato: ${release.length} byte, impronta ${impronta(release)}`);
+const sorgenti = new Map<string, Uint8Array>();
+for (const f of new Set(Object.values(DAI_SORGENTI))) sorgenti.set(f, await scarica(`https://raw.githubusercontent.com/${repository}/${voce.commit}/${f}`));
+const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string } };
+const zipDelNucleo = join(RADICE, "ricetta", "nucleo", "scaricato", nucleo.zip.nome);
+if (!existsSync(zipDelNucleo)) fermo(`manca ${zipDelNucleo}: si fa prima bun run libreria:costruisci`);
+const vociDelNucleo = vociDelloZip(readFileSync(zipDelNucleo));
+if (impronta(readFileSync(zipDelNucleo)) !== nucleo.zip.sha256) fermo("lo zip del nucleo nel deposito non ha l'impronta di pacchetto.json");
+const licenzaDelNucleo = vociDelNucleo.get(`${nucleo.file.percorso.split("/")[0]}/LICENSE`) ?? fermo("la licenza non è nello zip del nucleo");
+
+// --- Il verdetto sul pacchetto: una funzione sola, per il vero e per le mutazioni. Vuoto è verde; ogni motivo nomina la voce.
+// Uno zip che non si legge è un rosso col suo motivo, come ogni altro: una politica sola.
+const colpiIn = (testo: string): string[] => [PERCORSO_ASSOLUTO, ...VIETATE].flatMap((rx) => rx.exec(testo)?.[0] ?? []);
+type Attesa = { byte: number; sha256: string };
+function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa): string[] {
+  const motivi: string[] = [];
+  if (pacchetto.length !== attesa.byte) motivi.push(`byte ${pacchetto.length}, nella ricetta ${attesa.byte}`);
+  if (impronta(pacchetto) !== attesa.sha256) motivi.push(`impronta ${impronta(pacchetto).slice(0, 12)}, nella ricetta ${attesa.sha256.slice(0, 12)}`);
+  let voci: Map<string, Uint8Array>;
+  try {
+    voci = vociDelloZip(pacchetto);
+  } catch (e) {
+    return [...motivi, `lo zip non si legge: ${e instanceof Error ? e.message : String(e)}`];
+  }
+  const elenco = differenzeDegliElenchi(voci.keys(), NEL_PACCHETTO);
+  for (const v of elenco.soloA) motivi.push(`voce in più: ${v}`);
+  for (const v of elenco.soloB) motivi.push(`voce mancante: ${v}`);
+  for (const [v, f] of Object.entries(DAI_SORGENTI)) {
+    const d = voci.get(v);
+    if (d !== undefined && impronta(d) !== impronta(sorgenti.get(f)!)) motivi.push(`${v}: non è ${f} all'etichetta`);
+  }
+  const libreria = voci.get("extension/dist/libreria.cjs");
+  if (libreria !== undefined && impronta(libreria) !== nucleo.file.sha256) motivi.push(`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(libreria).slice(0, 12)})`);
+  const licenza = voci.get("extension/LICENZA-ALGODESIGN.txt");
+  if (licenza !== undefined && impronta(licenza) !== impronta(licenzaDelNucleo)) motivi.push("extension/LICENZA-ALGODESIGN.txt: non è la licenza dello zip del nucleo");
+  // Ogni voce tranne l'icona, che è un'immagine confrontata qui sopra per contenuto: anche le voci in più.
+  for (const [v, d] of voci) if (v !== "extension/icona.png") for (const c of colpiIn(Buffer.from(d).toString("utf8"))) motivi.push(`${v}: ${c}`);
+  return motivi;
+}
+const motiviVeri = motiviDellaRelease(release, voce);
+console.log(`motivi sul file della release: ${motiviVeri.length}`);
+prova("il file della release: byte e impronta della voce, le voci attese nei due versi, i file del repository all'etichetta, il nucleo e la sua licenza, nessun percorso assoluto né stringa vietata", motiviVeri.length === 0, motiviVeri.join("; "));
+
+// --- Il lettore dello zip contro il `tar` di System32, SUL FILE DELLA RELEASE: stesso elenco nei due versi, stessi byte.
+const tar = join(process.env.SystemRoot ?? fermo("manca SystemRoot"), "System32", "tar.exe");
+if (!existsSync(tar)) fermo(`non c'è ${tar}`);
+const estratto = join(cartella, "estratto  dalla release");
+mkdirSync(estratto);
+const elencoTar = Bun.spawnSync([tar, "-tf", fileRelease], { stdout: "pipe", stderr: "pipe" });
+const estrazione = Bun.spawnSync([tar, "-xf", fileRelease, "-C", estratto], { stdout: "pipe", stderr: "pipe" });
+if (elencoTar.exitCode !== 0 || estrazione.exitCode !== 0) fermo(`il tar non apre il file della release: ${elencoTar.stderr.toString()} ${estrazione.stderr.toString()}`);
+const nelTar = elencoTar.stdout.toString().split(/\r?\n/).filter((r) => r !== "" && !r.endsWith("/"));
+const vociRelease = vociDelloZip(release);
+const lettoreContro = differenzeDegliElenchi(vociRelease.keys(), nelTar);
+const lettoreDiverse = [...vociRelease].filter(([v, d]) => !existsSync(join(estratto, v)) || impronta(d) !== impronta(readFileSync(join(estratto, v)))).map(([v]) => v);
+console.log(`lettore dello zip sul file della release: ${vociRelease.size} voci, tar ${nelTar.length}; solo nel lettore ${lettoreContro.soloA.length}, solo nel tar ${lettoreContro.soloB.length}, byte diversi ${lettoreDiverse.length}`);
+prova("il lettore dello zip vede il file della release come il tar di sistema: stesso elenco, stessi byte", vociRelease.size > 0 && lettoreContro.soloA.length + lettoreContro.soloB.length + lettoreDiverse.length === 0, `solo nel lettore: ${lettoreContro.soloA.join(", ")}; solo nel tar: ${lettoreContro.soloB.join(", ")}; diversi: ${lettoreDiverse.join(", ")}`);
+prova("controllo del lettore: il tar con una voce in più non torna", differenzeDegliElenchi(vociRelease.keys(), [...nelTar, "extension/x"]).soloB.join() === "extension/x");
+
+// --- Il manifesto nel pacchetto: versione e identificativo della voce, come l'editor li scrive (in minuscolo).
+const manifesto = JSON.parse(Buffer.from(vociRelease.get("extension/package.json") ?? new Uint8Array()).toString("utf8")) as { name?: string; publisher?: string; version?: string };
+const identificativo = `${manifesto.publisher}.${manifesto.name}`.toLowerCase();
+console.log(`manifesto: ${manifesto.publisher}.${manifesto.name} ${manifesto.version}; nella voce ${voce.estensione} ${voce.versione}`);
+prova("il manifesto ha la versione e l'identificativo della voce", manifesto.version === voce.versione && identificativo === voce.estensione, `${identificativo} ${manifesto.version}`);
+
+// --- L'attestazione, sul file riscaricato: il soggetto è quel file, il repository è quello della fonte, il commit quello della voce.
+type Verifica = { verificationResult?: { statement?: { subject?: { digest?: { sha256?: string } }[] }; signature?: { certificate?: { sourceRepositoryURI?: string; sourceRepositoryDigest?: string; runInvocationURI?: string; sourceRepositoryRef?: string } } } }[];
+const gh = Bun.which("gh") ?? fermo("gh non c'è: serve per verificare l'attestazione");
+function attestazione(file: string): { uscita: number; testo: string; verifiche: Verifica } {
+  const p = Bun.spawnSync([gh, "attestation", "verify", file, "-R", repository, "--format", "json"], { stdout: "pipe", stderr: "pipe" });
+  const testo = `${p.stdout.toString()}${p.stderr.toString()}`;
+  let verifiche: Verifica = [];
+  try {
+    if (p.exitCode === 0) verifiche = JSON.parse(p.stdout.toString()) as Verifica;
+  } catch {
+    fermo(`gh attestation verify non ha dato JSON:\n${testo.slice(0, 500)}`);
+  }
+  return { uscita: p.exitCode ?? -1, testo, verifiche };
+}
+const a = attestazione(fileRelease);
+if (a.uscita !== 0 && /could not|network|dial tcp|timeout/i.test(a.testo) && !/no attestations|404/i.test(a.testo)) fermo(`attestazione non verificabile:\n${a.testo.slice(0, 800)}`);
+const certificati = a.verifiche.map((v) => v.verificationResult?.signature?.certificate ?? {});
+const soggetti = a.verifiche.flatMap((v) => v.verificationResult?.statement?.subject ?? []).map((s) => s.digest?.sha256);
+for (const c of certificati) console.log(`attestazione: repository ${c.sourceRepositoryURI}, commit ${c.sourceRepositoryDigest}, riferimento ${c.sourceRepositoryRef}, corsa ${c.runInvocationURI}`);
+prova(
+  "l'attestazione del file riscaricato: il soggetto è il file, repository e commit sono quelli della voce, c'è la corsa",
+  a.uscita === 0 && certificati.length > 0 && soggetti.includes(impronta(release)) && certificati.every((c) => c.sourceRepositoryURI === `https://github.com/${repository}` && c.sourceRepositoryDigest === voce.commit && /\/actions\/runs\/\d+\//.test(c.runInvocationURI ?? "")),
+  `uscita ${a.uscita}: ${a.testo.slice(0, 500)}`,
+);
+
+// --- Le mutazioni del verdetto, ognuna col suo motivo e lei sola; e quante voci ha toccato.
 function zipDi(voci: ReadonlyMap<string, Uint8Array>): Buffer {
   const locali: Buffer[] = [];
   const indice: Buffer[] = [];
@@ -133,365 +239,68 @@ function zipDi(voci: ReadonlyMap<string, Uint8Array>): Buffer {
   e.writeUInt32LE(posizione, 16);
   return Buffer.concat([...locali, ...indice, e]);
 }
-
-const tsc = Bun.which("tsc", { PATH: join(RADICE, "node_modules", ".bin") }) ?? fermo("tsc non c'è: bun install alla radice");
-// Quello di sistema: il `tar` che una shell può trovare prima non sa leggere uno zip.
-const tar = join(process.env.SystemRoot ?? fermo("manca SystemRoot"), "System32", "tar.exe");
-if (!existsSync(tar)) fermo(`non c'è ${tar}: serve per aprire il pacchetto`);
-
-// --- La costruzione, sempre da capo, e i tipi.
-rmSync(join(ESTENSIONE, "dist"), { recursive: true, force: true });
-const costruzione = esegui(["bun", "run", "algo:costruisci"]);
-prova("la costruzione: libreria, estensione, pacchetto", costruzione.uscita === 0 && existsSync(VSIX), costruzione.testo);
-if (!existsSync(VSIX)) fermo(`il pacchetto non c'è:\n${costruzione.testo}`);
-console.log(`pacchetto: ${readFileSync(VSIX).length} byte`);
-for (const conf of [join(ESTENSIONE, "tsconfig.json"), join(RADICE, "collaudo", "algo", "tsconfig.json")]) {
-  const t = esegui([tsc, "-p", conf]);
-  prova(`tsc su ${conf.includes("collaudo") ? "la prova" : "l'estensione"}`, t.uscita === 0, t.testo);
-}
-
-// --- La logica. L'esito si legge dal rapporto che il programma scrive, non dalla sola uscita.
-const rapporto = join(cartella, "test.xml");
-const test = esegui(["bun", "test", "./collaudo/algo/documento.test.ts", "--reporter=junit", `--reporter-outfile=${rapporto}`]);
-if (!existsSync(rapporto)) fermo(`bun test non ha scritto il rapporto, uscita ${test.uscita}:\n${test.testo}`);
-const radiceDelRapporto = /<testsuites\b[^>]*>/.exec(readFileSync(rapporto, "utf8"))?.[0] ?? "";
-const numero = (nome: string) => Number(new RegExp(`\\b${nome}="(\\d+)"`).exec(radiceDelRapporto)?.[1] ?? "-1");
-console.log(`logica: ${numero("tests")} prove, fallite ${numero("failures")}, saltate ${numero("skipped")}; dichiarate ${TEST_ATTESI}`);
-// `tests` conta anche quelle saltate: una prova saltata non è una prova passata.
-prova("la logica, senza editor", test.uscita === 0 && numero("tests") === TEST_ATTESI && numero("failures") === 0 && numero("skipped") === 0, test.testo);
-
-// --- Il pacchetto da fuori: estratto in una cartella con spazi doppi.
-const estratto = join(cartella, "estratto  dal pacchetto");
-mkdirSync(estratto);
-const elencoTar = esegui([tar, "-tf", VSIX]);
-const estrazione = esegui([tar, "-xf", VSIX, "-C", estratto]);
-if (elencoTar.uscita !== 0 || estrazione.uscita !== 0) fermo(`il pacchetto non si apre:\n${elencoTar.testo}\n${estrazione.testo}`);
-const contenuto = elencoTar.testo.split(/\r?\n/).filter((r) => r !== "" && !r.endsWith("/"));
-
-const scarti = (elenco: string[]) => differenzeDegliElenchi(elenco, NEL_PACCHETTO);
-const contro = scarti(contenuto);
-console.log(`nel pacchetto: ${contenuto.length} file; attesi ${NEL_PACCHETTO.length}; in più ${contro.soloA.length}, mancanti ${contro.soloB.length}`);
-prova("il pacchetto contiene esattamente i file attesi", contro.soloA.length === 0 && contro.soloB.length === 0, `in più: ${contro.soloA.join(", ")}; mancanti: ${contro.soloB.join(", ")}`);
-
-const copiaNelPacchetto = join(estratto, "extension", "dist", "libreria.cjs");
-const stessoFile = (a: string, b: string): boolean => impronta(readFileSync(a)) === impronta(readFileSync(b));
-console.log(`libreria nel pacchetto: ${impronta(readFileSync(copiaNelPacchetto)).slice(0, 12)}; provata dalla conformità: ${impronta(readFileSync(LIBRERIA)).slice(0, 12)}`);
-prova("la libreria nel pacchetto è lo stesso file che la conformità prova", stessoFile(copiaNelPacchetto, LIBRERIA));
-
-// Le licenze: la nostra uguale a quella del repository, quella del nucleo uguale a quella che accompagna il file della release.
-const datiDelNucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string }; file: { percorso: string } };
-const licenzaDelNucleo = join(cartella, "licenza del nucleo");
-mkdirSync(licenzaDelNucleo);
-const voceLicenza = `${dirname(datiDelNucleo.file.percorso)}/LICENSE`;
-const apertura = esegui([tar, "-xf", join(RADICE, "ricetta", "nucleo", "scaricato", datiDelNucleo.zip.nome), "-C", licenzaDelNucleo, voceLicenza]);
-if (apertura.uscita !== 0) fermo(`la licenza del nucleo non si estrae:\n${apertura.testo}`);
-// Un testo che manca è un rosso di questa prova, non un'eccezione.
-const stessoTesto = (nome: string, atteso: string): boolean => existsSync(join(estratto, "extension", nome)) && stessoFile(join(estratto, "extension", nome), atteso);
-prova("i testi delle licenze sono quelli del repository e del file della release", stessoTesto("LICENSE.txt", join(RADICE, "LICENSE")) && stessoTesto("LICENZA-ALGODESIGN.txt", join(licenzaDelNucleo, voceLicenza)));
-
-const colpiIn = (testo: string): string[] => [PERCORSO_ASSOLUTO, ...VIETATE].flatMap((rx) => rx.exec(testo)?.[0] ?? []);
-
-// Il lettore dello zip di questa prova contro il `tar` di sistema, sul pacchetto costruito: lo stesso elenco nei due versi, e ogni voce
-// con i byte del file estratto. È il controllo che il lettore usato sul pacchetto della release veda ciò che c'è.
-const vociDelCostruito = vociDelloZip(readFileSync(VSIX));
-const lettoreContro = differenzeDegliElenchi(vociDelCostruito.keys(), contenuto);
-const lettoreDiverse = [...vociDelCostruito].filter(([v, d]) => !existsSync(join(estratto, v)) || impronta(d) !== impronta(readFileSync(join(estratto, v)))).map(([v]) => v);
-console.log(`lettore dello zip sul pacchetto costruito: ${vociDelCostruito.size} voci, tar ${contenuto.length}; solo nel lettore ${lettoreContro.soloA.length}, solo nel tar ${lettoreContro.soloB.length}, byte diversi ${lettoreDiverse.length}`);
-prova("il lettore dello zip vede il pacchetto costruito come il tar di sistema: stesso elenco, stessi byte", vociDelCostruito.size > 0 && lettoreContro.soloA.length + lettoreContro.soloB.length + lettoreDiverse.length === 0, `solo nel lettore: ${lettoreContro.soloA.join(", ")}; solo nel tar: ${lettoreContro.soloB.join(", ")}; diversi: ${lettoreDiverse.join(", ")}`);
-
-// Il pacchetto della release, quello che la ricetta installa nell'unità: byte e impronta della sua voce, l'elenco delle voci contro
-// quello atteso nei due versi, il contenuto uguale, voce per voce, al pacchetto costruito ora dai sorgenti (le date dello zip cambiano
-// a ogni costruzione, il contenuto no), e i cercatori di percorsi assoluti e stringhe vietate su ogni sua voce di testo. Si prende da
-// extensions/algo/scaricato/ (ignorata) o dalla fonte; un'impronta sbagliata è un rosso, e il file scaricato non vi entra.
-type VoceRelease = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string };
-const voceRelease = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: VoceRelease[] }).nostri.find((v) => v.nome === "estensione-algo" && v.stato === "release") ?? fermo("in ricetta/componenti.json non c'è la voce estensione-algo con stato release");
-const fileRelease = join(ESTENSIONE, "scaricato", voceRelease.file);
-let release: Buffer;
-if (existsSync(fileRelease)) release = readFileSync(fileRelease);
-else {
-  try {
-    const r = await fetch(voceRelease.fonte);
-    if (!r.ok) fermo(`non si è potuto scaricare ${voceRelease.fonte}: risposta ${r.status}; prima della release il file si copia in ${fileRelease} dal deposito dell'unità`);
-    release = Buffer.from(await r.arrayBuffer());
-  } catch (e) {
-    fermo(`non si è potuto scaricare ${voceRelease.fonte}: ${e instanceof Error ? e.message : String(e)}`);
-  }
-  if (impronta(release) === voceRelease.sha256) {
-    mkdirSync(dirname(fileRelease), { recursive: true });
-    writeFileSync(fileRelease, release);
-  }
-}
-type Attesa = { byte: number; sha256: string };
-/** Il verdetto sul pacchetto della release: una funzione sola, per il vero e per le mutazioni. Vuoto è verde; ogni motivo nomina la voce. */
-function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa, costruito: string): string[] {
-  const motivi: string[] = [];
-  if (pacchetto.length !== attesa.byte) motivi.push(`byte ${pacchetto.length}, nella ricetta ${attesa.byte}`);
-  if (impronta(pacchetto) !== attesa.sha256) motivi.push(`impronta ${impronta(pacchetto).slice(0, 12)}, nella ricetta ${attesa.sha256.slice(0, 12)}`);
-  let voci: Map<string, Uint8Array>;
-  try {
-    voci = vociDelloZip(pacchetto);
-  } catch (e) {
-    return [...motivi, `lo zip non si legge: ${e instanceof Error ? e.message : String(e)}`];
-  }
-  const elenco = scarti([...voci.keys()]);
-  for (const v of elenco.soloA) motivi.push(`voce in più: ${v}`);
-  for (const v of elenco.soloB) motivi.push(`voce mancante: ${v}`);
-  for (const v of NEL_PACCHETTO) {
-    const d = voci.get(v);
-    if (d !== undefined && (!existsSync(join(costruito, v)) || impronta(d) !== impronta(readFileSync(join(costruito, v))))) motivi.push(`contenuto diverso da quello costruito: ${v}`);
-  }
-  // Ogni voce tranne l'icona, che è un'immagine confrontata qui sopra per contenuto: anche le voci in più.
-  for (const [v, d] of voci) if (v !== "extension/icona.png") for (const c of colpiIn(Buffer.from(d).toString("utf8"))) motivi.push(`${v}: ${c}`);
-  return motivi;
-}
-const vociRelease = (() => {
-  try {
-    return vociDelloZip(release);
-  } catch (e) {
-    return fermo(`il pacchetto della release non si legge: ${e instanceof Error ? e.message : String(e)}`);
-  }
-})();
-const motiviVeri = motiviDellaRelease(release, voceRelease, estratto);
-const elencoRelease = scarti([...vociRelease.keys()]);
-console.log(`pacchetto della release: ${release.length} byte, impronta ${impronta(release).slice(0, 12)}; nella ricetta ${voceRelease.byte} byte, ${voceRelease.sha256.slice(0, 12)}; voci ${vociRelease.size}, attese ${NEL_PACCHETTO.length}, in più ${elencoRelease.soloA.length}, mancanti ${elencoRelease.soloB.length}; voci di testo guardate dai cercatori ${[...vociRelease.keys()].filter((v) => v !== "extension/icona.png").length}; motivi ${motiviVeri.length}`);
-prova("il pacchetto della release: byte e impronta della ricetta, le voci attese nei due versi, il contenuto di quello costruito, nessun percorso assoluto né stringa vietata", motiviVeri.length === 0, motiviVeri.join("; "));
-
-// Le mutazioni del verdetto, su copie del pacchetto della release: ognuna deve dare rosso col suo motivo, e lei solo. Uno zip ricomposto
-// porta byte e impronta propri nell'attesa, come se la ricetta li avesse scritti dal file caricato: resta solo ciò che è mutato.
 const attesaDi = (b: Uint8Array): Attesa => ({ byte: b.length, sha256: impronta(b) });
 const ricomposto = (cambia: (m: Map<string, Uint8Array>) => number): { zip: Buffer; toccate: number } => {
   const m = new Map(vociRelease);
   const toccate = cambia(m);
   return { zip: zipDi(m), toccate };
 };
-function mutazione(nome: string, zip: Uint8Array, toccate: number, attesa: Attesa, buona: (motivi: string[]) => boolean): void {
-  const motivi = motiviDellaRelease(zip, attesa, estratto);
+function mutazione(nome: string, zip: Uint8Array, toccate: number, attesa: Attesa, attesi: string[]): void {
+  const motivi = motiviDellaRelease(zip, attesa);
   console.log(`  ${nome}: toccate ${toccate}, motivi ${motivi.length}: ${motivi.join("; ")}`);
-  prova(`mutazione della release: ${nome}`, toccate > 0 && buona(motivi), `toccate ${toccate}; motivi: ${motivi.join("; ")}`);
+  prova(`mutazione: ${nome}`, toccate > 0 && motivi.length === attesi.length && attesi.every((x, i) => motivi[i] === x), `toccate ${toccate}; motivi: ${motivi.join("; ")}`);
 }
-const tale = (attesi: string[]) => (motivi: string[]): boolean => motivi.length === attesi.length && attesi.every((a, i) => motivi[i] === a);
 const intatto = ricomposto(() => 0);
-const motiviIntatto = motiviDellaRelease(intatto.zip, attesaDi(intatto.zip), estratto);
-console.log(`  ricomposto senza mutazioni: ${intatto.zip.length} byte, voci ${vociDelloZip(intatto.zip).size}, motivi ${motiviIntatto.length}`);
-prova("controllo: il pacchetto della release ricomposto senza mutazioni è verde", motiviIntatto.length === 0 && vociDelloZip(intatto.zip).size === vociRelease.size, motiviIntatto.join("; "));
+const motiviIntatto = motiviDellaRelease(intatto.zip, attesaDi(intatto.zip));
+prova("controllo: il file della release ricomposto senza mutazioni è verde", motiviIntatto.length === 0 && vociDelloZip(intatto.zip).size === vociRelease.size, motiviIntatto.join("; "));
 const EXTRA = "extension/dist/extra.cjs";
 const inPiu = ricomposto((m) => (m.set(EXTRA, new TextEncoder().encode("module.exports = 1;\n")), 1));
-mutazione("una voce in più", inPiu.zip, inPiu.toccate, attesaDi(inPiu.zip), tale([`voce in più: ${EXTRA}`]));
+mutazione("una voce in più", inPiu.zip, inPiu.toccate, attesaDi(inPiu.zip), [`voce in più: ${EXTRA}`]);
 const senza = ricomposto((m) => Number(m.delete("extension/LICENSE.txt")));
-mutazione("una voce mancante", senza.zip, senza.toccate, attesaDi(senza.zip), tale(["voce mancante: extension/LICENSE.txt"]));
+mutazione("una voce mancante", senza.zip, senza.toccate, attesaDi(senza.zip), ["voce mancante: extension/LICENSE.txt"]);
 const diverso = ricomposto((m) => (m.set("extension/package.json", Buffer.concat([m.get("extension/package.json") ?? new Uint8Array(), Buffer.from(" ")])), 1));
-mutazione("una voce col contenuto diverso", diverso.zip, diverso.toccate, attesaDi(diverso.zip), tale(["contenuto diverso da quello costruito: extension/package.json"]));
+mutazione("una voce diversa dal file del repository all'etichetta", diverso.zip, diverso.toccate, attesaDi(diverso.zip), ["extension/package.json: non è package.json all'etichetta"]);
+const altroNucleo = ricomposto((m) => (m.set("extension/dist/libreria.cjs", Buffer.concat([m.get("extension/dist/libreria.cjs") ?? new Uint8Array(), Buffer.from("\n")])), 1));
+mutazione("un altro file del nucleo", altroNucleo.zip, altroNucleo.toccate, attesaDi(altroNucleo.zip), [`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(Buffer.concat([vociRelease.get("extension/dist/libreria.cjs")!, Buffer.from("\n")])).slice(0, 12)})`]);
 const vietato = ricomposto((m) => (m.set(EXTRA, new TextEncoder().encode(String.raw`module.exports = "C:\MyDev";`)), 1));
-mutazione("una voce in più con un percorso assoluto e il nome del progetto", vietato.zip, vietato.toccate, attesaDi(vietato.zip), tale([`voce in più: ${EXTRA}`, `${EXTRA}: C:\\`, `${EXTRA}: MyDev`]));
-// Sul file vero, contro la voce vera della ricetta. L'impronta: un bit dell'ora della prima testata locale, che nessun lettore usa, a
-// byte uguali. I byte: uno in coda, dove il lettore non guarda.
-if (Buffer.from(release.subarray(0, 4)).readUInt32LE(0) !== 0x04034b50) fermo("il pacchetto della release non comincia con una testata locale");
+mutazione("una voce in più con un percorso assoluto e il nome del progetto", vietato.zip, vietato.toccate, attesaDi(vietato.zip), [`voce in più: ${EXTRA}`, `${EXTRA}: C:\\`, `${EXTRA}: MyDev`]);
+// Sul file vero, contro la voce vera. L'impronta: un bit dell'ora della prima testata locale, che nessun lettore usa, a byte uguali.
+if (Buffer.from(release.subarray(0, 4)).readUInt32LE(0) !== 0x04034b50) fermo("il file della release non comincia con una testata locale");
 const conAltraImpronta = Buffer.from(release);
 conAltraImpronta[10] = conAltraImpronta[10]! ^ 1;
-mutazione("un'impronta diversa, a byte uguali", conAltraImpronta, Buffer.compare(conAltraImpronta, release) === 0 ? 0 : 1, voceRelease, tale([`impronta ${impronta(conAltraImpronta).slice(0, 12)}, nella ricetta ${voceRelease.sha256.slice(0, 12)}`]));
+mutazione("un'impronta diversa, a byte uguali", conAltraImpronta, Buffer.compare(conAltraImpronta, release) === 0 ? 0 : 1, voce, [`impronta ${impronta(conAltraImpronta).slice(0, 12)}, nella ricetta ${voce.sha256.slice(0, 12)}`]);
 const conUnByte = Buffer.concat([release, Buffer.from([0])]);
-mutazione("un byte in più", conUnByte, conUnByte.length - release.length, voceRelease, tale([`byte ${release.length + 1}, nella ricetta ${voceRelease.byte}`, `impronta ${impronta(conUnByte).slice(0, 12)}, nella ricetta ${voceRelease.sha256.slice(0, 12)}`]));
+mutazione("un byte in più", conUnByte, conUnByte.length - release.length, voce, [`byte ${release.length + 1}, nella ricetta ${voce.byte}`, `impronta ${impronta(conUnByte).slice(0, 12)}, nella ricetta ${voce.sha256.slice(0, 12)}`]);
+const troncato = Buffer.from(release.subarray(0, release.length - 30));
+mutazione("uno zip troncato: non si legge", troncato, release.length - troncato.length, attesaDi(troncato), ["lo zip non si legge: manca la fine dell'indice"]);
+// L'attestazione di un file con un byte in più non c'è: gh lo rifiuta.
+const fileConUnByte = join(cartella, `con un byte ${voce.file}`);
+writeFileSync(fileConUnByte, conUnByte);
+const b = attestazione(fileConUnByte);
+console.log(`  attestazione del file con un byte in più: uscita ${b.uscita}, ${b.testo.trim().split(/\r?\n/).slice(-1)[0] ?? ""}`);
+prova("mutazione: un byte in più non ha attestazione", b.uscita !== 0 && b.verifiche.length === 0, b.testo.slice(0, 300));
 
-// L'icona: lo stesso file di AlgoDesign al commit dell'etichetta, nel pannello e accanto ai file del linguaggio.
-const inventarioDelNucleo = leggiInventario(INVENTARIO);
-const repoDellIcona = repoDelNucleo(undefined);
-fermoSeEtichettaSpostata(repoDellIcona, inventarioDelNucleo);
-const iconaDellEtichetta = git(repoDellIcona, "show", `${inventarioDelNucleo.commit}:${ICONA_NEL_NUCLEO}`);
-const fileDellIcona = join(estratto, "extension", "icona.png");
-// Un pacchetto senza icona è un rosso di questa prova, non un fermo: lo nomina già il confronto degli elenchi.
-const iconaNelPacchetto = existsSync(fileDellIcona) ? readFileSync(fileDellIcona) : new Uint8Array();
-console.log(`icona nel pacchetto: ${impronta(iconaNelPacchetto).slice(0, 12)}; all'etichetta ${inventarioDelNucleo.etichetta}: ${impronta(iconaDellEtichetta).slice(0, 12)}`);
-/** Un'icona è quella dell'etichetta se ha la sua impronta: una funzione sola, per il vero e per la mutazione. */
-const stessaIcona = (a: Uint8Array, b: Uint8Array): boolean => impronta(a) === impronta(b);
-prova("l'icona è quella di AlgoDesign all'etichetta", stessaIcona(iconaNelPacchetto, iconaDellEtichetta));
-type ManifestoDelleIcone = { icon?: string; contributes?: { languages?: { id: string; extensions?: string[]; icon?: { light?: string; dark?: string } }[] } };
-/** Il manifesto dà l'icona al pannello e al linguaggio dei file `.algo`, chiaro e scuro: una funzione sola, per il vero e per la mutazione. */
-const iconaDichiarata = (m: ManifestoDelleIcone): boolean => {
-  const l = m.contributes?.languages?.find((x) => x.extensions?.includes(".algo"));
-  return m.icon === "icona.png" && l !== undefined && [l.icon?.light, l.icon?.dark].every((p) => p?.replace(/^\.\//, "") === "icona.png");
-};
-const manifestoDelleIcone = JSON.parse(readFileSync(join(estratto, "extension", "package.json"), "utf8")) as ManifestoDelleIcone;
-prova("il manifesto dà l'icona al pannello e ai file .algo", iconaDichiarata(manifestoDelleIcone), JSON.stringify({ icon: manifestoDelleIcone.icon, languages: manifestoDelleIcone.contributes?.languages }));
-
-// L'icona è un'immagine, non un testo: si confronta per impronta, qui sopra.
-const testuali = contenuto.filter((f) => f !== "extension/icona.png");
-const colpi = testuali.flatMap((f) => colpiIn(readFileSync(join(estratto, f), "utf8")).map((c) => `${f}: ${c}`));
-console.log(`percorsi assoluti e stringhe vietate nel pacchetto: ${colpi.length}, su ${testuali.length} file di testo; l'icona è confrontata per impronta`);
-prova("nessun percorso assoluto e nessuna stringa vietata nel pacchetto", colpi.length === 0, colpi.join("; "));
-
-const importDi = (testo: string): string[] => [...new Set(new Bun.Transpiler({ loader: "js" }).scanImports(testo).map((i) => i.path))].sort();
-const codice = readFileSync(join(estratto, "extension", "dist", "extension.cjs"), "utf8");
-console.log(`import dell'estensione: ${importDi(codice).join(", ")}`);
-prova("l'estensione importa solo l'editor e la copia della libreria", importDi(codice).join() === IMPORT_ATTESI.join(), importDi(codice).join(", "));
-
-const manifesto = JSON.parse(readFileSync(join(estratto, "extension", "package.json"), "utf8")) as { license: string; contributes: { configuration: { properties: { "algo.linguaggio": { enum: string[] } } } } };
-const vsixManifest = readFileSync(join(estratto, "extension.vsixmanifest"), "utf8");
-prova("il manifesto dichiara la licenza e il pacchetto la indica", manifesto.license === "MIT" && vsixManifest.includes("<License>extension/LICENSE.txt</License>"), `${manifesto.license}; ${vsixManifest.slice(0, 300)}`);
-const offerti = manifesto.contributes.configuration.properties["algo.linguaggio"].enum;
-// Solo qui: la costruzione ha già verificato l'estratto, e senza estratto si ferma prima con un motivo.
-const { linguaggi } = await import("../../ricetta/nucleo/estratto/app/core/genera/linguaggi");
-const registro = differenzeDegliElenchi(offerti, linguaggi.map((v) => v.id));
-console.log(`linguaggi offerti: ${offerti.length}, nel registro ${linguaggi.length}; solo offerti ${registro.soloA.length}, solo nel registro ${registro.soloB.length}`);
-prova("l'impostazione offre le voci del registro, elemento per elemento", registro.soloA.length === 0 && registro.soloB.length === 0, `${registro.soloA.join(", ")}; ${registro.soloB.join(", ")}`);
-
-// --- I controlli di sopra devono sapersi accendere: su copie, e su elenchi con una voce in più.
-prova("mutazione: un file in più nel pacchetto si vede", scarti([...contenuto, "extension/src/x.ts"]).soloA.join() === "extension/src/x.ts");
-prova("mutazione: un file mancante si vede", scarti(contenuto.filter((f) => !f.endsWith("libreria.cjs"))).soloB.join() === "extension/dist/libreria.cjs");
-prova("mutazione: una licenza mancante si vede", scarti(contenuto.filter((f) => !f.endsWith("LICENSE.txt"))).soloB.join() === "extension/LICENSE.txt");
-const altra = join(cartella, "libreria-alterata.cjs");
-copyFileSync(LIBRERIA, altra);
-writeFileSync(altra, `${readFileSync(altra, "utf8")}\n// un byte in più\n`);
-prova("mutazione: una libreria diversa ha un'altra impronta", !stessoFile(altra, LIBRERIA));
-prova("mutazione: un percorso assoluto si vede, con la barra e con la rovescia", colpiIn("x = 'D:/a'").length === 1 && colpiIn(String.raw`x = 'C:\a'`).length === 1);
-prova("mutazione: ogni stringa vietata si vede", ["my dev", "MyDev", "my-dev", "my_dev", "ricetta/x", "ricetta\\x", "estratto/x", "estratto\\x", "collaudo/x", "collaudo\\x", "bun:sqlite", "Bun.spawn"].every((s) => colpiIn(s).length === 1));
-prova("mutazione: un import in più si vede", importDi(`${codice}\nif (false) require("altro");`).includes("altro"));
-prova("mutazione: un'icona diversa non è quella dell'etichetta", !stessaIcona(new Uint8Array([...iconaNelPacchetto, 0]), iconaDellEtichetta));
-prova("mutazione: senza l'icona del linguaggio il manifesto non basta", !iconaDichiarata({ ...manifestoDelleIcone, contributes: { languages: [] } }));
-prova("mutazione: senza l'icona del pannello il manifesto non basta", !iconaDichiarata({ ...manifestoDelleIcone, icon: undefined }));
-prova("mutazione: un'icona solo chiara non basta", !iconaDichiarata({ ...manifestoDelleIcone, contributes: { languages: (manifestoDelleIcone.contributes?.languages ?? []).map((l) => ({ ...l, icon: { light: l.icon?.light } })) } }));
-
-// --- Nell'editor installato.
-async function nellEditor(): Promise<void> {
-  const eseguibile = UNITA !== undefined ? join(UNITA, "vscodium", "VSCodium.exe") : join(dirname(dirname(Bun.which("code") ?? fermo("code non è nel PATH: serve l'editor installato"))), "Code.exe");
-  if (!existsSync(eseguibile)) fermo(`non c'è ${eseguibile}`);
-  // Nell'unità si carica la copia installata dal pacchetto, non quella estratta qui.
-  const installata = UNITA !== undefined ? join(UNITA, "vscodium", "data", "extensions", "prototipo.algo-codice-0.0.1") : undefined;
-  if (installata !== undefined) {
-    const nellaCartella = contenuto.filter((f) => f.startsWith("extension/")).map((f) => f.slice("extension/".length));
-    // Il manifesto l'editor lo riscrive e ci aggiunge i suoi metadati: si confronta senza.
-    const senzaMetadati = (p: string): string => JSON.stringify({ ...(JSON.parse(readFileSync(p, "utf8")) as object), __metadata: undefined });
-    const uguali = (f: string): boolean => (f === "package.json" ? senzaMetadati(join(estratto, "extension", f)) === senzaMetadati(join(installata, f)) : stessoFile(join(estratto, "extension", f), join(installata, f)));
-    const diversi = nellaCartella.filter((f) => !existsSync(join(installata, f)) || !uguali(f));
-    console.log(`estensione installata: ${nellaCartella.length} file confrontati col pacchetto, diversi ${diversi.length}`);
-    prova("l'estensione installata è il pacchetto, file per file", nellaCartella.length > 0 && diversi.length === 0, diversi.join(", "));
-  }
-  const node = Bun.which("node") ?? fermo("node non c'è");
-
-  // Gli attesi, ricalcolati dai sorgenti: lo stesso script della conformità, sul file al commit fissato.
-  const inventario = leggiInventario(INVENTARIO);
-  const repo = repoDelNucleo(undefined);
-  fermoSeEtichettaSpostata(repo, inventario);
-  const corpus = join(cartella, "corpus");
-  await new Bun.Archive(git(repo, "archive", "--format=tar", inventario.commit, "app/casi/")).extract(corpus);
-  const casi = join(corpus, "app", "casi");
-  const fileAttesi = join(cartella, "attesi.json");
-  const a = esegui(["bun", CONFORMITA_ATTESI, casi, fileAttesi]);
-  if (a.uscita !== 0 || !existsSync(fileAttesi)) fermo(`gli attesi non sono nati:\n${a.testo}`);
-  const attesi = JSON.parse(readFileSync(fileAttesi, "utf8")) as Record<string, { generato: true; testo: string } | Rifiuto>;
-  const attesoDi = (linguaggio: string, lingua: "it" | "en"): string => {
-    const e = attesi[`${FILE} ${linguaggio} ${lingua}`] ?? fermo(`manca l'atteso di ${linguaggio} ${lingua}`);
-    return e.generato ? e.testo : testoDelRifiuto(e, linguaggio, lingua);
+// --- Nell'unità: l'estensione installata è il pacchetto, file per file (il manifesto senza i metadati che l'editor aggiunge).
+if (UNITA !== undefined) {
+  const installata = join(UNITA, "vscodium", "data", "extensions", `${voce.estensione}-${voce.versione}`);
+  const nellaCartella = [...vociRelease.keys()].filter((f) => f.startsWith("extension/")).map((f) => f.slice("extension/".length));
+  const senzaMetadati = (b: Uint8Array): string => JSON.stringify({ ...(JSON.parse(Buffer.from(b).toString("utf8")) as object), __metadata: undefined });
+  const uguali = (f: string): boolean => {
+    const p = join(installata, f);
+    if (!existsSync(p)) return false;
+    const d = vociRelease.get(`extension/${f}`)!;
+    return f === "package.json" ? senzaMetadati(d) === senzaMetadati(readFileSync(p)) : impronta(d) === impronta(readFileSync(p));
   };
-
-  // Il file in una cartella con spazi doppi.
-  const dove = join(cartella, "cartella  con  spazi");
-  mkdirSync(dove);
-  const fileAlgo = join(dove, "arrotonda-meta.algo");
-  copyFileSync(join(casi, ...`${FILE}.algo`.split("/")), fileAlgo);
-  const originale = readFileSync(fileAlgo);
-
-  // Il primo piano del sistema, campionato mentre l'editor gira: si misura e si stampa.
-  const user32 = dlopen("user32.dll", { GetForegroundWindow: { args: [], returns: FFIType.u64_fast } });
-  const davanti = (): unknown => user32.symbols.GetForegroundWindow();
-  const prima = davanti();
-  const inizio = performance.now();
-  let perso: number | undefined;
-  let ripreso: number | undefined;
-  let campioni = 0;
-  const viste = new Set<unknown>([prima]);
-  const campiona = setInterval(() => {
-    const ora = performance.now() - inizio;
-    campioni++;
-    viste.add(davanti());
-    if (perso === undefined && davanti() !== prima) perso = ora;
-    if (perso !== undefined && ripreso === undefined && davanti() === prima) ripreso = ora;
-  }, 25);
-
-  const uscita = join(cartella, "esiti.json");
-  const dati = join(cartella, "dati  editor");
-  // Nell'unità le impostazioni sono quelle di chi la usa: la prova cambia linguaggio e lingua, e le rimette byte per byte
-  // a editor chiuso, o la verifica dell'unità direbbe rosso sul file.
-  const impostazioniDellUnita = UNITA !== undefined ? join(UNITA, "vscodium", "data", "user-data", "User", "settings.json") : undefined;
-  const impostazioniPrima = impostazioniDellUnita !== undefined && existsSync(impostazioniDellUnita) ? readFileSync(impostazioniDellUnita) : undefined;
-  // Si rimettono anche se la prova si interrompe (Ctrl+C) o il lancio fallisce; un file che prima non c'era si toglie.
-  const rimetti = (): string => {
-    if (impostazioniDellUnita === undefined) return "";
-    const ora = existsSync(impostazioniDellUnita) ? readFileSync(impostazioniDellUnita) : undefined;
-    if (impostazioniPrima === undefined) {
-      if (ora === undefined) return "non c'erano, non ci sono";
-      rmSync(impostazioniDellUnita);
-      return "nate dall'editor, tolte";
-    }
-    const cambiate = ora === undefined || Buffer.compare(ora, impostazioniPrima) !== 0;
-    writeFileSync(impostazioniDellUnita, impostazioniPrima);
-    return cambiate ? "cambiate dall'editor, rimesse" : "non cambiate";
-  };
-  // All'interruzione si ferma prima l'editor, che altrimenti potrebbe riscrivere le impostazioni dopo il ripristino.
-  let lanciato: ReturnType<typeof Bun.spawn> | undefined;
-  const allInterruzione = (): void => {
-    lanciato?.kill();
-    void (lanciato?.exited ?? Promise.resolve()).finally(() => {
-      rimetti();
-      process.exit(2);
-    });
-  };
-  process.once("SIGINT", allInterruzione);
-  console.log(UNITA !== undefined ? "APRO L'EDITOR: una finestra per pochi secondi, con i dati dell'unità" : "APRO L'EDITOR: una finestra per pochi secondi, con un profilo temporaneo");
-  let fuori = "";
-  let errori = "";
-  let codiceUscita = -1;
-  let statoImpostazioni = "";
-  try {
-    const figlio = Bun.spawn([node, join(RADICE, "collaudo", "algo", "lancia.cjs"), eseguibile, installata ?? join(estratto, "extension"), fileAlgo, uscita, dati, JSON.stringify(CASI)], { cwd: cartella, stdout: "pipe", stderr: "pipe" });
-    lanciato = figlio;
-    [fuori, errori] = await Promise.all([new Response(figlio.stdout).text(), new Response(figlio.stderr).text()]);
-    codiceUscita = await figlio.exited;
-  } finally {
-    process.off("SIGINT", allInterruzione);
-    clearInterval(campiona);
-    user32.close();
-    statoImpostazioni = rimetti();
-  }
-  const durata = performance.now() - inizio;
-  if (impostazioniDellUnita !== undefined) {
-    console.log(`impostazioni dell'unità: ${statoImpostazioni}`);
-    const comePrima = impostazioniPrima === undefined ? !existsSync(impostazioniDellUnita) : Buffer.compare(readFileSync(impostazioniDellUnita), impostazioniPrima) === 0;
-    prova("le impostazioni dell'unità sono quelle di prima, byte per byte", comePrima);
-  }
-  if (codiceUscita !== 0 || !existsSync(uscita)) fermo(`l'editor non ha scritto gli esiti, uscita ${codiceUscita}:\n${fuori.slice(-1500)}\n${errori.slice(-1500)}`);
-  console.log(`editor: ${(durata / 1000).toFixed(1)} s; primo piano del sistema: ${perso === undefined ? "mai perso" : `perso a ${(perso / 1000).toFixed(1)} s, ${ripreso === undefined ? "non ripreso" : `ripreso a ${(ripreso / 1000).toFixed(1)} s`}`}; campioni ${campioni}, finestre viste ${viste.size} [${[...viste].join(", ")}]`);
-
-  type DiUnCaso = { testo: string; fuocoDopoIlComando: string; fuocoNelDocumento: string; invariatoDopoAverDigitato: boolean; sporco: boolean; idLinguaggio: string };
-  const e = JSON.parse(readFileSync(uscita, "utf8")) as { casi: Record<string, DiUnCaso>; alterato: string; illeggibile: string; illeggibileIdLinguaggio: string; rimesso: string; controlloDigitazione: boolean; salvatoNonDetto: boolean; nonSalvatoDetto: boolean; nonSalvato: string };
-  const pacchetto = require(LIBRERIA) as Libreria;
-  for (const [linguaggio, lingua] of CASI) {
-    const nome = `${linguaggio} ${lingua}`;
-    const c = e.casi[nome] ?? fermo(`manca l'esito di ${nome}`);
-    const atteso = attesoDi(linguaggio, lingua);
-    console.log(`${nome}: ${Buffer.byteLength(c.testo)} byte, sha256 ${impronta(new TextEncoder().encode(c.testo)).slice(0, 12)}, colore ${c.idLinguaggio}`);
-    prova(`${nome}: il documento è identico all'atteso`, c.testo === atteso, `documento:\n${c.testo.slice(0, 300)}\natteso:\n${atteso.slice(0, 300)}`);
-    prova(`${nome}: colore`, c.idLinguaggio === documento(pacchetto, originale.toString("utf8"), linguaggio, lingua).idLinguaggio, c.idLinguaggio);
-    prova(`${nome}: dopo il comando il fuoco resta sul file`, c.fuocoDopoIlComando === "file", c.fuocoDopoIlComando);
-    prova(`${nome}: digitando col fuoco nel documento non cambia nulla`, c.fuocoNelDocumento === "algo-codice" && c.invariatoDopoAverDigitato && !c.sporco, JSON.stringify(c));
-  }
-  const [primo, lingua] = CASI[0];
-  const atteso = attesoDi(primo, lingua);
-  prova("controllo positivo: la stessa digitazione su un documento vero lo cambia", e.controlloDigitazione);
-  prova("con modifiche non salvate il codice è quello del file salvato, e il comando lo dice solo in quel caso", e.nonSalvato === atteso && e.nonSalvatoDetto && e.salvatoNonDetto, `${e.salvatoNonDetto}, ${e.nonSalvatoDetto}: ${e.nonSalvato.slice(0, 300)}`);
-  prova("un file alterato cambia il documento, e non è più l'atteso", e.alterato !== atteso && e.alterato.includes("3.5"), e.alterato.slice(0, 300));
-  prova("un file illeggibile: il documento lo dice, senza il codice di prima", e.illeggibile === documento(pacchetto, "questo non è un file", primo, lingua).testo && e.illeggibileIdLinguaggio === "plaintext", `${e.illeggibileIdLinguaggio}: ${e.illeggibile.slice(0, 300)}`);
-  prova("rimesso il file, il documento torna identico all'atteso", e.rimesso === atteso, e.rimesso.slice(0, 300));
-  prova("il file non è rimasto alterato", Buffer.compare(readFileSync(fileAlgo), originale) === 0);
-  prova("nessun download dell'editor", !existsSync(join(RADICE, ".vscode-test")) && !existsSync(join(cartella, ".vscode-test")), readdirSync(cartella).join(", "));
+  const diversi = nellaCartella.filter((f) => !uguali(f));
+  console.log(`estensione installata in ${installata}: ${nellaCartella.length} file confrontati col pacchetto, diversi ${diversi.length}`);
+  prova("l'estensione installata nell'unità è il pacchetto della release, file per file", existsSync(installata) && nellaCartella.length > 0 && diversi.length === 0, `${installata}: ${diversi.join(", ")}`);
 }
 
-if (CON_FINESTRA) await nellEditor();
-
-const provePreviste = UNITA !== undefined ? PROVE_NELL_UNITA : CON_FINESTRA ? PROVE_CON_FINESTRA : PROVE_SENZA_FINESTRA;
-console.log(`prove: ${fatte}/${provePreviste}, fallite ${fallite.length}${CON_FINESTRA ? "" : "; la finestra non è stata aperta"}`);
-if (fatte !== provePreviste) {
-  console.log(`FERMO: il denominatore non torna: dichiarate ${provePreviste}, eseguite ${fatte}`);
+const previste = UNITA !== undefined ? PROVE_NELL_UNITA : PROVE;
+console.log(`prove: ${fatte}/${previste}, fallite ${fallite.length}`);
+if (fatte !== previste) {
+  console.log(`FERMO: il denominatore non torna: dichiarate ${previste}, eseguite ${fatte}`);
   process.exit(2);
 }
-console.log(`ESITO: ${fallite.length > 0 ? "ROSSO" : CON_FINESTRA ? "VERDE" : "VERDE, senza la finestra: il documento nell'editor non è stato provato"}`);
+console.log(`ESITO: ${fallite.length > 0 ? "ROSSO" : "VERDE"}`);
 process.exit(fallite.length === 0 ? 0 : 1);

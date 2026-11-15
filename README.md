@@ -13,8 +13,9 @@ Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'am
 | `ricetta/puntatori/` | L'inventario di quella copia e la prova che la confronta con il commit da cui viene |
 | `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata, lo verifica per impronta e dichiara la versione del contratto |
 | `extensions/libreria/` | La libreria sopra il nucleo, con cinque funzioni: apri, controlla, genera, leggi Accademico, aggiungi alla libreria |
-| `extensions/algo/` | Il prototipo dell'estensione per i file `.algo`, che nell'unità è già installata |
-| `collaudo/` | Le prove: della libreria, della conformità al nucleo, dell'estensione, del codice generato che si esegue nell'unità, e il kit dell'unità col suo gate |
+| `collaudo/` | Le prove: della libreria, della conformità al nucleo, del pacchetto dell'estensione che l'unità installa, del codice generato che si esegue nell'unità, e il kit dell'unità col suo gate |
+
+L'estensione per i file `.algo`, che nell'unità è già installata, ha il suo repository: [`gspe65/AlgoDesign-VSCode`](https://github.com/gspe65/AlgoDesign-VSCode).
 
 ## Prerequisiti
 
@@ -24,11 +25,11 @@ Per costruire l'unità:
 - Git.
 - La rete, la prima volta: il deposito dei componenti pesa circa 1,1 GB per la base e 1,2 GB per l'estesa. L'unità costruita occupa circa 2,7 GB, l'estesa 3,3 GB.
 
-Per le prove, e per costruire da sé il pacchetto dell'estensione:
+Per le prove:
 
 - [Bun](https://bun.sh) 1.4.2 e [Node.js](https://nodejs.org) 24.
-- VS Code, solo per installarvi il pacchetto dell'estensione e per la sua prova con `--finestra`.
-- Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usano anche il gate dell'unità, per il corpus di esecuzione, e la costruzione dell'estensione.
+- [GitHub CLI](https://cli.github.com) (`gh`, con un account qualunque), per verificare l'attestazione del pacchetto dell'estensione.
+- Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usa anche il gate dell'unità, per il corpus di esecuzione.
 - Python 3, per i comandi `python` di questa pagina (il confronto del corso sui puntatori, l'indice delle licenze): va bene anche quello di un'unità costruita, `<unità>\python\python.exe`.
 
 ## Come si costruisce l'unità
@@ -50,15 +51,7 @@ L'unità finita si sposta e si copia come una cartella qualsiasi, anche in un pe
 
 ### Il pacchetto dell'estensione
 
-Il costruttore installa nell'unità il pacchetto dell'estensione per i file `.algo` della release di questo repository (`algo-codice-0.0.1.vsix`), con byte e impronta scritti nella ricetta. Chi vuole costruirlo dai sorgenti:
-
-```
-bun install --frozen-lockfile
-bun ricetta/nucleo/estrai.ts
-bun run algo:costruisci
-```
-
-La costruzione prende il pacchetto del nucleo dalla release di AlgoDesign e ne confronta l'impronta: la prima volta serve la rete, poi resta in `ricetta/nucleo/scaricato/`. Il pacchetto che esce in `extensions/algo/dist/` ha lo stesso contenuto di quello della release, file per file, ma un'impronta diversa, perché lo zip porta le date in cui i file sono stati scritti: per questo la ricetta installa quello della release. `bun collaudo/algo/prova.ts` confronta i due, voce per voce.
+Il costruttore installa nell'unità il pacchetto dell'estensione per i file `.algo` dalla release del suo repository, [`gspe65/AlgoDesign-VSCode`](https://github.com/gspe65/AlgoDesign-VSCode) (`AlgoDesign-Code-0.0.2.vsix`), con byte e impronta scritti nella ricetta. Il pacchetto lo costruiscono le GitHub Actions di quel repository, che lo provano con l'editor su Windows, Ubuntu e macOS e ne attestano la provenienza; lì si trova anche come costruirlo dai sorgenti. `bun collaudo/algo/prova.ts` lo lega alla ricetta (qui sotto, «Come si provano il nucleo e le estensioni»).
 
 ## Se una fonte sparisce
 
@@ -173,10 +166,10 @@ Per l'estesa sono 77 archivi, circa 785 MB; con `-Variante base` solo quelli del
 
 ## L'estensione per i file `.algo`
 
-Nell'unità è già installata. In VS Code si installa dal pacchetto, quello della release oppure quello costruito qui:
+Nell'unità è già installata. Altrove si installa dal pacchetto della release del suo repository:
 
 ```
-code --install-extension extensions/algo/dist/algo-codice.vsix
+code --install-extension AlgoDesign-Code-0.0.2.vsix
 ```
 
 Apri un file `.algo` e dalla riga di comando dell'editor scegli «Mostra il codice generato». Il linguaggio e la lingua si scelgono nelle impostazioni `algo.linguaggio` e `algo.lingua`. I file `.algo` hanno l'icona di AlgoDesign.
@@ -200,14 +193,11 @@ Come sopra, ognuna finisce con una riga `ESITO:` oppure `FERMO:`.
 
 La prova di conformità confronta il pacchetto sotto Node con i sorgenti del nucleo sotto Bun, su tutti i file di prova di AlgoDesign, in ogni linguaggio e nelle due lingue.
 
+`bun collaudo/algo/prova.ts` riscarica il pacchetto dell'estensione dalla release e lo lega alla ricetta: byte e impronta della voce, l'etichetta che punta al commit della voce, l'attestazione della corsa che l'ha costruito, le voci dello zip nei due versi coi file del repository a quell'etichetta, il file del nucleo che la prova di conformità prova. Serve la rete. Con `--unita <cartella>` controlla anche che l'estensione installata nell'unità sia il pacchetto, file per file:
+
 ```
-bun collaudo/algo/prova.ts --finestra
 bun collaudo/algo/prova.ts --unita C:\MyDev
 ```
-
-La prima apre VS Code per pochi secondi, con un profilo temporaneo; la seconda apre l'editor dell'unità, con l'estensione installata lì e coi dati dell'unità: le impostazioni che la prova cambia si rimettono come erano alla fine, anche se la si interrompe. In tutte e due la finestra può prendere la tastiera mentre scrivi. Senza `--finestra` né `--unita` l'esito dice che il documento nell'editor non è stato provato.
-
-`bun collaudo/algo/prova.ts` cerca il pacchetto della release in `extensions/algo/scaricato/`, e se non c'è lo scarica dalla release.
 
 ## Licenza
 
@@ -219,8 +209,6 @@ La prima apre VS Code per pochi secondi, con un profilo temporaneo; la seconda a
 | **Documentazione**: i file Markdown (`*.md`) del repository | [Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) | [`LICENSE-DOCS`](LICENSE-DOCS) |
 
 Fa eccezione `ricetta/unita/progetti-puntatori/terzi/sds/`, codice di terzi incluso nel corso sui puntatori, con la sua licenza BSD (il `LICENSE` e la `PROVENIENZA.md` nella sua cartella).
-
-L'icona dell'estensione (`extensions/algo/icona.png`) è quella di AlgoDesign, dello stesso autore, e ne segue la licenza MIT (`extensions/algo/LICENZA-ALGODESIGN.txt`); la licenza copre il file, non il nome.
 
 MyDev incorpora il nucleo di AlgoDesign, che ha la sua licenza MIT, e usa strumenti di sviluppo di terze parti, ciascuno con la propria licenza: l'elenco e i testi sono in [`LICENZE-DI-TERZE-PARTI.txt`](LICENZE-DI-TERZE-PARTI.txt), generato da `bun ricetta/licenze.ts`. I componenti dell'unità hanno il loro indice, `LICENZE.txt` alla radice dell'unità, generato da `ricetta/licenze_unita.py`.
 
