@@ -11,14 +11,14 @@
 //
 // Che cosa NON guarda: il contenuto del nucleo (lo guarda la prova di conformità); il `.gitignore`.
 
-import { appendFileSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { git as gitDelNucleo, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, type Inventario } from "./comune";
+import { ESTRATTO, git as gitDelNucleo, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, riferimentoDi, type Inventario } from "./comune";
 
 /** Il denominatore, dichiarato prima della corsa e confrontato alla fine. */
-const PROVE_ATTESE = 48;
+const PROVE_ATTESE = 59;
 
 const QUI = import.meta.dir;
 const cartella = mkdtempSync(join(tmpdir(), "nucleo  prova-"));
@@ -56,7 +56,7 @@ const rossoCon = (nome: string, c: { uscita: number; testo: string }, ...attesi:
 const fermoCon = (nome: string, c: { uscita: number; testo: string }, ...attesi: string[]) =>
   prova(nome, c.uscita === 2 && c.testo.includes("FERMO:") && !c.testo.includes("ESITO:") && attesi.every((a) => c.testo.includes(a)), `uscita ${c.uscita}, atteso 2 con ${attesi.join(", ")}\n${c.testo}`);
 
-console.log(`inventario: ${base.etichetta}, ${base.file.length} file; file bersaglio: ${file}`);
+console.log(`inventario: ${riferimentoDi(base)}, ${base.file.length} file; file bersaglio: ${file}`);
 
 // La chiusura ricalcolata coincide con l'inventario versionato.
 verde("chiusura ricalcolata uguale all'inventario", corsa("chiusura.ts"));
@@ -107,13 +107,18 @@ rossoCon("un'impronta alterata, alla chiusura", corsa("chiusura.ts", "--inventar
 rossoCon("un file tolto dall'inventario", corsa("chiusura.ts", "--inventario", inventarioFinto("tolto", (i) => void i.file.shift())), `solo nella chiusura: ${file}`);
 rossoCon("un file inventato nell'inventario", corsa("chiusura.ts", "--inventario", inventarioFinto("inventato", (i) => void i.file.push({ percorso: "app/core/inventato.ts", sha256: "0".repeat(64) }))), "solo nell'inventario: app/core/inventato.ts");
 
-// Un inventario che dice un altro commit: l'etichetta è l'unica fonte del commit. Qui si provano le guardie di estrai.ts e
-// chiusura.ts; il fermo comune delle prove a valle (fermoSeEtichettaSpostata di comune.ts, «non è più al commit
-// dell'inventario») non ha una prova: quegli script non accettano un inventario finto, e un'etichetta spostata nel
-// repository vero non si fa per provare.
+// Il riferimento. Con un'etichetta, è lei l'unica fonte del commit: un'etichetta accanto al commit dell'inventario che punta altrove è
+// un rosso. Senza etichetta il riferimento è il commit, scritto per intero: uno che nel repository non c'è, o abbreviato, è un fermo.
+// Qui si provano le guardie di estrai.ts e chiusura.ts; il fermo comune delle prove a valle (fermoSeEtichettaSpostata di comune.ts)
+// usa la stessa funzione del riferimento, e non ha una prova sua: quegli script non accettano un inventario finto.
+const conEtichetta = inventarioFinto("etichetta", (i) => void (i.etichetta = "v1.0.0"));
+rossoCon("un'etichetta accanto al commit che punta altrove, all'estrazione", corsa("estrai.ts", "--inventario", conEtichetta, "--cartella", join(cartella, "d")), "non è quello dell'etichetta v1.0.0");
+rossoCon("un'etichetta accanto al commit che punta altrove, alla chiusura", corsa("chiusura.ts", "--inventario", conEtichetta), "non è quello dell'etichetta v1.0.0");
 const conCommit = inventarioFinto("commit", (i) => void (i.commit = "0".repeat(40)));
-rossoCon("un commit diverso da quello dell'etichetta, all'estrazione", corsa("estrai.ts", "--inventario", conCommit, "--cartella", join(cartella, "d")), "non è quello dell'etichetta");
-rossoCon("un commit diverso da quello dell'etichetta, alla chiusura", corsa("chiusura.ts", "--inventario", conCommit), "non è quello dell'etichetta");
+fermoCon("un commit dell'inventario che il repository non ha, all'estrazione", corsa("estrai.ts", "--inventario", conCommit, "--cartella", join(cartella, "d2")), `il commit non c'è: ${"0".repeat(40)}`);
+fermoCon("un commit dell'inventario che il repository non ha, alla chiusura", corsa("chiusura.ts", "--inventario", conCommit), `il commit non c'è: ${"0".repeat(40)}`);
+fermoCon("un commit abbreviato nell'inventario", corsa("estrai.ts", "--inventario", inventarioFinto("abbreviato", (i) => void (i.commit = i.commit.slice(0, 7))), "--cartella", join(cartella, "d3")), "il commit non è scritto per intero");
+fermoCon("--etichetta e --commit insieme", corsa("chiusura.ts", "--etichetta", "v1.0.0", "--commit", base.commit), "il riferimento è uno solo");
 
 // --- Il repository finto: lo stesso `app/`, con un commit per ogni guasto, su un'etichetta sua.
 const finto = join(cartella, "repository finto");
@@ -140,6 +145,9 @@ const chiusuraSul = (etichetta: string) => corsa("chiusura.ts", "--repo", finto,
 etichettaFinta("con-spia", file, (t) => `${t}\nexport const sonda = "bun:sqlite";\n`);
 // La riga del rosso, non il nome della spia: quello sta anche nel conteggio stampato, e un altro rosso più avanti lo coprirebbe.
 rossoCon("una riga con la spia, che il compilatore accetta", chiusuraSul("con-spia"), "ROSSO: spia Bun:", `${file}: export const sonda`);
+// Lo stesso commit nominato per intero, senza etichetta: il riferimento per commit arriva alle stesse spie.
+const commitConSpia = Bun.spawnSync(["git", "-C", finto, "rev-parse", "con-spia^{commit}"], { stdout: "pipe" }).stdout.toString().trim();
+rossoCon("la stessa riga, col commit al posto dell'etichetta", corsa("chiusura.ts", "--repo", finto, "--commit", commitConSpia), `commit ${commitConSpia} (senza etichetta)`, "ROSSO: spia Bun:", `${file}: export const sonda`);
 etichettaFinta("con-errore", file, (t) => `${t}\nexport const sonda: number = "x";\n`);
 rossoCon("un errore di tipo nella chiusura", chiusuraSul("con-errore"), "il tsc completo sulla chiusura", "TS2322");
 etichettaFinta("senza-colpo", "app/core/genera/typescript.ts", (t) => t.replaceAll('"node:fs"', '"altro:fs"'));
@@ -154,9 +162,11 @@ const rotto = join(cartella, "rotto.json");
 writeFileSync(rotto, "{ non è JSON");
 fermoCon("un inventario che non è JSON", corsa("estrai.ts", "--inventario", rotto), "eccezione non catturata");
 
-// --- Il pacchetto della release: il deposito vero per il caso buono, depositi finti per i guasti. L'uscita non è mai quella vera.
-type VoceDelContratto = { versione: string; etichetta: string; punto_ingresso_sha256: string };
-type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; contratto: VoceDelContratto[] };
+// --- Il pacchetto: il deposito vero per il caso buono, depositi finti per i guasti. L'uscita non è mai quella vera. Il pacchetto in uso
+// è quello costruito dal commit (`dal_commit`); lo zip della release si verifica comunque, e i suoi guasti restano rossi.
+type VoceDelContratto = { versione: string; etichetta?: string; commit?: string; punto_ingresso_sha256: string };
+type DalCommit = { commit: string; byte: number; sha256: string; bun: string };
+type Descrizione = { etichetta: string; indirizzo: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; dal_commit?: DalCommit; contratto: VoceDelContratto[] };
 const descrizioneVera = JSON.parse(readFileSync(join(QUI, "pacchetto.json"), "utf8")) as Descrizione;
 const pacchetti = join(cartella, "pacchetti");
 mkdirSync(pacchetti);
@@ -176,9 +186,20 @@ function depositoFinto(contenuto?: Buffer): string {
 }
 const uscitaFinta = () => join(pacchetti, `uscita ${++numero}.cjs`);
 
+const dalCommitVero = descrizioneVera.dal_commit ?? (() => { throw new Error("pacchetto.json senza dal_commit: queste prove sono per il modo dal commit"); })();
 const uscitaBuona = uscitaFinta();
-verde("il pacchetto dal deposito", corsa("pacchetto.ts", "--uscita", uscitaBuona));
-prova("il file scritto ha l'impronta dichiarata", existsSync(uscitaBuona) && impronta(readFileSync(uscitaBuona)) === descrizioneVera.file.sha256, "impronta diversa o file assente");
+verde("il pacchetto costruito dal commit, con lo zip della release dal deposito", corsa("pacchetto.ts", "--uscita", uscitaBuona));
+prova("il file scritto ha l'impronta dichiarata della costruzione", existsSync(uscitaBuona) && impronta(readFileSync(uscitaBuona)) === dalCommitVero.sha256, "impronta diversa o file assente");
+
+// La costruzione: un'impronta dichiarata diversa, un estratto alterato, un estratto che manca.
+const uscitaNonCostruita = uscitaFinta();
+rossoCon("un'impronta della costruzione diversa da quella dichiarata", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.dal_commit!.sha256 = "0".repeat(64))), "--uscita", uscitaNonCostruita), "ROSSO: l'impronta del pacchetto costruito non torna");
+prova("con l'impronta della costruzione sbagliata il file non si scrive", !existsSync(uscitaNonCostruita), "il file è stato scritto");
+const estrattoAlterato = join(pacchetti, "estratto alterato");
+cpSync(ESTRATTO, estrattoAlterato, { recursive: true });
+appendFileSync(join(estrattoAlterato, "app", "entrypoint", "index.ts"), "\nexport const sonda = 1;\n");
+rossoCon("un estratto alterato dà un'altra costruzione", corsa("pacchetto.ts", "--estratto", estrattoAlterato, "--uscita", uscitaFinta()), "ROSSO: l'impronta del pacchetto costruito non torna");
+fermoCon("un estratto che non c'è", corsa("pacchetto.ts", "--estratto", join(pacchetti, "nessun estratto"), "--uscita", uscitaFinta()), "manca l'estratto del punto d'ingresso");
 
 const zipVero = readFileSync(join(QUI, "scaricato", descrizioneVera.zip.nome));
 const zipAlterato = Buffer.from(zipVero);
@@ -193,7 +214,11 @@ const uscitaMancata = uscitaFinta();
 rossoCon("un'impronta del file diversa da quella dichiarata", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.file.sha256 = "0".repeat(64))), "--uscita", uscitaMancata), "ROSSO: l'impronta del file non torna");
 prova("con l'impronta sbagliata il file non si scrive", !existsSync(uscitaMancata), "il file è stato scritto");
 
-rossoCon("un'etichetta diversa da quella dell'inventario", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.etichetta = "v0.0.0")), "--uscita", uscitaFinta()), "ROSSO: l'etichetta del pacchetto (v0.0.0) non è quella dell'inventario");
+rossoCon("un commit del pacchetto diverso dal riferimento dell'inventario", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.dal_commit!.commit = "1".repeat(40))), "--uscita", uscitaFinta()),
+  `ROSSO: il commit del pacchetto (${"1".repeat(40)}) non è il riferimento dell'inventario (commit ${base.commit})`);
+// Il modo della release (senza dal_commit) vuole l'inventario alla stessa etichetta: con l'inventario al commit è rosso.
+rossoCon("il modo della release con l'inventario al commit", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void delete d.dal_commit), "--uscita", uscitaFinta()),
+  `ROSSO: l'etichetta del pacchetto (${descrizioneVera.etichetta}) non è quella dell'inventario (commit ${base.commit})`);
 rossoCon("un file che non è nello zip", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.file.percorso = "altro/assente.cjs")), "--uscita", uscitaFinta()), "ROSSO: il file non è nello zip: altro/assente.cjs");
 
 // L'adattatore alterato: la riga del rosso nomina quella che differisce.
@@ -202,33 +227,38 @@ copyFileSync(join(RADICE, "extensions", "libreria", "src", "index.ts"), adattato
 writeFileSync(adattatoreAlterato, `// riga in più\n${readFileSync(adattatoreAlterato, "utf8")}`);
 rossoCon("un adattatore diverso dal punto d'ingresso", corsa("pacchetto.ts", "--adattatore", adattatoreAlterato, "--uscita", uscitaFinta()), "ROSSO: l'adattatore non è quello di AlgoDesign alla riga 1");
 
-// Il contratto: il numero legato all'impronta del punto d'ingresso. Una voce vecchia inventata (etichetta v0.9.0) fa da storia.
+// Il contratto: il numero legato all'impronta del punto d'ingresso. Una voce vecchia inventata (etichetta v0.9.0) fa da storia, al posto
+// di quelle vere; l'ultima voce vera è per il commit (`rifVero`, «commit <hash>»).
 const voceVera = descrizioneVera.contratto.at(-1)!;
+const rifVero = voceVera.etichetta !== undefined ? voceVera.etichetta : `commit ${voceVera.commit}`;
 const zeri = "0".repeat(64);
-const conStoria = (vecchia: Partial<VoceDelContratto>) => descrizioneFinta((d) => void (d.contratto = [{ ...voceVera, etichetta: "v0.9.0", ...vecchia }, voceVera]));
+const conStoria = (vecchia: Partial<VoceDelContratto>) =>
+  descrizioneFinta((d) => void (d.contratto = [{ versione: voceVera.versione, etichetta: "v0.9.0", punto_ingresso_sha256: voceVera.punto_ingresso_sha256, ...vecchia }, voceVera]));
 rossoCon("un'impronta del punto d'ingresso mutata a numero fermo", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.punto_ingresso_sha256 = zeri)), "--uscita", uscitaFinta()),
-  `ROSSO: il punto d'ingresso all'etichetta ${voceVera.etichetta} ha l'impronta ${voceVera.punto_ingresso_sha256}, il contratto ${voceVera.versione} dichiara ${zeri}`);
-rossoCon("un'etichetta nuova con l'impronta cambiata e il numero fermo", corsa("pacchetto.ts", "--descrizione", conStoria({ punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
-  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: l'impronta del punto d'ingresso cambia e il numero resta ${voceVera.versione}`);
-rossoCon("un'etichetta nuova col numero cambiato e l'impronta ferma", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9" }), "--uscita", uscitaFinta()),
-  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero passa da 0.9 a ${voceVera.versione} e l'impronta del punto d'ingresso non cambia`);
-verde("un'etichetta nuova con l'impronta e il numero cambiati", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()));
-rossoCon("l'ultima voce del contratto per un'altra etichetta", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.etichetta = "v0.0.0")), "--uscita", uscitaFinta()),
-  `ROSSO: l'ultima voce del contratto è per l'etichetta v0.0.0, il pacchetto per ${voceVera.etichetta}`);
+  `ROSSO: il punto d'ingresso a ${rifVero} ha l'impronta ${voceVera.punto_ingresso_sha256}, il contratto ${voceVera.versione} dichiara ${zeri}`);
+rossoCon("un riferimento nuovo con l'impronta cambiata e il numero fermo", corsa("pacchetto.ts", "--descrizione", conStoria({ punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${rifVero}: l'impronta del punto d'ingresso cambia e il numero resta ${voceVera.versione}`);
+rossoCon("un riferimento nuovo col numero cambiato e l'impronta ferma", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9" }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${rifVero}: il numero passa da 0.9 a ${voceVera.versione} e l'impronta del punto d'ingresso non cambia`);
+verde("un riferimento nuovo con l'impronta e il numero cambiati", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()));
+rossoCon("l'ultima voce del contratto per un altro commit", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.commit = "1".repeat(40))), "--uscita", uscitaFinta()),
+  `ROSSO: l'ultima voce del contratto è per commit ${"1".repeat(40)}, il pacchetto in uso per ${rifVero}`);
+rossoCon("una voce del contratto con l'etichetta e il commit insieme", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.etichetta = "v0.0.0")), "--uscita", uscitaFinta()),
+  `ROSSO: la voce ${voceVera.versione} del contratto deve avere un'etichetta o un commit, uno solo`);
 rossoCon("un contratto non dichiarato", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto = [])), "--uscita", uscitaFinta()), "ROSSO: pacchetto.json non dichiara il contratto");
-// La forma del numero, la storia con un'etichetta ripetuta, e il numero che scende con l'impronta cambiata (il confronto fra voci
+// La forma del numero, la storia con un riferimento ripetuto, e il numero che scende con l'impronta cambiata (il confronto fra voci
 // consecutive, da solo, lo lascerebbe passare).
 rossoCon("un numero del contratto a tre parti", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.versione = "1.0.0")), "--uscita", uscitaFinta()),
   "ROSSO: il numero del contratto non è nella forma maggiore.minore: 1.0.0");
 rossoCon("un numero del contratto con uno zero in testa", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.contratto.at(-1)!.versione = "01.0")), "--uscita", uscitaFinta()),
   "ROSSO: il numero del contratto non è nella forma maggiore.minore: 01.0");
-rossoCon("due voci del contratto con la stessa etichetta", corsa("pacchetto.ts", "--descrizione", conStoria({ etichetta: voceVera.etichetta, versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
-  `ROSSO: il contratto ha più voci per la stessa etichetta: ${voceVera.etichetta}`);
-rossoCon("un numero del contratto che scende", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "1.1", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
-  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero scende da 1.1 a ${voceVera.versione}`);
+rossoCon("due voci del contratto con lo stesso riferimento", corsa("pacchetto.ts", "--descrizione", conStoria({ etichetta: voceVera.etichetta, commit: voceVera.commit, versione: "0.9", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: il contratto ha più voci per lo stesso riferimento: ${rifVero}`);
+rossoCon("un numero del contratto che scende", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "1.2", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
+  `ROSSO: contratto, da v0.9.0 a ${rifVero}: il numero scende da 1.2 a ${voceVera.versione}`);
 // Il confronto ha due termini (la parte maggiore che scende, oppure la stessa maggiore e la minore che scende): uno per sonda.
 rossoCon("un numero del contratto che scende nella parte maggiore", corsa("pacchetto.ts", "--descrizione", conStoria({ versione: "2.0", punto_ingresso_sha256: zeri }), "--uscita", uscitaFinta()),
-  `ROSSO: contratto, da v0.9.0 a ${voceVera.etichetta}: il numero scende da 2.0 a ${voceVera.versione}`);
+  `ROSSO: contratto, da v0.9.0 a ${rifVero}: il numero scende da 2.0 a ${voceVera.versione}`);
 
 // Senza deposito e senza rete non si è potuto misurare: un fermo, mai un rosso.
 fermoCon("un indirizzo irraggiungibile", corsa("pacchetto.ts", "--descrizione", descrizioneFinta((d) => void (d.indirizzo = "http://127.0.0.1:9/assente.zip")), "--deposito", depositoFinto(), "--uscita", uscitaFinta()), "non si è potuto scaricare");

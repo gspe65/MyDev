@@ -14,13 +14,16 @@
 import { appendFileSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { differenzeDegliElenchi, fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo } from "../../ricetta/nucleo/comune";
+import { differenzeDegliElenchi, fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, riferimentoDi } from "../../ricetta/nucleo/comune";
 
 /** Il denominatore, dichiarato prima della corsa e confrontato alla fine. */
-const PROVE_ATTESE = 21;
+const PROVE_ATTESE = 25;
 
-/** Le funzioni del contratto: un'esportazione in più è un rosso, non una comodità. */
-const CINQUE = ["aggiungiAllaLibreria", "apri", "controlla", "genera", "leggiAccademico"];
+/** Le funzioni del contratto (1.1): un'esportazione in più è un rosso, non una comodità. */
+const SETTE = ["aggiungiAllaLibreria", "apri", "controlla", "disegna", "genera", "leggiAccademico", "segnalazioni"];
+/** Il punto d'ingresso di AlgoDesign è nell'inventario (il pacchetto si costruisce da lì) ed è il gemello dell'adattatore, che lo
+ *  copia a specificatori diversi: l'adattatore non lo raggiunge, e si toglie per nome dal confronto, non per differenza. */
+const GEMELLO = "app/entrypoint/index.ts";
 /** Stringhe che nel pacchetto non devono esserci: la struttura del repo ospite, e il motore con cui si costruisce. */
 const VIETATE = ["ricetta/", "ricetta\\", "estratto/", "estratto\\", "bun:", "Bun."];
 /** Un file vero del corpus, con l'esito atteso di ogni generatore in entrambe le lingue. */
@@ -51,7 +54,7 @@ function esegui(comando: string[], cwd = RADICE): { uscita: number; testo: strin
 const tsc = Bun.which("tsc", { PATH: join(RADICE, "node_modules", ".bin") }) ?? fermo("tsc non c'è: bun install alla radice");
 const node = Bun.which("node") ?? fermo("node non c'è: serve per provare il pacchetto");
 const inventario = leggiInventario(INVENTARIO);
-console.log(`inventario: ${inventario.etichetta}, ${inventario.file.length} file; node ${esegui([node, "--version"]).fuori.trim()}`);
+console.log(`inventario: ${riferimentoDi(inventario)}, ${inventario.file.length} file; node ${esegui([node, "--version"]).fuori.trim()}`);
 
 // Il file del corpus, al commit fissato.
 const repo = repoDelNucleo(undefined);
@@ -80,9 +83,11 @@ function classifica(elenco: string[]): { delNucleo: string[]; delSorgente: strin
   return { delNucleo: elenco.filter((r) => r.includes(sigla)).map((r) => r.slice(r.indexOf(sigla) + sigla.length)), delSorgente, librerie, estranei };
 }
 const { delNucleo, delSorgente, librerie, estranei } = classifica(righe);
-const { soloA: fuoriInventario, soloB: nonRaggiunti } = differenzeDegliElenchi(delNucleo, inventario.file.map((v) => v.percorso));
+const gemelloNellInventario = inventario.file.some((v) => v.percorso === GEMELLO);
+prova(`il punto d'ingresso tolto dal confronto è nell'inventario: ${GEMELLO}`, gemelloNellInventario, "l'esclusione nasconderebbe un file che non c'è");
+const { soloA: fuoriInventario, soloB: nonRaggiunti } = differenzeDegliElenchi(delNucleo, inventario.file.map((v) => v.percorso).filter((p) => p !== GEMELLO));
 console.log(`tsc --listFilesOnly: righe ${righe.length} = ${delNucleo.length} del nucleo + ${delSorgente.length} del sorgente + ${librerie.length} librerie + ${estranei.length} estranei`);
-console.log(`nucleo contro inventario: ${delNucleo.length} · ${inventario.file.length}, fuori dall'inventario ${fuoriInventario.length}, non raggiunti ${nonRaggiunti.length}`);
+console.log(`nucleo contro inventario: ${delNucleo.length} · ${inventario.file.length} meno il gemello ${GEMELLO}, fuori dall'inventario ${fuoriInventario.length}, non raggiunti ${nonRaggiunti.length}`);
 prova("l'adattatore raggiunge esattamente i file dell'inventario", fuoriInventario.length === 0 && nonRaggiunti.length === 0 && delSorgente.length === 1 && estranei.length === 0, `fuori: ${fuoriInventario.join(", ")}; non raggiunti: ${nonRaggiunti.join(", ")}; estranei: ${estranei.join(", ")}`);
 prova("mutazione: un file estraneo nell'elenco del compilatore si vede", classifica([...righe, "C:/altrove/aiuto.ts"]).estranei.join() === "C:/altrove/aiuto.ts");
 
@@ -116,9 +121,9 @@ const vietateIn = (pacchetto: string): string[] => VIETATE.filter((v) => readFil
 
 const vero = sottoNode(PACCHETTO);
 if (vero.uscita !== 0) fermo(`il pacchetto non gira sotto Node:\n${vero.testo}`);
-const confronto = differenzeDegliElenchi(vero.esportazioni, CINQUE);
-console.log(`esportazioni: ${vero.esportazioni.length} [${vero.esportazioni.join(", ")}]; attese ${CINQUE.length}; in più ${confronto.soloA.length}, mancanti ${confronto.soloB.length}`);
-prova("esporta esattamente le cinque funzioni", confronto.soloA.length === 0 && confronto.soloB.length === 0, `in più: ${confronto.soloA.join(", ")}; mancanti: ${confronto.soloB.join(", ")}`);
+const confronto = differenzeDegliElenchi(vero.esportazioni, SETTE);
+console.log(`esportazioni: ${vero.esportazioni.length} [${vero.esportazioni.join(", ")}]; attese ${SETTE.length}; in più ${confronto.soloA.length}, mancanti ${confronto.soloB.length}`);
+prova("esporta esattamente le sette funzioni", confronto.soloA.length === 0 && confronto.soloB.length === 0, `in più: ${confronto.soloA.join(", ")}; mancanti: ${confronto.soloB.join(", ")}`);
 const imports = importDel(PACCHETTO);
 console.log(`import del pacchetto: ${imports.length} [${imports.join(", ")}]`);
 prova("nessun import nel pacchetto", imports.length === 0, imports.join(", "));
@@ -139,6 +144,14 @@ prova(
 );
 // Il motivo del nome vuoto è quello che il nucleo dà ai metadati, passato così com'è.
 prova("aggiungi alla libreria: un progetto che non è una libreria e un nome vuoto sono rifiuti", e.nonLibreria === "non_e_una_libreria" && e.nomeCattivo === "illeggibile", `${String(e.nonLibreria)}, ${String(e.nomeCattivo)}`);
+// Le due funzioni del contratto 1.1, da fuori. I byte sul corpus intero li confronta la prova di conformità.
+prova("disegna: l'SVG della prima funzione, con la larghezza e l'altezza che dichiara", e.disegno === true, JSON.stringify(e.disegno));
+prova(
+  "disegna: una funzione, una lingua e un insieme di colori sconosciuti sono eccezioni col nome",
+  uguale(e.disegnaRifiuta, ["funzione sconosciuta: nessuna", "lingua sconosciuta: IT", "insieme di colori sconosciuto: verde"]),
+  JSON.stringify(e.disegnaRifiuta),
+);
+prova("segnalazioni: un elenco, e una lingua sconosciuta è un'eccezione col nome", e.segnalazioni === true && e.segnalazioniRifiuta === "lingua sconosciuta: IT", `${String(e.segnalazioni)}, ${String(e.segnalazioniRifiuta)}`);
 
 // --- Le mutazioni, su copie del pacchetto: i controlli di sopra devono accendersi.
 function copia(nome: string, coda: string): string {
@@ -148,7 +161,7 @@ function copia(nome: string, coda: string): string {
   return p;
 }
 const inPiu = sottoNode(copia("in-piu", "module.exports = { ...module.exports, inPiu: () => 1 };"));
-prova("mutazione: un'esportazione in più si vede", differenzeDegliElenchi(inPiu.esportazioni, CINQUE).soloA.join() === "inPiu", inPiu.testo);
+prova("mutazione: un'esportazione in più si vede", differenzeDegliElenchi(inPiu.esportazioni, SETTE).soloA.join() === "inPiu", inPiu.testo);
 const senza = sottoNode(copia("senza", 'module.exports = Object.fromEntries(Object.entries(module.exports).filter(([k]) => k !== "genera"));'));
 prova("mutazione: un'esportazione mancante ferma il pacchetto sotto Node", senza.uscita !== 0 && senza.testo.includes("genera"), senza.testo);
 prova("mutazione: un require si vede dal parser", importDel(copia("require", 'if (false) require("inesistente");')).includes("inesistente"), "");

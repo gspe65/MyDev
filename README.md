@@ -11,8 +11,8 @@ Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'am
 | `ricetta/` | Il costruttore e la verifica dell'unità, l'elenco dei componenti con versione, fonte e impronta (`componenti.json`, e `componenti-estesa.json` per l'aggiunta dell'estesa), l'indice delle licenze e il comando dei sorgenti |
 | `ricetta/unita/` | I file nostri che entrano nell'unità: il lanciatore, i comandi di `bin`, le impostazioni dell'editor e di Chromium, i progetti di esempio, le guide e, per l'estesa, la copia del codice del corso sui puntatori |
 | `ricetta/puntatori/` | L'inventario di quella copia e la prova che la confronta con il commit da cui viene |
-| `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata, lo verifica per impronta e dichiara la versione del contratto |
-| `extensions/libreria/` | La libreria sopra il nucleo, con cinque funzioni: apri, controlla, genera, leggi Accademico, aggiungi alla libreria |
+| `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata (o, fino alla release che lo porta, da un commit fissato), lo verifica per impronta e dichiara la versione del contratto |
+| `extensions/libreria/` | La libreria sopra il nucleo, con sette funzioni: apri, controlla, genera, disegna, segnalazioni, leggi Accademico, aggiungi alla libreria |
 | `collaudo/` | Le prove: della libreria, della conformità al nucleo, del pacchetto dell'estensione che l'unità installa, del codice generato che si esegue nell'unità, e il kit dell'unità col suo gate |
 
 L'estensione per i file `.algo`, che nell'unità è già installata, ha il suo repository: [`gspe65/AlgoDesign-VSCode`](https://github.com/gspe65/AlgoDesign-VSCode).
@@ -29,7 +29,7 @@ Per le prove:
 
 - [Bun](https://bun.sh) 1.4.2 e [Node.js](https://nodejs.org) 24.
 - [GitHub CLI](https://cli.github.com) (`gh`, con un account qualunque), per verificare l'attestazione del pacchetto dell'estensione.
-- Il repository di AlgoDesign, con l'etichetta `v1.0.0`, nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usa anche il gate dell'unità, per il corpus di esecuzione.
+- Il repository di AlgoDesign, col commit che `ricetta/nucleo/inventario.json` nomina (di norma quello di un'etichetta; fino alla release `1.0.1` di AlgoDesign, il commit del contratto 1.1, che deve esserci nella copia locale), nella cartella `AlgoDesign` accanto a questa oppure indicato con la variabile d'ambiente `ALGODESIGN_REPO`. Lo usa anche il gate dell'unità, per il corpus di esecuzione.
 - Python 3, per i comandi `python` di questa pagina (il confronto del corso sui puntatori, l'indice delle licenze): va bene anche quello di un'unità costruita, `<unità>\python\python.exe`.
 
 ## Come si costruisce l'unità
@@ -176,7 +176,7 @@ Apri un file `.algo` e dalla riga di comando dell'editor scegli «Mostra il codi
 
 Il documento è in sola lettura e si aggiorna rilanciando il comando, non da solo. Viene dal file salvato: se ci sono modifiche non salvate, il comando lo dice. Se il codice non si può generare, il documento dice perché. L'estensione non compila e non esegue. Il pacchetto porta i testi delle sue licenze ed è ancora un prototipo.
 
-L'estensione usa il nucleo di AlgoDesign attraverso cinque funzioni, quelle della libreria: è il **contratto 1.0**, il punto d'ingresso di AlgoDesign `v1.0.0`. `ricetta/nucleo/pacchetto.json` ne tiene il numero accanto all'impronta del punto d'ingresso, e `bun ricetta/nucleo/pacchetto.ts` dà rosso se a un'etichetta nuova di AlgoDesign il punto d'ingresso cambia e il numero no. Un campo o un valore nuovo porta il contratto alla 1.1; una funzione in più o in meno non è ammessa.
+L'estensione usa il nucleo di AlgoDesign attraverso le funzioni della libreria. Il pacchetto `0.0.2` porta il **contratto 1.0**: cinque funzioni, il file della release `v1.0.0` di AlgoDesign. La ricetta è già al **contratto 1.1**: sette funzioni, cioè `disegna` (il flowchart di una funzione in SVG) e `segnalazioni` (gli errori e gli avvisi con le frasi di AlgoDesign) in più. Fino alla release `1.0.1` di AlgoDesign il contratto 1.1 viene da un commit fissato: il pacchetto si costruisce dai sorgenti di quel commit e deve avere i byte e l'impronta scritti in `ricetta/nucleo/pacchetto.json`. Lo zip della release `v1.0.0` resta verificato nel deposito, perché è quello che il pacchetto dell'estensione porta. In `pacchetto.json` il contratto ha una voce per riferimento (un'etichetta o un commit), col numero accanto all'impronta del punto d'ingresso, e `bun ricetta/nucleo/pacchetto.ts` dà rosso se il punto d'ingresso cambia e il numero no.
 
 ## Come si provano il nucleo e le estensioni
 
@@ -191,7 +191,7 @@ bun ricetta/licenze.ts --verifica
 
 Come sopra, ognuna finisce con una riga `ESITO:` oppure `FERMO:`.
 
-La prova di conformità confronta il pacchetto sotto Node con i sorgenti del nucleo sotto Bun, su tutti i file di prova di AlgoDesign, in ogni linguaggio e nelle due lingue.
+La prova di conformità confronta il pacchetto sotto Node con i sorgenti del nucleo sotto Bun, su tutti i file di prova di AlgoDesign, in ogni linguaggio e nelle due lingue. Per il contratto 1.1 confronta anche il disegno di ogni funzione, senza e coi bollini sui blocchi segnalati (l'SVG byte per byte, con una misura del testo fissa), e le segnalazioni, appaiate ai codici del controllo nei due versi. Lo stesso pacchetto lo prova anche in un contesto senza Node, come in una pagina. Prova infine il file della release `v1.0.0`, quello che il pacchetto dell'estensione porta.
 
 `bun collaudo/algo/prova.ts` riscarica il pacchetto dell'estensione dalla release e lo lega alla ricetta: byte e impronta della voce, l'etichetta che punta al commit della voce, l'attestazione della corsa che l'ha costruito, le voci dello zip nei due versi coi file del repository a quell'etichetta, il file del nucleo che la prova di conformità prova. Serve la rete. Con `--unita <cartella>` controlla anche che l'estensione installata nell'unità sia il pacchetto, file per file:
 

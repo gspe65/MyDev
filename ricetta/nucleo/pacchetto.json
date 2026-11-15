@@ -9,11 +9,22 @@
     "percorso": "AlgoDesign-Core-1.0.0/algodesign-core.cjs",
     "sha256": "7f0f098214494ec44d3ae93a8c9ab6e0e113d2e9823f6d1ca069b5dd3ffb7c84"
   },
+  "dal_commit": {
+    "commit": "3ac5e07913b35debf0229afa724b9aa9ad07f997",
+    "byte": 610339,
+    "sha256": "b89ead06ed8d8c41fbbe5efaed889b260a4ec349518b9f261968a880e2eafa6a",
+    "bun": "1.4.2"
+  },
   "contratto": [
     {
       "versione": "1.0",
       "etichetta": "v1.0.0",
       "punto_ingresso_sha256": "2fda092b3879b45403976e966c10958ebd575ccc983f16c00fbf81d2b0c330e1"
+    },
+    {
+      "versione": "1.1",
+      "commit": "3ac5e07913b35debf0229afa724b9aa9ad07f997",
+      "punto_ingresso_sha256": "1afdf0bf11ab02bc70407a11ab001947d6eecc52523a4dbc01060a1f5956cc17"
     }
   ]
 }

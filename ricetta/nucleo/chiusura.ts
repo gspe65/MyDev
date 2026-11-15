@@ -2,10 +2,16 @@
 //
 //   bun ricetta/nucleo/chiusura.ts                                    ricalcola e confronta (atteso verde)
 //   bun ricetta/nucleo/chiusura.ts --scrivi --etichetta <etichetta>   ricalcola e riscrive l'inventario
-//   opzioni: --repo <cartella>, --inventario <file>
+//   bun ricetta/nucleo/chiusura.ts --scrivi --commit <hash intero>    lo stesso, col commit come riferimento (senza etichetta)
+//   opzioni: --repo <cartella>, --inventario <file>; --etichetta o --commit anche senza --scrivi, al posto di quello dell'inventario
+//
+// Il riferimento è un'etichetta, che dà il commit; senza etichetta è il commit stesso, scritto per intero (l'eccezione del
+// contratto dal commit, fino alla release che lo porta). Un commit che non c'è è un fermo.
 //
 // Chi decide l'elenco è il compilatore: `tsc --listFilesOnly` sull'intero `app/` del commit, estratto in una cartella
-// temporanea, a partire da un file che importa per nome le funzioni d'ingresso (una funzione sparita è un errore).
+// temporanea, a partire da un file che importa per nome le funzioni d'ingresso (una funzione sparita è un errore). Fra gli
+// ingressi c'è il punto d'ingresso del pacchetto (`app/entrypoint/index.ts`), che entra così nell'inventario: il pacchetto
+// si costruisce da lì.
 // `--listFilesOnly` esce 0 anche se un import non si risolve, e quel file sparisce in silenzio: per questo nello stesso
 // giro gira un `tsc` completo, che deve uscire 0, e un giro col file tolto, che deve uscire rosso.
 //
@@ -20,10 +26,11 @@ import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSyn
 import { tmpdir } from "node:os";
 import { basename, isAbsolute, join, normalize, relative } from "node:path";
 import { parseArgs } from "node:util";
-import { commitDellEtichetta, differenzeDegliElenchi, fermo, FORMA, git, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, rosso, type Inventario, type VoceDelFile } from "./comune";
+import { commitDellEtichetta, commitPresente, differenzeDegliElenchi, fermo, FORMA, git, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, rosso, type Inventario, type VoceDelFile } from "./comune";
 
 /** Le funzioni d'ingresso del contratto, più quelle con cui lo strumento differenziale genera fuori dalla finestra. */
 const INGRESSI: { modulo: string; funzioni: string[] }[] = [
+  { modulo: "entrypoint/index", funzioni: ["aggiungiAllaLibreria", "apri", "controlla", "disegna", "genera", "leggiAccademico", "segnalazioni"] },
   { modulo: "core/progetto/formato", funzioni: ["apri", "salva"] },
   { modulo: "core/controllo/controllo", funzioni: ["controlla", "tetti"] },
   { modulo: "core/modifica/operazioni", funzioni: ["progettoNuovo"] },
@@ -63,16 +70,26 @@ const NEL_COMMENTO = { spia: "Bun", file: "app/core/progetto/formato.ts" };
 
 const { values: opzioni } = parseArgs({
   args: Bun.argv.slice(2),
-  options: { repo: { type: "string" }, inventario: { type: "string" }, etichetta: { type: "string" }, scrivi: { type: "boolean", default: false } },
+  options: { repo: { type: "string" }, inventario: { type: "string" }, etichetta: { type: "string" }, commit: { type: "string" }, scrivi: { type: "boolean", default: false } },
   strict: true,
 });
 
 const repo = repoDelNucleo(opzioni.repo);
 const percorsoInventario = opzioni.inventario ?? INVENTARIO;
 const precedente: Inventario | null = opzioni.scrivi && !existsSync(percorsoInventario) ? null : leggiInventario(percorsoInventario);
-const etichetta = opzioni.etichetta ?? precedente?.etichetta ?? fermo("manca l'etichetta (--etichetta)");
-const commit = commitDellEtichetta(repo, etichetta);
-console.log(`etichetta ${etichetta}, commit ${commit}`);
+if (opzioni.etichetta !== undefined && opzioni.commit !== undefined) fermo("--etichetta e --commit insieme: il riferimento è uno solo");
+// Il riferimento: dalle opzioni, se no dall'inventario. Un'etichetta vince sul commit scritto accanto, che si confronta alla fine.
+const etichetta: string | undefined = opzioni.etichetta ?? (opzioni.commit === undefined ? precedente?.etichetta : undefined);
+const commit =
+  etichetta !== undefined
+    ? commitDellEtichetta(repo, etichetta)
+    : commitPresente(repo, opzioni.commit ?? precedente?.commit ?? fermo("manca il riferimento (--etichetta o --commit)"));
+console.log(etichetta !== undefined ? `etichetta ${etichetta}, commit ${commit}` : `commit ${commit} (senza etichetta)`);
+// Col riferimento letto dall'inventario, il confronto si fa prima di calcolare: a un altro commit la chiusura sarebbe un'altra, e il
+// rosso direbbe quella invece del motivo. Con un riferimento esplicito si calcola su quello, e il confronto resta in fondo.
+const esplicito = opzioni.etichetta !== undefined || opzioni.commit !== undefined;
+if (!opzioni.scrivi && !esplicito && precedente !== null && precedente.commit !== commit)
+  rosso(`il commit dell'inventario (${precedente.commit}) non è quello ${etichetta !== undefined ? `dell'etichetta ${etichetta}` : "del riferimento"} (${commit})`);
 
 function tsc(cartella: string, ...argomenti: string[]): { uscita: number; testo: string } {
   const eseguibile = Bun.which("tsc", { PATH: join(RADICE, "node_modules", ".bin") });
@@ -116,7 +133,8 @@ process.on("exit", () => rmSync(albero, { recursive: true, force: true }));
 let ricalcolati: VoceDelFile[];
 {
   await new Bun.Archive(git(repo, "archive", "--format=tar", commit, "--", "app")).extract(albero);
-  const importazioni = INGRESSI.map((i) => `import { ${i.funzioni.join(", ")} } from "./app/${i.modulo}";`).join("\n");
+  // Ogni nome col numero del modulo davanti: il punto d'ingresso esporta gli stessi nomi dei moduli del nucleo che chiama.
+  const importazioni = INGRESSI.map((i, n) => `import { ${i.funzioni.map((f) => `${f} as m${n}_${f}`).join(", ")} } from "./app/${i.modulo}";`).join("\n");
   writeFileSync(join(albero, FILE_DEGLI_INGRESSI), `${importazioni}\n`);
   writeFileSync(
     join(albero, "tsconfig.chiusura.json"),
@@ -178,7 +196,7 @@ let ricalcolati: VoceDelFile[];
 for (const v of ricalcolati) console.log(`  ${v.sha256.slice(0, 12)}  ${v.percorso}`);
 
 if (opzioni.scrivi) {
-  const inventario: Inventario = { etichetta, commit, forma: FORMA, file: ricalcolati };
+  const inventario: Inventario = { ...(etichetta !== undefined ? { etichetta } : {}), commit, forma: FORMA, file: ricalcolati };
   writeFileSync(percorsoInventario, `${JSON.stringify(inventario, null, 2)}\n`);
   console.log(`inventario scritto: ${relative(RADICE, percorsoInventario).replaceAll("\\", "/")}`);
   console.log(`totale: ${ricalcolati.length}`);
@@ -188,7 +206,7 @@ if (opzioni.scrivi) {
 
 const inventario = precedente!;
 console.log(`confronto con l'inventario: inventario ${inventario.file.length} · chiusura ${ricalcolati.length}`);
-if (inventario.commit !== commit) rosso(`il commit dell'inventario (${inventario.commit}) non è quello dell'etichetta ${etichetta} (${commit})`);
+if (inventario.commit !== commit) rosso(`il commit dell'inventario (${inventario.commit}) non è quello ${etichetta !== undefined ? `dell'etichetta ${etichetta}` : "del riferimento"} (${commit})`);
 const { soloA: soloInventario, soloB: soloChiusura } = differenzeDegliElenchi(inventario.file.map((v) => v.percorso), ricalcolati.map((v) => v.percorso));
 console.log(`solo nell'inventario: ${soloInventario.length} · solo nella chiusura: ${soloChiusura.length}`);
 if (soloInventario.length > 0 || soloChiusura.length > 0) {
