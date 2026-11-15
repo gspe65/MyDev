@@ -21,14 +21,15 @@
 # Il deposito predefinito sta accanto alla destinazione. Ogni file del deposito si confronta con byte e
 # impronta dell'elenco: un'impronta sbagliata e' un rosso e non fa riscaricare nulla; un file che manca
 # si scarica dalla fonte, o con -SenzaRete e' un fermo che lo nomina. Vale anche per il .vsix nostro (stato release):
-# e' un file della release di questo repository, e si installa dal deposito.
+# e' un file della release del repository dell'estensione, e si installa dal deposito.
 #
 # Uscite: 0 verde, 1 rosso, 2 fermo (non si e' potuto misurare o costruire).
 #
 # Che cosa NON guarda:
 # - che i programmi costruiti funzionino: lo dicono le prove dell'unita';
 # - i file nostri ancora da scrivere: si elencano e si saltano; quelli presenti si copiano dal repository;
-# - che il .vsix della release corrisponda ai sorgenti: si confronta la sua impronta con quella dell'elenco.
+# - da dove viene il .vsix della release: si confronta la sua impronta con quella dell'elenco (l'attestazione e i sorgenti
+#   all'etichetta li guarda collaudo/algo/prova.ts).
 
 [CmdletBinding()]
 param(
