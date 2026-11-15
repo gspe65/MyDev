@@ -33,8 +33,8 @@ const NOME_DELLA_VOCE = POSIZIONE_VOCE >= 0 ? (process.argv[POSIZIONE_VOCE + 1] 
 type Profilo = { pacchetto: string[]; daiSorgenti: Record<string, string>; immagini: string[]; nucleo: boolean; prove: number };
 const PROFILI: Record<string, Profilo> = {
   "estensione-algo": {
-    pacchetto: ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/icona.png", "extension/package.json", "extension/readme.md"],
-    daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md" },
+    pacchetto: ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/LICENZA-ALGODESIGN.txt", "extension/dist/extension.cjs", "extension/dist/libreria.cjs", "extension/dist/pagina.js", "extension/dist/pagina.css", "extension/icona.png", "extension/package.json", "extension/readme.md"],
+    daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md", "extension/dist/pagina.css": "src/web/pagina.css" },
     immagini: ["extension/icona.png"],
     nucleo: true,
     prove: 17,
@@ -136,7 +136,10 @@ console.log(`file della release riscaricato: ${release.length} byte, impronta ${
 const sorgenti = new Map<string, Uint8Array>();
 for (const f of new Set(Object.values(DAI_SORGENTI))) sorgenti.set(f, await scarica(`https://raw.githubusercontent.com/${repository}/${voce.commit}/${f}`));
 // Il nucleo, solo per il profilo che lo porta: il file della conformità e la sua licenza, dallo zip del deposito.
-const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string } };
+const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; dal_commit?: { sha256: string } };
+// Il file del nucleo in uso: costruito dai sorgenti all'etichetta finché c'è `dal_commit` (il pacchetto 0.0.3 porta quello), se no
+// il file della release. La licenza dello zip è la stessa dei sorgenti all'etichetta (misurato, byte per byte).
+const improntaDelNucleo = nucleo.dal_commit?.sha256 ?? nucleo.file.sha256;
 let licenzaDelNucleo: Uint8Array = new Uint8Array();
 if (PROFILO.nucleo) {
   const zipDelNucleo = join(RADICE, "ricetta", "nucleo", "scaricato", nucleo.zip.nome);
@@ -169,7 +172,7 @@ function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa): string[] {
   }
   if (PROFILO.nucleo) {
     const libreria = voci.get("extension/dist/libreria.cjs");
-    if (libreria !== undefined && impronta(libreria) !== nucleo.file.sha256) motivi.push(`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(libreria).slice(0, 12)})`);
+    if (libreria !== undefined && impronta(libreria) !== improntaDelNucleo) motivi.push(`extension/dist/libreria.cjs: non è il file del nucleo che la conformità prova (${impronta(libreria).slice(0, 12)})`);
     const licenza = voci.get("extension/LICENZA-ALGODESIGN.txt");
     if (licenza !== undefined && impronta(licenza) !== impronta(licenzaDelNucleo)) motivi.push("extension/LICENZA-ALGODESIGN.txt: non è la licenza dello zip del nucleo");
   }
