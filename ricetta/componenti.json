@@ -78,10 +78,10 @@
     {
       "nome": "browser/chromium",
       "gruppo": "browser",
-      "fonte": "https://github.com/gspe65/chromium-senza-codec/releases/download/157.0.8103.38-1.1-senza-codec/ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip",
+      "fonte": "https://github.com/gspe65/chromium-senza-codec/releases/download/157.0.8103.38-1.1-senza-codec-ffmpeg-separata/ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip",
       "file": "ungoogled-chromium_157.0.8103.38-1.1_windows_x64.zip",
-      "byte": 202576606,
-      "sha256": "2f9206648586d7f62512417241318ae61128341d7243d7dbe4ab2698552d3e87",
+      "byte": 202895832,
+      "sha256": "b304f0ec0649840fd4163d3a2bd1718972009512d3af280582b0846cb29c1bb1",
       "versione": "157.0.8103.38-1.1",
       "licenza": "BSD-3-Clause",
       "modo": "zip",
@@ -93,7 +93,7 @@
         "d3dcompiler_47.dll",
         "dxcompiler.dll"
       ],
-      "motivo": "ungoogled-chromium 157.0.8103.38-1.1 per Windows x64 costruito senza codec proprietari (proprietary_codecs, ffmpeg col marchio Chromium, niente parser MPEG-2 TS, niente Widevine) dalla corsa 42965706241 di gspe65/chromium-senza-codec, commit dda9e2e, con attestazione di provenienza; l'impronta e' quella attestata. Non decodifica H.264, H.265 e AAC; VP9, AV1 e Opus si'. I due file Microsoft di Direct3D tolti: la decodifica e la pagina reggono senza, e d3dcompiler_47.dll c'e' in Windows."
+      "motivo": "ungoogled-chromium 157.0.8103.38-1.1 per Windows x64 costruito senza codec proprietari (proprietary_codecs, ffmpeg col marchio Chromium, niente parser MPEG-2 TS, niente Widevine) e con la FFmpeg in un ffmpeg.dll separato, come nell'editor (is_component_ffmpeg, piu' la modifica che lascia caricare ffmpeg.dll alle pagine), dalla corsa 43575433341 di gspe65/chromium-senza-codec, commit 25693ae, con attestazione di provenienza; l'impronta e' quella attestata. Non decodifica H.264, H.265 e AAC; VP9, AV1 e Opus si'. ffmpeg.dll si puo' sostituire con un'altra costruzione della stessa FFmpeg. I due file Microsoft di Direct3D tolti: la decodifica e la pagina reggono senza, e d3dcompiler_47.dll c'e' in Windows."
     },
     {
       "nome": "algodesign/algodesign",

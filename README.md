@@ -13,7 +13,7 @@ Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'am
 | `ricetta/puntatori/` | L'inventario di quella copia e la prova che la confronta con il commit da cui viene |
 | `ricetta/nucleo/` | Estrae il nucleo di AlgoDesign da un'etichetta fissata (o, fino alla release che lo porta, da un commit fissato), lo verifica per impronta e dichiara la versione del contratto |
 | `extensions/libreria/` | La libreria sopra il nucleo, con sette funzioni: apri, controlla, genera, disegna, segnalazioni, leggi Accademico, aggiungi alla libreria |
-| `collaudo/` | Le prove: della libreria, della conformità al nucleo, del pacchetto dell'estensione che l'unità installa, del codice generato che si esegue nell'unità, e il kit dell'unità col suo gate |
+| `collaudo/` | Le prove: della libreria, della conformità al nucleo, del pacchetto dell'estensione che l'unità installa, del codice generato che si esegue nell'unità, la pagina dei codec di Chromium, e il kit dell'unità col suo gate |
 
 L'estensione per i file `.algo`, che nell'unità è già installata, ha il suo repository: [`gspe65/AlgoDesign-VSCode`](https://github.com/gspe65/AlgoDesign-VSCode).
 
@@ -138,11 +138,11 @@ Che cosa vuol dire per chi lo usa:
 - **Le estensioni sono spente**, e Chromium non si aggiorna: la versione è quella della ricetta.
 - Il lanciatore gli dà un profilo dentro l'unità e apre a ogni avvio la pagina «Chromium in MyDev», che spiega queste cose; la barra degli indirizzi cerca con DuckDuckGo, dalle preferenze iniziali (`ricetta/unita/chromium/`).
 
-Il gate dell'unità apre Chromium dal lanciatore e controlla il profilo, la pagina e le scritture fuori dall'unità, non che cosa Chromium decodifica: quello si misura con una pagina di prova dei codec, a ogni versione nuova di Chromium.
+Il gate dell'unità apre Chromium dal lanciatore e controlla il profilo, la pagina e le scritture fuori dall'unità; poi apre sul `chrome.exe` dell'unità la pagina dei codec (`collaudo/codec/`), che chiede quali formati Chromium sa riprodurre e prova davvero sei campioni, e vuole H.264, H.265 e AAC rifiutati e VP9, AV1 e Opus riprodotti. Il controllo positivo, la stessa pagina sulla release ufficiale di ungoogled-chromium che decodifica H.264, si rifà a ogni versione nuova di Chromium.
 
 **Una scrittura fuori dall'unità, dichiarata.** Ogni Chromium su Windows scrive nel registro, sotto `HKCU\Software\Chromium`, i codici di controllo delle sue impostazioni e lo stato dell'ultima chiusura, e nessuna opzione lo spegne: il gate ammette quelle sole chiavi, misurate, e dà rosso su ogni altra scrittura.
 
-**La FFmpeg**, la libreria che decodifica audio e video (licenza LGPL), in questa versione è collegata dentro `chrome.dll`; un `chrome.dll` con la FFmpeg in un file a parte, `ffmpeg.dll`, è previsto per la `0.3.0`. I sorgenti della FFmpeg e della procedura di costruzione stanno fra quelli che `ricetta/sorgenti.ps1` scarica; per il sorgente completo di Chromium, circa 2 GB, l'indice delle licenze rimanda a quello di Google, alla stessa versione.
+**La FFmpeg**, la libreria che decodifica audio e video (licenza LGPL), è un file a parte, `ffmpeg.dll`, come nell'editor: chi vuole la sostituisce con un'altra costruzione della stessa FFmpeg. La procedura delle corse la separa da `chrome.dll` e la aggiunge all'elenco delle librerie che le pagine possono caricare. I sorgenti della FFmpeg e della procedura di costruzione stanno fra quelli che `ricetta/sorgenti.ps1` scarica.
 
 ## Il corso sui puntatori, nell'estesa
 
