@@ -5,6 +5,7 @@
   "telemetry.telemetryLevel": "off",
   "chat.disableAIFeatures": true,
   "workbench.welcomePage.extraAnnouncements": false,
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
   "security.workspace.trust.enabled": false,
   "basedpyright.analysis.typeCheckingMode": "standard",
   "clangd.arguments": ["--pch-storage=memory"],
