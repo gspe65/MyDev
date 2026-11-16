@@ -3,7 +3,8 @@
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
-# Con -Finestre apre l'editor due volte, tre nell'estesa, e Chromium due volte (dal lanciatore e, per il controllo negativo,
+# Con -Finestre apre l'editor quattro volte, cinque nell'estesa (le ultime due per S-E1, che apre anche la finestra
+# "Salva con nome" di Windows e la preme con Invio solo se e' davanti), e Chromium due volte (dal lanciatore e, per il controllo negativo,
 # senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
 # stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
 # Senza, i percorsi si cercano a file fermi e tracce e ascolti dell'editor non si misurano: l'esito lo dice.
@@ -18,7 +19,8 @@
 # le sonde dello script della lingua), A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il
 # silenzio del lanciatore), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
-# all'avvio, con un controllo negativo senza lanciatore (con le finestre).
+# all'avvio, con un controllo negativo senza lanciatore (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
+# dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -314,6 +316,24 @@ try {
         $MotoreS = $ScritteS -and ([IO.File]::ReadAllText($PrefS, $Utf8).Contains('duckduckgo.com'))
         Scrivi "    sonda: processi accesi $ChromeS; preferenze scritte $ScritteS; pagina dell'unita' $PaginaS; motore della barra $MotoreS; finestre: $($TitoliS -join ' | ')"
         Annota 'A13' 'controllo negativo: senza lanciatore ne'' primo avvio, pagina e motore falsi' $(if ($ChromeS -lt 1 -or $TitoliS.Count -lt 1 -or -not $ScritteS) { 2 } elseif (-not $PaginaS -and -not $MotoreS) { 0 } else { 1 })
+
+        # E1: lo scenario S-E1 dello studente nell'editor dell'unita' (dal flowchart al punto d'arresto, con la finestra
+        # "Salva con nome" vera di Windows), con l'ambiente che il gate da' all'editor, quello del lanciatore. Il flowchart
+        # non e' mai stato aperto: le aperture prima non lo toccano. Poi il controllo positivo: la stessa corsa col pacchetto
+        # della 0.2.0 deve essere rossa al passo 7 (nessuna pagina). I file dello scenario se1.py li toglie dall'unita'.
+        Scrivi '=== E1: lo scenario S-E1 nell''editor dell''unita'''
+        $GitPc = Get-Command git -ErrorAction SilentlyContinue
+        if ($null -eq $GitPc) { Annota 'E1' 'S-E1: git non c''e' 2; Annota 'E1' 'S-E1 controllo positivo: git non c''e' 2 }
+        else {
+            $Se1 = '-X utf8 -B "' + (Join-Path $Kit 'se1.py') + '" --unita "' + $Rad + '" --lavoro "' + (Join-Path $Lav 'se1') + '" --kit "' + $Kit + '" --repo "' + (Split-Path -Parent (Split-Path -Parent $Qui)) + '" --git "' + $GitPc.Source + '"'
+            foreach ($giro in @(@{ Nome = 'se1'; Arg = ''; Cosa = 'S-E1 dalla pagina al punto d''arresto' }, @{ Nome = 'se1-controllo'; Arg = ' --controllo'; Cosa = 'S-E1 controllo positivo: col pacchetto della 0.2.0 rosso al passo 7' })) {
+                $r = Lancia $Py ($Se1 + $giro.Arg) $Ambiente
+                [IO.File]::WriteAllText((Join-Path $Lav ($giro.Nome + '.log')), $r.Testo, $Utf8)
+                foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo)') { Scrivi "    $riga" } }
+                Annota 'E1' $giro.Cosa $r.Uscita
+                Chiudi-Tutto
+            }
+        }
     }
 
     # --- L'ambiente C, dal terminale dell'unita'.
@@ -451,7 +471,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 30 } else { 20 }
+    $Attesi = if ($Finestre) { 32 } else { 20 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
