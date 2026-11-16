@@ -37,7 +37,9 @@ SPECIE = [
     ("stato per cartella", ED + r"user-data/User/workspaceStorage/[^/]+/(workspace\.json|state\.vscdb(\.backup)?)$", "una cartella per percorso aperto"),
     ("stato condiviso", ED + r"shared-data/sharedStorage/state\.vscdb(\.backup)?$", "riscritto all'apertura"),
     ("cronologia dei file", ED + r"user-data/User/History/", "cronologia locale dei file modificati"),
-    ("registro di Chromium", ED + r"user-data/(Session Storage|Local Storage/leveldb|WebStorage/[^/]+/[^/]+|shared_proto_db|Network)/", "contenitori e registri di Chromium"),
+    # Service Worker/Database: la pagina di un'estensione (una webview, come la pagina dei flowchart) registra un service
+    # worker alla prima apertura, e il registro di LevelDB porta il percorso (misurato con lo scenario dello studente).
+    ("registro di Chromium", ED + r"user-data/(Session Storage|Local Storage/leveldb|WebStorage/[^/]+/[^/]+|shared_proto_db|Network|Service Worker/Database)/", "contenitori e registri di Chromium"),
     ("cache di Chromium", ED + r"user-data/(CachedProfilesData|CachedData|Code Cache|GPUCache|Cache|DawnGraphiteCache|DawnWebGPUCache|Crashpad)/", "rigenerata"),
     ("log dell'editor", ED + r"user-data/logs/", "testo dei log"),
     # Misurati su una copia spostata: l'editor riscrive il primo dopo un'apertura in inglese, la seconda mai; li

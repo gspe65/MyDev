@@ -101,6 +101,12 @@ if ($null -ne $d) {
         [void][SE1.D]::SetForegroundWindow($h)
         Start-Sleep -Milliseconds 600
         if ([SE1.D]::GetForegroundWindow() -ne $h) { continue }
+        # Il nome si rilegge subito prima del tasto: misurato nel gate, un tasto battuto da chi lavora sul PC mentre la
+        # finestra prendeva il primo piano e' finito nel campo ("'.c" salvato al posto di "lettura-intero.c"). Se il nome
+        # e' cambiato non si preme nulla: non e' piu' il gesto dello scenario.
+        $ora = Elemento $d 'Edit' '1001'
+        $esito.nomePrimaDelTasto = if ($null -ne $ora) { $ora.Current.Name } else { $null }
+        if ($esito.nomePrimaDelTasto -ne $esito.nome) { $esito.motivo = 'il nome nel campo e'' cambiato mentre la finestra era davanti (un tasto da fuori): nessun tasto, chiusa'; break }
         if ($via -eq 'automazione') {
             $b = Elemento $d 'Button' '1'
             try { if ($null -ne $b) { $b.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke() } } catch { $esito.automazione = $_.Exception.Message }
@@ -111,7 +117,7 @@ if ($null -ne $d) {
         if (& $chiusa) { $esito.premuto = $true; $esito.via = $via }
     }
     if (-not $esito.premuto) {
-        $esito.motivo = 'la finestra di dialogo non si e'' chiusa con "Salva" (o non e'' venuta davanti): chiusa con Annulla'
+        if (-not $esito.Contains('motivo')) { $esito.motivo = 'la finestra di dialogo non si e'' chiusa con "Salva" (o non e'' venuta davanti): chiusa con Annulla' }
         try { $d.GetCurrentPattern([Windows.Automation.WindowPattern]::Pattern).Close() } catch { }
     }
 }
