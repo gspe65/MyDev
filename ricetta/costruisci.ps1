@@ -67,6 +67,9 @@ $NatiDallUso = @(
     'nginx/ssl/',
     'python/Lib/site-packages/',
     'python/Scripts/',
+    # Il Python incorporato in lldb: lldb-dap (il passo passo) all'avvio scrive i __pycache__ dei moduli che carica
+    # (misurato con lo scenario dello studente nel gate: cinque .pyc di encodings/). I file dell'elenco restano controllati.
+    'llvm/python/lib/',
     'msys64/etc/hosts',
     'msys64/etc/mtab',
     'msys64/etc/networks',
