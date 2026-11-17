@@ -188,6 +188,9 @@ def scrivi(repo, commit):
     # La copia si riscrive per intero: i file che il commit non ha piu' si tolgono.
     for rel in sorted(set(leggi_cartella(COPIA)) - set(tenuti)) if COPIA.is_dir() else []:
         (COPIA / rel).unlink()
+    # E le cartelle rimaste senza file, dalla piu' profonda: la prova le segna rosse (git non le conserva).
+    for rel in sorted(vuote(leggi_sottocartelle(COPIA), tenuti), key=lambda d: -d.count("/")) if COPIA.is_dir() else []:
+        (COPIA / rel).rmdir()
     for rel, b in tenuti.items():
         (COPIA / rel).parent.mkdir(parents=True, exist_ok=True)
         (COPIA / rel).write_bytes(b)
