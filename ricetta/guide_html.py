@@ -8,7 +8,8 @@ di `.md` (`progetti/GUIDA-C.md` → `guide/progetti/GUIDA-C.html`); `guide/indic
 scrive nella cartella `guide` dell'unità, che non deve esistere.
 
 Il convertitore è `markdown-it-py` del Python dell'unità: CommonMark con le tabelle, l'HTML nei sorgenti scritto come testo.
-Un nome di guida scritto come codice (`progetti/GUIDA-C.md`) diventa un collegamento alla sua copia. La pagina non chiede
+Un nome di guida scritto come codice (`progetti/GUIDA-C.md`) diventa un collegamento alla sua copia, e così il nome di un
+progetto (`01-ciao`, sotto un titolo `c-comuni/`) porta alla copia del suo `LEGGIMI.md`. La pagina non chiede
 nulla alla rete: lo stile è nel file.
 
 Uscite: 0 verde, 1 rosso (una guida che non si legge come UTF-8, nessuna guida trovata), 2 fermo (la cartella delle copie
@@ -58,7 +59,7 @@ STILE = """
   h3 { font-size: 1.1rem; margin: 1.4rem 0 .5rem; }
   li { margin: .25rem 0; }
   a { color: var(--link); }
-  code { font: .92em Consolas, "Cascadia Mono", monospace; background: var(--riquadro); border: 1px solid var(--bordo); border-radius: 4px; padding: 0 .3em; }
+  code { font: .92em Consolas, "Cascadia Mono", monospace; background: var(--riquadro); border: 1px solid var(--bordo); border-radius: 4px; padding: 0 .3em; overflow-wrap: anywhere; }
   pre { background: var(--riquadro); border: 1px solid var(--bordo); border-radius: 6px; padding: .7rem 1rem; overflow-x: auto; }
   pre code { background: none; border: 0; padding: 0; font-size: .9rem; }
   table { border-collapse: collapse; margin: .8rem 0; display: block; overflow-x: auto; }
@@ -131,14 +132,26 @@ def main():
         token = md.parse(testo)
         titoli[rel] = titolo_di(token, rel)
         qui = posixpath.dirname(copia_di(rel))
-        for t in token:
+        cartella = posixpath.dirname(rel)
+        # Un nome di progetto scritto come codice (`01-ciao`) porta alla guida del progetto: si cerca nella cartella che
+        # l'ultimo titolo nomina come codice (`c-comuni/`), poi accanto alla guida.
+        gruppo = None
+        for i, t in enumerate(token):
+            if t.type == "heading_open":
+                figli = token[i + 1].children or []
+                nomi = [c.content for c in figli if c.type == "code_inline" and c.content.endswith("/")]
+                gruppo = nomi[0].rstrip("/") if nomi else None
             if t.type != "inline" or not t.children:
                 continue
             for c in t.children:
                 if c.type != "code_inline":
                     continue
                 nome = c.content.replace("\\", "/")
-                meta = nome if nome in note else ("progetti/" + nome if "progetti/" + nome in note else None)
+                candidati = [nome, "progetti/" + nome]
+                if gruppo:
+                    candidati.append(posixpath.join(cartella, gruppo, nome, "LEGGIMI.md"))
+                candidati.append(posixpath.join(cartella, nome, "LEGGIMI.md"))
+                meta = next((x for x in candidati if x in note and x != rel), None)
                 if meta:
                     c.meta["collegamento"] = posixpath.relpath(copia_di(meta), qui)
         pagine[rel] = (token, qui)

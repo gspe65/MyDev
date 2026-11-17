@@ -8,12 +8,13 @@ le guide sono `README.md` e i `.md` sotto `progetti/` fuori dalle cartelle `terz
 tranne `guide/indice.html`. Si appaiano nei due versi (una guida senza copia e una copia senza guida sono rosse, per nome);
 per ogni coppia le tabelle e i blocchi di codice si contano nel sorgente con le righe del Markdown (riga d'intestazione più
 riga dei trattini; recinti di tre apici inversi) e nella copia con un lettore dell'HTML (`<table>`, `<pre>`), e devono
-essere uguali. L'indice deve collegare ogni copia, e ogni suo collegamento deve portare a un file; la pagina di Chromium
+essere uguali; ogni collegamento relativo di una copia deve portare a un file dell'elenco. L'indice deve collegare ogni
+copia, e ogni suo collegamento deve portare a un file; la pagina di Chromium
 (`chromium/benvenuto.html`) deve collegare l'indice.
 
 Il verdetto è una funzione sola, attraversata dal dato vero e dalle sonde false in coda: una copia tolta, una copia in
-più, una tabella persa, un blocco di codice perso, un collegamento dell'indice tolto, la pagina di Chromium senza
-l'indice. Ogni sonda deve dare il rosso col proprio nome, e solo quello.
+più, una tabella persa, un blocco di codice perso, un collegamento rotto in una copia, un collegamento dell'indice tolto,
+la pagina di Chromium senza l'indice. Ogni sonda deve dare il rosso col proprio nome, e solo quello.
 
 Che cosa NON guarda: che il testo della copia sia quello del sorgente parola per parola, né l'aspetto della pagina (lo
 guarda un occhio, nel cancello d'usabilità); i blocchi di codice rientrati di quattro spazi e le tabelle senza la riga
@@ -98,7 +99,12 @@ def giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti):
         if c not in copie:
             continue
         s = conta_md(sorgenti[g])
-        h, _ = leggi_html(pagine[c])
+        h, link = leggi_html(pagine[c])
+        for u in link:
+            if re.match(r"[a-z][a-z0-9+.-]*:", u) or u.startswith("#"):
+                continue
+            if posixpath.normpath(posixpath.join(posixpath.dirname(c), u)) not in esistenti:
+                difetti.append(f"collegamento a un file che non c'è: {c} → {u}")
         if s["recinti dispari"]:
             difetti.append(f"recinto di codice non chiuso nel sorgente: {g}")
         for k in ("tabelle", "codice"):
@@ -182,6 +188,9 @@ def main():
                           "copia che l'indice non collega: guide/progetti/in-piu.html"]),
         "tabella persa": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=senza_tabella), f"tabelle diverse: {scelta}"),
         "codice perso": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=senza_codice), f"codice diverse: {scelta}"),
+        "collegamento rotto": (dict(guide=guide, copie=copie, sorgenti=sorgenti,
+                                    pagine={**pag, cs: pag[cs].replace("</main>", '<a href="non-c-e.html">x</a></main>', 1)}),
+                               f"collegamento a un file che non c'è: {cs} → non-c-e.html"),
         "indice senza una copia": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag, indice=tolta_dall_indice),
                                    f"copia che l'indice non collega: {cs}"),
         "Chromium senza l'indice": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
