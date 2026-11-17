@@ -4,7 +4,7 @@
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
 # Con -Finestre apre l'editor quattro volte, cinque nell'estesa (le ultime due per S-E1, che apre anche la finestra
-# "Salva con nome" di Windows e la preme con Invio solo se e' davanti), e Chromium due volte (dal lanciatore e, per il controllo negativo,
+# "Salva con nome" di Windows e la preme: coi tasti solo se e' davanti, col messaggio al pulsante anche dietro), e Chromium due volte (dal lanciatore e, per il controllo negativo,
 # senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
 # stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
 # Senza, i percorsi si cercano a file fermi e tracce e ascolti dell'editor non si misurano: l'esito lo dice.

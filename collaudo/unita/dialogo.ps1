@@ -1,13 +1,13 @@
 # S-E1, passo 11: la finestra "Salva con nome" di Windows aperta dall'editor dell'unita'. La trova fra quelle dei processi
 # dell'unita', ne legge con UI Automation titolo, nome del file e cartella, la fotografa (PrintWindow: solo quella finestra,
-# mai lo schermo) e preme "Salva" con Invio, come lo studente.
+# mai lo schermo) e preme "Salva" con Invio, come lo studente (o con le altre due vie qui sotto).
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File dialogo.ps1 -Unita <radice> -Uscita <file.json> -Foto <file.png> [-Attesa 30]
 #
 # Misurato (Windows 11, novembre 2026): la finestra di dialogo non e' figlia della radice di UI Automation ma della finestra
 # dell'editor che la possiede; il nome del file e' un elemento di classe Edit con l'identificativo 1001 (il suo nome e' il testo),
 # la cartella e' la barra "Indirizzo: <cartella>", e "Salva" e "Annulla" hanno gli identificativi 1 e 2 ma il tipo Pane, non
-# Button. I tasti partono SOLO se la finestra davanti e' quella di dialogo, e "premuto" vuol dire che la finestra si e' chiusa
-# (vedi sotto le tre vie); se no la finestra si chiude ("Annulla") e l'esito lo dice.
+# Button. I tasti partono SOLO se la finestra davanti e' quella di dialogo (il messaggio al pulsante anche dietro), e "premuto"
+# vuol dire che la finestra si e' chiusa (vedi sotto le tre vie); se no la finestra si chiude ("Annulla") e l'esito lo dice.
 #
 # Uscite: 0 premuto (finestra chiusa da "Salva"), 2 non si e' potuto (nessuna finestra, non davanti, non chiusa). Solo ASCII: PowerShell 5.1 legge un .ps1 senza BOM
 # come ANSI. Che cosa NON guarda: le finestre di altri processi; il contenuto della cartella mostrata.
@@ -30,6 +30,7 @@ Add-Type -Namespace SE1 -Name D -MemberDefinition @'
 [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
 [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr h);
 [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+[DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint m, IntPtr w, IntPtr l);
 public struct RECT { public int Left, Top, Right, Bottom; }
 '@
 # Senza, con lo schermo ridimensionato (125%) GetWindowRect da' la finestra ridotta e la foto e' tagliata (misurato).
@@ -93,23 +94,29 @@ if ($null -ne $d) {
     # "Salva", solo con la finestra di dialogo davanti, e premuto vuol dire CHIUSA: misurato, Invio mandato con la finestra
     # davanti puo' non arrivare al pulsante (la seconda finestra della sessione restava aperta, col nome nel campo, e la misura
     # contava "premuto"). Tre vie in fila, ciascuna verificata dalla chiusura: Invio, Alt+S (la lettera sottolineata di "Salva"),
-    # il pulsante con UI Automation. L'esito dice quale.
+    # e il messaggio BM_CLICK al pulsante. L'esito dice quale. Le due vie da tastiera solo con la finestra davanti; il messaggio
+    # no: misurato di notte, senza nessuno al PC, il primo piano resta alla barra delle applicazioni e nessuna finestra nuova
+    # viene davanti (gate FERMO al passo 11), mentre BM_CLICK mandato con PostMessage a una "Salva con nome" vera
+    # DIETRO la chiude e salva (4 su 4). PostMessage e non SendMessage: una seconda domanda di Windows ("Sostituire?") terrebbe
+    # SendMessage appeso. La pressione di UI Automation qui non c'e': il pulsante e' un Pane e risponde "Pattern non supportato".
     $chiusa = { -not [SE1.D]::IsWindow($h) -or -not [SE1.D]::IsWindowVisible($h) }
-    foreach ($via in @('{ENTER}', '%s', 'automazione')) {
+    foreach ($via in @('{ENTER}', '%s', 'messaggio')) {
         if (& $chiusa) { break }
         [SE1.D]::keybd_event(0x12, 0, 0, 0); [SE1.D]::keybd_event(0x12, 0, 2, 0)
         [void][SE1.D]::SetForegroundWindow($h)
         Start-Sleep -Milliseconds 600
-        if ([SE1.D]::GetForegroundWindow() -ne $h) { continue }
+        $davanti = [SE1.D]::GetForegroundWindow() -eq $h
+        $esito.davanti = $davanti
+        if (-not $davanti -and $via -ne 'messaggio') { continue }
         # Il nome si rilegge subito prima del tasto: misurato nel gate, un tasto battuto da chi lavora sul PC mentre la
         # finestra prendeva il primo piano e' finito nel campo ("'.c" salvato al posto di "lettura-intero.c"). Se il nome
         # e' cambiato non si preme nulla: non e' piu' il gesto dello scenario.
         $ora = Elemento $d 'Edit' '1001'
         $esito.nomePrimaDelTasto = if ($null -ne $ora) { $ora.Current.Name } else { $null }
         if ($esito.nomePrimaDelTasto -ne $esito.nome) { $esito.motivo = 'il nome nel campo e'' cambiato mentre la finestra era davanti (un tasto da fuori): nessun tasto, chiusa'; break }
-        if ($via -eq 'automazione') {
+        if ($via -eq 'messaggio') {
             $b = Elemento $d 'Button' '1'
-            try { if ($null -ne $b) { $b.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke() } } catch { $esito.automazione = $_.Exception.Message }
+            if ($null -ne $b) { $esito.messaggio = [SE1.D]::PostMessage([IntPtr]$b.Current.NativeWindowHandle, 0x00F5, [IntPtr]::Zero, [IntPtr]::Zero) }
         }
         else { (New-Object -ComObject WScript.Shell).SendKeys($via) }
         $t3 = Get-Date
