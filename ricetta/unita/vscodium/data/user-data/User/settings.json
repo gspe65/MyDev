@@ -6,6 +6,7 @@
   "chat.disableAIFeatures": true,
   "workbench.welcomePage.extraAnnouncements": false,
   "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "workbench.editorAssociations": { "*.md": "vscode.markdown.preview.editor" },
   "security.workspace.trust.enabled": false,
   "basedpyright.analysis.typeCheckingMode": "standard",
   "clangd.arguments": ["--pch-storage=memory"],

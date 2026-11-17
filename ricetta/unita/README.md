@@ -25,6 +25,7 @@ L'editor va aperto da qui, non da `vscodium\VSCodium.exe`: il collegamento gli d
 
 I menu dell'editor sono in italiano; qualche voce recente, soprattutto della chat, resta in inglese, perché l'ultimo pacchetto della lingua italiana è di qualche versione prima dell'editor. I comandi valgono per la cartella **del file aperto**: prima apri un sorgente del progetto, per esempio `main.c`, poi lancia il comando.
 
+- **▶ Compila ed esegui** e **Passo passo**, nella barra in basso e in alto a destra con un file `.c` aperto, sono la strada più breve: compilano col `Makefile` della cartella, se c'è, se no il solo file aperto, ed eseguono il programma nel terminale «Programma C», dove scrivi quello che il programma chiede. «Passo passo» si ferma all'inizio di `main`, o ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. Sui progetti di `c-processi` «Passo passo» non funziona, e lo dice: lì usa F5 con «Debug con gcc».
 - **Ctrl+Maiusc+B** compila con `gcc`. Gli errori compaiono nel pannello **Problemi**, sulla riga giusta.
 - Dal menu **Terminale → Esegui attività…** (se la finestra è stretta, **Terminale** sta sotto **···**) trovi gli altri comandi: «Compila con clang», «Esegui il programma gcc», «Esegui il programma clang» e i quattro comandi «ASan», che compilano ed eseguono con e senza il controllo degli errori di memoria. Ogni «Esegui» compila prima. I comandi «ASan» compilano il solo file aperto, non tutti i sorgenti del progetto.
 - **F5** avvia il debug. Nella vista **Esegui con debug** scegli «Debug con gcc» o «Debug con clang»: il programma si compila e si ferma ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. F5 usa poi l'ultima scelta.
@@ -37,13 +38,16 @@ Si può lavorare anche solo dal terminale, con `make`: lo spiega la guida al C.
 
 ## Le guide
 
+Le guide sono i file `.md` dell'unità. In VSCodium si aprono come pagina: per modificarne una, «Apri file di origine» (l'icona in alto a destra) mostra il testo. Le stesse guide, come pagine web, stanno nella cartella `guide`: `guide\indice.html` le elenca tutte, e la pagina che Chromium apre all'avvio porta lì.
+
 - `progetti/GUIDA-C.md`: il C da zero, i due compilatori, i processi e i thread, e la mappa dei progetti.
 - `progetti/Avvio-C.md`: i comandi essenziali, in breve.
 - Nell'unità estesa, `progetti/GUIDA-ESTESA.md`: Rust, `git` e `gh`. Per Rust i comandi dell'editor sono «Cargo: compila», «Cargo: esegui», «Cargo: clippy» e «Cargo: formatta», e il debug è «Debug Rust», con un sorgente del progetto aperto.
+- Ogni progetto ha il suo `LEGGIMI.md`, con che cosa fa e come provarlo.
 
 ## I file `.algo`
 
-VSCodium riconosce i file di AlgoDesign dall'icona. Con un file `.algo` aperto, il comando «Mostra il codice generato» (Ctrl+Maiusc+P, poi il nome del comando) mostra in sola lettura il codice del flowchart. Il linguaggio e la lingua si scelgono nelle impostazioni `algo.linguaggio` e `algo.lingua`.
+Aprendo un file `.algo` di AlgoDesign, VSCodium mostra la pagina del flowchart: il disegno, una scheda per ogni funzione, gli errori e gli avvisi di AlgoDesign e, a destra, il codice generato. Il codice si sceglie sulla pagina, con «Linguaggio» (Pseudocodice, Python o C) e «Lingua»; «Salva il codice come…» lo salva accanto al flowchart, pronto da compilare. La pagina non modifica il flowchart: lo si cambia in AlgoDesign, e quando lo salvi la pagina si aggiorna da sola. «Apri come testo» mostra il contenuto del file così com'è.
 
 ## Il browser Chromium
 
