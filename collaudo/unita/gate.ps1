@@ -20,7 +20,9 @@
 # silenzio del lanciatore), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
 # all'avvio, con un controllo negativo senza lanciatore, e la pagina dei codec sul suo chrome.exe (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
-# dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre).
+# dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre), E6 le guide
+# leggibili (ogni guida .md nostra con la sua copia HTML in guide, tabelle e blocchi di codice uguali, l'indice e la pagina
+# di Chromium che lo collega, con le sonde del verdetto).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
@@ -425,6 +427,8 @@ try {
     $null = Passo 'A9' 'insieme-sonde' $Py ($Ins + ' --sonde')
     # --- A7: le sonde dello script della lingua dell'unita' (il verdetto sulla cache e la forma dei percorsi).
     $null = Passo 'A7' 'lingua-sonde' $Py ('-I -B "' + (Join-Path $Rad 'vscodium\lingua.py') + '" --sonde')
+    # --- E6: le guide leggibili. Le guide e le copie sono quelle di unita-file.txt (la costruzione), le sonde nello script.
+    $null = Passo 'E6' 'guide' $Py ('-X utf8 -B "' + (Join-Path $Kit 'guide.py') + '" "' + $Rad + '"')
 
     # --- U17: le licenze. Il generatore legge la ricetta, quindi gira dal repository e non dalla copia del kit.
     Scrivi '=== U17: licenze'
@@ -482,7 +486,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 34 } else { 20 }
+    $Attesi = if ($Finestre) { 35 } else { 21 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }

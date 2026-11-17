@@ -17,7 +17,7 @@
   h2 { font-size: 1.15rem; margin: .8rem 0 .4rem; }
   ul { padding-left: 1.2rem; margin: .3rem 0; }
   li { margin: .25rem 0; }
-  code { font: .92em Consolas, monospace; background: var(--sfondo); border: 1px solid var(--bordo); border-radius: 4px; padding: 0 .3em; }
+  code { font: .92em Consolas, monospace; background: var(--sfondo); border: 1px solid var(--bordo); border-radius: 4px; padding: 0 .3em; overflow-wrap: anywhere; }
   a { color: var(--link); }
   .piede { color: var(--tenue); font-size: .92rem; margin-top: 1.5rem; }
 </style>
@@ -26,6 +26,15 @@
 <main>
 <h1>Chromium in MyDev</h1>
 <p class="sotto">Questa pagina si apre ogni volta che avvii Chromium da <code>Chromium.exe</code>. Le schede nuove restano vuote.</p>
+
+<section>
+<h2>Le guide</h2>
+<ul>
+<li><a href="../guide/README.html">La guida dell'unità</a>: tutti gli strumenti, dove restano i tuoi file e che cosa manca.</li>
+<li><a href="../guide/indice.html">Tutte le guide</a>: la guida al C, i comandi essenziali e la guida di ogni progetto.</li>
+</ul>
+<p>Sono le copie delle guide <code>.md</code> della cartella dell'unità, fatte quando l'unità è stata costruita.</p>
+</section>
 
 <section>
 <h2>Cercare</h2>
@@ -51,12 +60,6 @@
 <li><strong>Chi riceve una copia della cartella riceve anche quelli.</strong> Prima di dare l'unità ad altri, togli dalla copia la cartella <code>home</code>.</li>
 <li>I file che scarichi finiscono nella cartella <strong>Download</strong> di Windows, come con ogni browser.</li>
 </ul>
-</section>
-
-<section>
-<h2>La guida completa</h2>
-<p>La guida dell'unità spiega tutti gli strumenti, dove restano i tuoi file e che cosa manca: è il file <a href="../README.md"><code>README.md</code></a> nella cartella dell'unità.</p>
-<p>Qui si apre come testo semplice, con i segni della formattazione. Si legge meglio nell'editor: aprilo in VSCodium e premi <strong>Ctrl+Maiusc+V</strong>.</p>
 </section>
 
 <p class="piede">Questa pagina sta nell'unità e si apre senza rete.</p>

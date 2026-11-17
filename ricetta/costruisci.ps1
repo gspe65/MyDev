@@ -450,6 +450,11 @@ try {
         if ($r.Uscita -ne 0) { Rosso "$($v.nome): fusione non riuscita, uscita $($r.Uscita): $($r.Testo)" }
         Scrivi $r.Testo.Trim()
     }
+    # Le guide leggibili: la copia HTML di ogni guida nostra in Markdown, nella cartella guide, scritta dal convertitore
+    # col Python dell'unita' (markdown-it-py e' una voce dell'elenco). Dopo i file nostri, che portano le guide.
+    $r = Lancia (Unisci $Dest 'python/python.exe') ('-I -B ' + (Virgolette (Unisci $Repo 'ricetta/guide_html.py')) + ' ' + (Virgolette $Dest)) $null
+    if ($r.Uscita -ne 0) { Rosso "guide in HTML non scritte, uscita $($r.Uscita): $($r.Testo)" }
+    Scrivi $r.Testo.Trim()
     $Mancanti = @($Dati.nostri | Where-Object { $_.stato -eq 'da scrivere' })
     Scrivi ("file nostri ancora da scrivere: $($Mancanti.Count): " + (($Mancanti | ForEach-Object { $_.nome }) -join ', '))
     # La lingua dell'editor: senza languagepacks.json la prima apertura sarebbe in inglese. Lo stesso script lo
