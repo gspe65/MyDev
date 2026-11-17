@@ -1,6 +1,6 @@
 {
  "formato": 1,
- "commit": "326b2b5eea727c9f91d586e8f2653cef22752df5",
+ "commit": "3111979583e88d9800f8cba40f80f1bad7e99fc7",
  "cartella": "progetti/puntatori/codice",
  "esclusi": {
   ".gitattributes": "regola di fine riga del repository del corso",
@@ -305,9 +305,9 @@
   },
   {
    "percorso": "esempi/lez00/misure.mydev.txt",
-   "byte": 783,
-   "sha256": "a0c8e0f8ad6e2377fd3c3589e110bded40d699686bae7d2ac2526c9fb5602a14",
-   "blob": "140fedffca37975b0dff3a07c3bd4f27d419f1c8"
+   "byte": 758,
+   "sha256": "74083741dba44d221c5c16dcb00016222944410284107e36073e541f5bc5e137",
+   "blob": "2a56f8694a046ec484952f3f8ee5856e9b180606"
   },
   {
    "percorso": "esempi/lez00/misure.windows.txt",
@@ -1685,15 +1685,15 @@
   },
   {
    "percorso": "strumenti/verifica.py",
-   "byte": 16724,
-   "sha256": "1bea01ec00590112c7c67920ab1be04d6565ce153fceb2a614484844d5782b6f",
-   "blob": "e6a1ffca95b631eccb2f8c7f5c0af816512f61bc"
+   "byte": 16730,
+   "sha256": "b1ebcb35f67bf8646751e4744461cb2d5436626d73544fbdf189158316cdb241",
+   "blob": "3100c98e908f7e7de9db71b3d0316a759b59b56d"
   },
   {
    "percorso": "strumenti/verifica_esempi.py",
-   "byte": 18743,
-   "sha256": "194caa4f4ddf66bb50d60a3abd084109fcf7d34e9228ef627735e62b5ac3a8ea",
-   "blob": "cf9cbf36fbb005316288af63b5e5a1f8f24cac40"
+   "byte": 18763,
+   "sha256": "12cf36427b86b7e58605298c427224b6ba062b8bca0029fd354f2cde27498fc8",
+   "blob": "5517bfa1648d652384c4f9a929d39ad9dadfa538"
   },
   {
    "percorso": "terzi/sds/LICENSE",

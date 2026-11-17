@@ -12,6 +12,11 @@
 # - le chiavi di blocco nelle impostazioni dell'editor e la scheda video spenta in argv.json (senza, H.264 e H.265 si
 #   decodificano dalla scheda video), coi valori scritti qui (non letti dalla ricetta), con sonde che alterano una
 #   chiave e devono dare rosso.
+# Le sonde della scansione passano per le stesse funzioni del dato vero, su un albero finto in una cartella temporanea
+# del sistema (mai nell'unita'), tolta alla fine: un file col nome di uno tolto, la cartella dell'autenticazione, una
+# copia di un programma dell'unita' che nomina Microsoft sotto un altro percorso (senza voce), le voci dell'elenco
+# senza i loro file, un nome con vsce-sign, un product.json con le due chiavi, un ffmpeg.dll diverso e uno assente.
+# Ciascuna deve far comparire il suo rosso, cercato per nome; una che non si accende e' un fermo.
 #
 # Uscite: 0 verde, 1 rosso (nomina i file), 2 fermo (non si e' potuto misurare).
 #
@@ -19,7 +24,8 @@
 # - i file senza voci di versione che non hanno un nome noto: un programma proprietario che non le ha passa;
 # - la licenza dei file che non nominano Microsoft;
 # - che cosa l'editor decodifica: lo dice la pagina dei codec aperta nell'editor, non un file fermo;
-# - che l'editor si comporti come dicono le chiavi: si guarda che ci siano, coi valori del blocco.
+# - che l'editor si comporti come dicono le chiavi: si guarda che ci siano, coi valori del blocco;
+# - il ramo vsce-sign del .vsix: nessuna sonda lo attraversa.
 
 [CmdletBinding()]
 param(
@@ -57,6 +63,123 @@ $Dichiarati = @{
     "$Lettura/netstd/microsoft.powershell.psreadline.polyfiller.dll"         = 'PSReadLine: BSD-2-Clause, testo in ThirdPartyNotices.txt'
 }
 
+# La scansione di una base (con la barra finale), uguale per l'unita' e per le sonde: i rossi FILE NOTO, CARTELLA NOTA,
+# SENZA VOCE, VOCE SENZA FILE e VSCE-SIGN, coi conteggi.
+function Scansiona([string]$Base, [bool]$Stampa) {
+    $n = $Base.Length
+    $err = New-Object Collections.Generic.List[string]
+    $totale = 0
+    $programmi = 0
+    $visti = @{}
+    foreach ($f in [IO.Directory]::EnumerateFiles($Base, '*', [IO.SearchOption]::AllDirectories)) {
+        $totale++
+        $rel = $f.Substring($n).Replace('\', '/').ToLowerInvariant()
+        $nome = [IO.Path]::GetFileName($rel)
+        if ($FileNoti -contains $nome) { $err.Add("FILE NOTO: $rel") }
+        foreach ($c in $CartelleNote) { if ($rel.StartsWith($c)) { $err.Add("CARTELLA NOTA: $rel") } }
+        $s = [IO.File]::OpenRead($f)
+        try { $b0 = $s.ReadByte(); $b1 = $s.ReadByte() } finally { $s.Dispose() }
+        if ($b0 -ne 0x4D -or $b1 -ne 0x5A) { continue }
+        $programmi++
+        $i = [Diagnostics.FileVersionInfo]::GetVersionInfo($f)
+        if ("$($i.CompanyName) $($i.LegalCopyright) $($i.ProductName)" -match 'Microsoft') {
+            $visti[$rel] = 1
+            if ($Stampa) { Scrivi "microsoft: $rel | $($i.CompanyName) | $($i.LegalCopyright) | $($i.FileDescription)" }
+            if (-not $Dichiarati.ContainsKey($rel)) { $err.Add("SENZA VOCE: $rel") }
+        }
+    }
+    foreach ($k in $Dichiarati.Keys) { if (-not $visti.ContainsKey($k)) { $err.Add("VOCE SENZA FILE: $k") } }
+    $firma = 0
+    foreach ($f in [IO.Directory]::EnumerateFileSystemEntries($Base, '*', [IO.SearchOption]::AllDirectories)) {
+        if ($f -match 'vsce-sign') { $firma++; $err.Add("VSCE-SIGN: $($f.Substring($n))") }
+    }
+    return @{ Errori = $err; Totale = $totale; Programmi = $programmi; Visti = $visti; Firma = $firma }
+}
+
+function LeggiJson([string]$file) {
+    return [IO.File]::ReadAllText($file, (New-Object Text.UTF8Encoding($false))) | ConvertFrom-Json
+}
+
+# Le chiavi di aggiornamento in un product.json letto: un rosso CHIAVE per ciascuna.
+function ChiaviTrovate($prodotto) {
+    $l = New-Object Collections.Generic.List[string]
+    foreach ($c in $ChiaviVietate) { if ($null -ne $prodotto.PSObject.Properties[$c]) { $l.Add("CHIAVE: $c") } }
+    return , $l
+}
+
+# ffmpeg.dll nella cartella dell'editor data: un rosso FFMPEG se manca o non e' quello libero.
+function FfmpegRotto([string]$cartella, [bool]$Stampa) {
+    $l = New-Object Collections.Generic.List[string]
+    $ff = Join-Path $cartella 'ffmpeg.dll'
+    if (-not [IO.File]::Exists($ff)) { $l.Add('FFMPEG: manca vscodium/ffmpeg.dll (senza, la finestra dell''editor non parte)') }
+    else {
+        $h = (Get-FileHash -LiteralPath $ff -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($Stampa) { Scrivi "ffmpeg.dll: sha256 $h, atteso quello libero $FfmpegLibero" }
+        if ($h -ne $FfmpegLibero) { $l.Add("FFMPEG: vscodium/ffmpeg.dll non e' quello coi soli codec liberi ($h)") }
+    }
+    return , $l
+}
+
+# Il verdetto sulle chiavi, uguale per il dato vero e per le sonde.
+function BloccoRotto($impostazioni, $attese) {
+    $rotte = New-Object Collections.Generic.List[string]
+    foreach ($k in $attese.Keys) {
+        $p = $impostazioni.PSObject.Properties[$k]
+        if ($null -eq $p) { $rotte.Add("IMPOSTAZIONE ASSENTE: $k") }
+        elseif ($p.Value -ne $attese[$k] -or $p.Value.GetType() -ne $attese[$k].GetType()) { $rotte.Add("IMPOSTAZIONE: $k = $($p.Value), attesa $($attese[$k])") }
+    }
+    return , $rotte
+}
+
+# Le sonde della scansione, di product.json e di ffmpeg.dll: un albero finto in una cartella temporanea del sistema,
+# tolta alla fine. Ogni sonda e' il rosso esatto che deve comparire una volta sola tra quelli dell'albero finto.
+# $Microsoft e' un programma dell'unita' che nomina Microsoft (relativo, come la scansione lo vede): la sua copia sotto
+# un altro percorso e' il programma senza voce. Senza, quella sonda resta spenta.
+function SondeScansione([string]$Radice, $Microsoft) {
+    $tmp = Join-Path ([IO.Path]::GetTempPath()) ('mydev-editor-sonde-' + [guid]::NewGuid().ToString('N'))
+    try {
+        $editor = Join-Path $tmp 'vscodium'
+        $app = Join-Path $editor 'resources\app'
+        foreach ($d in @((Join-Path $tmp 'sonda'), (Join-Path $app 'extensions\microsoft-authentication'), (Join-Path $tmp 'senza-ffmpeg'))) {
+            $null = [IO.Directory]::CreateDirectory($d)
+        }
+        $Utf8 = New-Object Text.UTF8Encoding($false)
+        [IO.File]::WriteAllText((Join-Path $tmp 'sonda\dbghelp.dll'), 'sonda', $Utf8)
+        [IO.File]::WriteAllText((Join-Path $app 'extensions\microsoft-authentication\package.json'), '{}', $Utf8)
+        [IO.File]::WriteAllText((Join-Path $tmp 'sonda\vsce-sign.exe'), 'sonda', $Utf8)
+        [IO.File]::WriteAllText((Join-Path $app 'product.json'), '{"nameShort": "sonda", "updateUrl": "u", "extensionsGallery": {}}', $Utf8)
+        [IO.File]::WriteAllText((Join-Path $editor 'ffmpeg.dll'), 'sonda', $Utf8)
+        if ($Microsoft) { Copy-Item -LiteralPath (Join-Path $Radice $Microsoft.Replace('/', '\')) -Destination (Join-Path $tmp 'sonda\senza-voce.dll') }
+        $voce = @($Dichiarati.Keys | Sort-Object)[0]
+
+        $finti = New-Object Collections.Generic.List[string]
+        foreach ($x in (Scansiona ($tmp + '\') $false).Errori) { $finti.Add($x) }
+        foreach ($x in (ChiaviTrovate (LeggiJson (Join-Path $app 'product.json')))) { $finti.Add($x) }
+        foreach ($x in (FfmpegRotto $editor $false)) { $finti.Add($x) }
+        foreach ($x in (FfmpegRotto (Join-Path $tmp 'senza-ffmpeg') $false)) { $finti.Add($x) }
+
+        $sonde = [ordered]@{
+            'FILE NOTO'          = 'FILE NOTO: sonda/dbghelp.dll'
+            'CARTELLA NOTA'      = 'CARTELLA NOTA: vscodium/resources/app/extensions/microsoft-authentication/package.json'
+            'SENZA VOCE'         = 'SENZA VOCE: sonda/senza-voce.dll'
+            'VOCE SENZA FILE'    = "VOCE SENZA FILE: $voce"
+            'VSCE-SIGN'          = 'VSCE-SIGN: sonda\vsce-sign.exe'
+            'CHIAVE updateUrl'   = 'CHIAVE: updateUrl'
+            'CHIAVE extensionsGallery' = 'CHIAVE: extensionsGallery'
+            'FFMPEG diverso'     = 'FFMPEG: vscodium/ffmpeg.dll non e'' quello coi soli codec liberi (*)'
+            'FFMPEG assente'     = 'FFMPEG: manca vscodium/ffmpeg.dll (senza, la finestra dell''editor non parte)'
+        }
+        $spente = New-Object Collections.Generic.List[string]
+        foreach ($k in $sonde.Keys) {
+            if (@($finti | Where-Object { $_ -like $sonde[$k] }).Count -ne 1) { $spente.Add($k) }
+        }
+        return @{ Totale = $sonde.Count; Spente = $spente; Finti = $finti.Count }
+    }
+    finally {
+        if ([IO.Directory]::Exists($tmp)) { Remove-Item -LiteralPath $tmp -Recurse -Force }
+    }
+}
+
 try {
     $Radice = [IO.Path]::GetFullPath($Unita).TrimEnd('\')
     $Editor = Join-Path $Radice 'vscodium'
@@ -64,37 +187,11 @@ try {
     $Errori = New-Object Collections.Generic.List[string]
 
     # Alla radice di un disco $Radice e' E:, che per l'enumerazione e' la cartella corrente del disco: si rimette la barra.
-    $Base = $Radice + '\'
-    $n = $Base.Length
-    $Totale = 0
-    $Programmi = 0
-    $Visti = @{}
-    foreach ($f in [IO.Directory]::EnumerateFiles($Base, '*', [IO.SearchOption]::AllDirectories)) {
-        $Totale++
-        $rel = $f.Substring($n).Replace('\', '/').ToLowerInvariant()
-        $nome = [IO.Path]::GetFileName($rel)
-        if ($FileNoti -contains $nome) { $Errori.Add("FILE NOTO: $rel") }
-        foreach ($c in $CartelleNote) { if ($rel.StartsWith($c)) { $Errori.Add("CARTELLA NOTA: $rel") } }
-        $s = [IO.File]::OpenRead($f)
-        try { $b0 = $s.ReadByte(); $b1 = $s.ReadByte() } finally { $s.Dispose() }
-        if ($b0 -ne 0x4D -or $b1 -ne 0x5A) { continue }
-        $Programmi++
-        $i = [Diagnostics.FileVersionInfo]::GetVersionInfo($f)
-        if ("$($i.CompanyName) $($i.LegalCopyright) $($i.ProductName)" -match 'Microsoft') {
-            $Visti[$rel] = 1
-            Scrivi "microsoft: $rel | $($i.CompanyName) | $($i.LegalCopyright) | $($i.FileDescription)"
-            if (-not $Dichiarati.ContainsKey($rel)) { $Errori.Add("SENZA VOCE: $rel") }
-        }
-    }
-    foreach ($k in $Dichiarati.Keys) { if (-not $Visti.ContainsKey($k)) { $Errori.Add("VOCE SENZA FILE: $k") } }
-    Scrivi "unita': file $Totale, programmi e librerie $Programmi, che nominano Microsoft $($Visti.Count), voci dichiarate $($Dichiarati.Count)"
-    if ($Programmi -eq 0) { Fermo "nessun programma trovato sotto $Radice" }
-
-    $NomiFirma = 0
-    foreach ($f in [IO.Directory]::EnumerateFileSystemEntries($Base, '*', [IO.SearchOption]::AllDirectories)) {
-        if ($f -match 'vsce-sign') { $NomiFirma++; $Errori.Add("VSCE-SIGN: $($f.Substring($n))") }
-    }
-    Scrivi "nomi con vsce-sign nell'unita': $NomiFirma"
+    $S = Scansiona ($Radice + '\') $true
+    foreach ($x in $S.Errori) { $Errori.Add($x) }
+    Scrivi "unita': file $($S.Totale), programmi e librerie $($S.Programmi), che nominano Microsoft $($S.Visti.Count), voci dichiarate $($Dichiarati.Count)"
+    if ($S.Programmi -eq 0) { Fermo "nessun programma trovato sotto $Radice" }
+    Scrivi "nomi con vsce-sign nell'unita': $($S.Firma)"
     if ($Vsix) {
         if (-not [IO.File]::Exists($Vsix)) { Fermo "manca $Vsix" }
         Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -111,37 +208,20 @@ try {
 
     $Prodotto = Join-Path $Editor 'resources\app\product.json'
     if (-not [IO.File]::Exists($Prodotto)) { Fermo "manca $Prodotto" }
-    $d = [IO.File]::ReadAllText($Prodotto, (New-Object Text.UTF8Encoding($false))) | ConvertFrom-Json
+    $d = LeggiJson $Prodotto
     Scrivi "product.json: chiavi $(@($d.PSObject.Properties).Count)"
-    foreach ($c in $ChiaviVietate) { if ($null -ne $d.PSObject.Properties[$c]) { $Errori.Add("CHIAVE: $c") } }
+    foreach ($x in (ChiaviTrovate $d)) { $Errori.Add($x) }
 
-    $Ff = Join-Path $Editor 'ffmpeg.dll'
-    if (-not [IO.File]::Exists($Ff)) { $Errori.Add('FFMPEG: manca vscodium/ffmpeg.dll (senza, la finestra dell''editor non parte)') }
-    else {
-        $h = (Get-FileHash -LiteralPath $Ff -Algorithm SHA256).Hash.ToLowerInvariant()
-        Scrivi "ffmpeg.dll: sha256 $h, atteso quello libero $FfmpegLibero"
-        if ($h -ne $FfmpegLibero) { $Errori.Add("FFMPEG: vscodium/ffmpeg.dll non e' quello coi soli codec liberi ($h)") }
-    }
+    foreach ($x in (FfmpegRotto $Editor $true)) { $Errori.Add($x) }
 
-    # Il verdetto sulle chiavi, uguale per il dato vero e per le sonde.
-    function BloccoRotto($impostazioni, $attese) {
-        $rotte = New-Object Collections.Generic.List[string]
-        foreach ($k in $attese.Keys) {
-            $p = $impostazioni.PSObject.Properties[$k]
-            if ($null -eq $p) { $rotte.Add("IMPOSTAZIONE ASSENTE: $k") }
-            elseif ($p.Value -ne $attese[$k] -or $p.Value.GetType() -ne $attese[$k].GetType()) { $rotte.Add("IMPOSTAZIONE: $k = $($p.Value), attesa $($attese[$k])") }
-        }
-        return , $rotte
-    }
     $FileImp = Join-Path $Editor 'data\user-data\User\settings.json'
     if (-not [IO.File]::Exists($FileImp)) { Fermo "manca $FileImp" }
-    $TestoImp = [IO.File]::ReadAllText($FileImp, (New-Object Text.UTF8Encoding($false)))
-    $Imp = $TestoImp | ConvertFrom-Json
+    $Imp = LeggiJson $FileImp
     foreach ($x in (BloccoRotto $Imp $Blocco)) { $Errori.Add($x) }
     Scrivi "impostazioni del blocco: $($Blocco.Count) chiavi controllate"
     $FileArgv = Join-Path $Editor 'data\argv.json'
     if (-not [IO.File]::Exists($FileArgv)) { Fermo "manca $FileArgv" }
-    $ArgvLetto = [IO.File]::ReadAllText($FileArgv, (New-Object Text.UTF8Encoding($false))) | ConvertFrom-Json
+    $ArgvLetto = LeggiJson $FileArgv
     foreach ($x in (BloccoRotto $ArgvLetto $Argv)) { $Errori.Add("argv.json: $x") }
     Scrivi "argv.json: $($Argv.Count) chiavi controllate"
     # Tre sonde, una per modo (valore, tipo, chiave assente): ciascuna si controlla col nome che ha alterato, non col
@@ -160,12 +240,18 @@ try {
     $Sonda = '{"locale": "it", "disable-hardware-acceleration": false}' | ConvertFrom-Json
     if (@(BloccoRotto $Sonda $Argv | Where-Object { $_ -match ': disable-hardware-acceleration( |$)' }).Count -eq 1) { $Accese++ }
     Scrivi "sonde delle impostazioni: $Accese accese su 4 (valore, tipo, chiave assente, scheda video riaccesa)"
-    $SondeSpente = $Accese -ne 4
+
+    $Microsoft = @($S.Visti.Keys | Sort-Object | Select-Object -First 1)
+    $Ss = SondeScansione $Radice $(if ($Microsoft.Count -gt 0) { $Microsoft[0] } else { $null })
+    $AcceseScan = $Ss.Totale - $Ss.Spente.Count
+    Scrivi "sonde della scansione: $AcceseScan accese su $($Ss.Totale) (FILE NOTO, CARTELLA NOTA, SENZA VOCE, VOCE SENZA FILE, VSCE-SIGN, CHIAVE due, FFMPEG diverso e assente), rossi dell'albero finto $($Ss.Finti)"
+    foreach ($k in $Ss.Spente) { Scrivi "SONDA SPENTA: $k" }
 
     Scrivi "errori: $($Errori.Count)"
     $Errori | Sort-Object | ForEach-Object { Scrivi "  $_" }
     # Gli errori si stampano anche quando una sonda e' spenta: il fermo non nasconde la chiave guasta.
-    if ($SondeSpente) { Fermo "una sonda delle impostazioni non si e' accesa: il verdetto sulle chiavi non e' provato" }
+    if ($Accese -ne 4) { Fermo "una sonda delle impostazioni non si e' accesa: il verdetto sulle chiavi non e' provato" }
+    if ($Ss.Spente.Count -gt 0) { Fermo "una sonda della scansione non si e' accesa ($($Ss.Spente -join ', ')): quel rosso non e' provato" }
     if ($Errori.Count -gt 0) {
         Scrivi 'ESITO: ROSSO'
         exit 1

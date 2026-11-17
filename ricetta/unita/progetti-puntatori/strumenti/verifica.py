@@ -1,7 +1,7 @@
 """Verifica la specifica, i file di prova e il codice C dell'archivio.
 
-Uso, dalla radice del repository:
-    python -B progetti/puntatori/codice/strumenti/verifica.py
+Uso, dalla cartella del codice del corso (lo script trova i file da dove sta):
+    python -B strumenti/verifica.py
 
 Che cosa controlla:
   A. Specifica contro file di prova, nei due versi: ogni comando e ogni risposta
@@ -25,9 +25,9 @@ Che cosa NON guarda (uno zero qui vale solo per cio' che sta sopra):
     confronta con il programma, non con un modello indipendente;
   - se il codice usa solo cio' che gli alunni hanno gia' visto: si rilegge a mano;
   - le perdite che il contatore non conta: una free tolta dentro libera lascia i
-    conteggi uguali, e su Windows ASan non vede le perdite. Le vede
-    verifica-linux.sh, nella macchina del corso;
-  - il comportamento su Linux, che controlla lo stesso verifica-linux.sh.
+    conteggi uguali, e su Windows ASan non vede le perdite. Le vede la
+    verifica su Linux del corso;
+  - il comportamento su Linux, che controlla la stessa verifica su Linux.
 """
 
 import os

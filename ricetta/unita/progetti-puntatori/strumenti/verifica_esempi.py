@@ -1,7 +1,7 @@
 """Verifica il banco degli esempi delle lezioni, su Windows e su Linux.
 
-Uso, dalla radice del repository:
-    python -B progetti/puntatori/codice/strumenti/verifica_esempi.py
+Uso, dalla cartella del codice del corso (lo script trova i file da dove sta):
+    python -B strumenti/verifica_esempi.py
 
 Ogni esempio in esempi/lezNN/ ha una riga in esempi/ESITI.txt:
     percorso | tipo | atteso
@@ -37,7 +37,7 @@ Che cosa controlla inoltre:
 Che cosa NON guarda (uno zero qui vale solo per cio' che sta sopra):
   - se l'esempio insegna quel che deve, o usa solo cio' che gli alunni hanno gia'
     visto: si rilegge a mano;
-  - se i materiali citano davvero questi file: lo controllera' C6.
+  - se i materiali citano davvero questi file: si controlla a mano.
 """
 
 import os

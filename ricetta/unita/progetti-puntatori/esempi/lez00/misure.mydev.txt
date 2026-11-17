@@ -3,7 +3,7 @@ unita 0.1.0 estesa
 rustc rustc 1.99.1 (58cf8f9c3 2026-10-13) (Rev2, Built by MSYS2 project)
 host_rustc x86_64-pc-cygwin
 linker_rustc x86_64-pc-cygwin-gcc
-linker_clang C:/MyDev-estesa/llvm/bin/ld.lld
+linker_clang ld.lld
 clang clang version 23.1.0 (https://github.com/llvm/llvm-project.git ea7d852a70e8bdfaf601d6626a760f9771b2c4b4)
 gcc gcc (GCC) 15.3.0
 gcc_macchina x86_64-pc-cygwin

@@ -8,10 +8,8 @@ Legge i byte di ogni file, per blocchi, senza distinguere maiuscole. Cerca:
 Ogni forma e' cercata con le barre delle due specie, raddoppiate e codificate per URL; in UTF-16 tutte tranne quelle
 codificate per URL (un indirizzo codificato e' testo in UTF-8).
 
-Un file con un colpo deve stare in una specie di SPECIE, col suo motivo; uno senza specie e' un rosso.
-Una specie di NOMINATE vale per un solo file e per una sola occorrenza scritta per intero: il file vi sta solo se,
-tolta quell'occorrenza, non resta nessun colpo; lo stesso testo in un altro file, o un altro colpo nello stesso file,
-e' un rosso.
+Un file con un colpo deve stare in una specie di SPECIE, col suo motivo; uno senza specie e' un rosso. Nessun dato
+copiato da altri repository e' ammesso per nome: un percorso assoluto in un dato copiato si corregge alla fonte.
 Con --usata l'editor deve essere stato aperto: i file di VERI devono avere il colpo, o il rilevatore non ha visto nulla.
 Le sonde sono file veri, scritti nell'unita' e tolti alla fine.
 
@@ -62,17 +60,6 @@ SPECIE = [
 # della costruzione, che questo rilevatore non cerca. languagepacks.json lo riscrive il lanciatore per la radice in cui parte.
 VERI = [ED + "user-data/User/globalStorage/storage.json", ED + "user-data/languagepacks.json"]
 
-# Le specie di un solo file e di una sola occorrenza, scritta per intero e in minuscolo come la legge esamina.
-# Non sono file che l'unita' riscrive: sono dati copiati con un percorso assoluto dentro, ammessi finche' la fonte non
-# si corregge. Relative alla radice.
-# Per ciascuna anche la radice che l'occorrenza porta: le sonde la aggiungono alle forme, e si accendono anche quando
-# la corsa non la passa con --altro.
-NOMINATE = [
-    ("misura registrata del corso", "progetti/puntatori/esempi/lez00/misure.mydev.txt",
-     b"linker_clang c:/mydev-estesa/llvm/bin/ld.lld", "C:\\MyDev-estesa",
-     "misura registrata del corso, porta la radice di costruzione dell'autore: si corregge nel repository del corso"),
-]
-
 
 def forme_di(testo, intero):
     """Le forme di un percorso. intero=False: dal componente con gli spazi doppi in poi."""
@@ -105,22 +92,17 @@ def forme_di(testo, intero):
     return uscita
 
 
-def esamina(percorso, forme, togli=None):
-    """Quali gruppi di forme compaiono nel file. Le letture lunghe si sovrappongono di quanto basta.
-    togli: un'occorrenza che non conta (le specie di NOMINATE), tolta dai byte prima di cercare; il file si legge
-    allora in una volta, perche' l'occorrenza non resti a meta' fra due letture."""
+def esamina(percorso, forme):
+    """Quali gruppi di forme compaiono nel file. Le letture lunghe si sovrappongono di quanto basta."""
     massimo = max(len(p) for _, pp in forme for p in pp)
     trovati = set()
     coda = b""
     with open(percorso, "rb") as h:
         while True:
-            blocco = h.read(-1 if togli else BLOCCO)
+            blocco = h.read(BLOCCO)
             if not blocco:
                 break
             dati = (coda + blocco).lower()
-            if togli:
-                # Una copia sola: una seconda occorrenza identica resta e conta come colpo.
-                dati = dati.replace(togli, b"", 1)
             for nome, pp in forme:
                 if nome not in trovati and any(p in dati for p in pp):
                     trovati.add(nome)
@@ -128,31 +110,21 @@ def esamina(percorso, forme, togli=None):
     return trovati
 
 
-def specie_di(rel, resto=None):
-    """La specie di un file con un colpo. resto: per un file di NOMINATE, i gruppi che restano tolta la sua occorrenza."""
+def specie_di(rel):
+    """La specie di un file con un colpo."""
     for nome, schema, _ in SPECIE:
         if re.match(schema, rel):
-            return nome
-    for nome, percorso, _, _, _ in NOMINATE:
-        if rel == percorso and resto is not None and not resto:
             return nome
     return None
 
 
-def giudica(colpi, resti=None):
-    """Il verdetto, uguale per il dato vero e per le sonde: i file con un colpo e senza specie.
-    resti: {file di NOMINATE: gruppi che restano tolta la sua occorrenza}."""
-    resti = resti or {}
-    return sorted(rel for rel in colpi if specie_di(rel, resti.get(rel)) is None)
-
-
-def occorrenza_di(rel):
-    """L'occorrenza dichiarata per questo file in NOMINATE, o None."""
-    return next((occ for _, percorso, occ, _, _ in NOMINATE if percorso == rel), None)
+def giudica(colpi):
+    """Il verdetto, uguale per il dato vero e per le sonde: i file con un colpo e senza specie."""
+    return sorted(rel for rel in colpi if specie_di(rel) is None)
 
 
 def scandisci(radice, forme):
-    colpi, resti, illeggibili = {}, {}, []
+    colpi, illeggibili = {}, []
     file_visti, byte_visti, salti = 0, 0, 0
     for cartella, _, nomi in os.walk(radice):
         for n in nomi:
@@ -161,11 +133,8 @@ def scandisci(radice, forme):
                 salti += 1
                 continue
             rel = os.path.relpath(f, radice).replace("\\", "/")
-            occ = occorrenza_di(rel)
             try:
                 trovati = esamina(f, forme)
-                if trovati and occ:
-                    resti[rel] = esamina(f, forme, togli=occ)
                 byte_visti += os.path.getsize(f)
             except OSError as e:
                 illeggibili.append(f"{rel}: {e.__class__.__name__}")
@@ -173,13 +142,11 @@ def scandisci(radice, forme):
             file_visti += 1
             if trovati:
                 colpi[rel] = sorted(trovati)
-    return colpi, resti, illeggibili, file_visti, byte_visti, salti
+    return colpi, illeggibili, file_visti, byte_visti, salti
 
 
 def sonde(radice, forme):
-    """Un file vero per ogni forma, fuori dalle specie, e uno dentro una specie: la prima specie deve dare rosso, la seconda no.
-    Per ogni specie di NOMINATE cinque file veri: l'occorrenza ammessa nel suo file, rossa in un altro, rossa con un
-    altro colpo accanto (della stessa radice o della radice dell'unita'), rossa ripetuta due volte."""
+    """Un file vero per ogni forma, fuori dalle specie, e uno dentro una specie: la prima specie deve dare rosso, la seconda no."""
     cartella = pathlib.Path(radice) / "progetti" / "sonda-u12"
     cartella.mkdir(parents=True, exist_ok=False)
     dentro = pathlib.Path(radice) / "vscodium" / "data" / "user-data" / "logs" / "sonda-u12.log"
@@ -200,26 +167,6 @@ def sonde(radice, forme):
         dentro.write_bytes(forme[0][1][0])
         rel = "vscodium/data/user-data/logs/sonda-u12.log"
         ammessa = giudica({rel: sorted(esamina(dentro, forme))}) == [] and bool(esamina(dentro, forme))
-        # Le specie di NOMINATE: l'occorrenza in un file di prova, giudicata col percorso dichiarato e con un altro.
-        for nome, percorso, occ, portata, _ in NOMINATE:
-            fs = forme + [("portata", forme_di(portata, True))]
-            altro_rel = "progetti/sonda-u12/" + percorso.rsplit("/", 1)[-1]
-            prove = [
-                ("ammessa nel suo file", b"prima\n" + occ + b"\ndopo", percorso, []),
-                ("rossa in un altro file", b"prima\n" + occ + b"\ndopo", altro_rel, [altro_rel]),
-                ("rossa con un'altra occorrenza della stessa radice", occ + b"\n" + fs[-1][1][0], percorso, [percorso]),
-                ("rossa con la radice dell'unita' accanto", occ + b"\n" + forme[0][1][0], percorso, [percorso]),
-                ("rossa con la stessa occorrenza due volte", occ + b"\n" + occ, percorso, [percorso]),
-            ]
-            for titolo, dati, r, atteso in prove:
-                f = cartella / f"f{tot}.bin"
-                f.write_bytes(dati)
-                t = esamina(f, fs)
-                tot += 1
-                if t and giudica({r: sorted(t)}, {r: esamina(f, fs, togli=occ)}) == atteso:
-                    accese += 1
-                else:
-                    print(f"  SONDA SPENTA: specie {nome}, {titolo}")
     finally:
         for f in cartella.glob("*"):
             f.unlink()
@@ -245,19 +192,16 @@ def principale():
             forme.append((nome, forme_di(testo, True)))
     print(f"gruppi di forme: {len(forme)}, forme: {sum(len(pp) for _, pp in forme)}")
     print(f"specie attese: {len(SPECIE)}")
-    colpi, resti, illeggibili, file_visti, byte_visti, salti = scandisci(radice, forme)
+    colpi, illeggibili, file_visti, byte_visti, salti = scandisci(radice, forme)
     print(f"file letti: {file_visti}, byte: {byte_visti}, collegamenti saltati: {salti}, illeggibili: {len(illeggibili)}")
     for r in illeggibili[:20]:
         print("  ILLEGGIBILE", r)
     per_specie = {}
     for rel in colpi:
-        per_specie.setdefault(specie_di(rel, resti.get(rel)) or "SENZA SPECIE", []).append(rel)
+        per_specie.setdefault(specie_di(rel) or "SENZA SPECIE", []).append(rel)
     for nome, _, motivo in SPECIE:
         print(f"  specie {nome}: {len(per_specie.get(nome, []))} file ({motivo})")
-    print(f"specie di un solo file: {len(NOMINATE)}")
-    for nome, percorso, _, _, motivo in NOMINATE:
-        print(f"  specie {nome}: {len(per_specie.get(nome, []))} file, {percorso} ({motivo})")
-    fuori = giudica(colpi, resti)
+    fuori = giudica(colpi)
     print(f"file con un colpo: {len(colpi)}, senza specie: {len(fuori)}")
     for rel in fuori:
         print(f"  SENZA SPECIE {rel} [{','.join(colpi[rel])}]")

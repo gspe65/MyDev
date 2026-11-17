@@ -3,7 +3,8 @@
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
-# Con -Finestre apre l'editor quattro volte, cinque nell'estesa (le ultime due per S-E1, che apre anche la finestra
+# Con -Finestre apre l'editor cinque volte, sei nell'estesa (le prime due dal lanciatore, la seconda con una differenza finta
+# per il controllo positivo di A9, che apre la finestra di avviso dell'insieme; le ultime due per S-E1, che apre anche la finestra
 # "Salva con nome" di Windows e la preme: coi tasti solo se e' davanti, col messaggio al pulsante anche dietro), e Chromium due volte (dal lanciatore e, per il controllo negativo,
 # senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
 # stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
@@ -17,7 +18,9 @@
 # radice con spazi doppi, U14 un'altra lettera, U15 nulla fuori dall'unita', U16 nessun privilegio, U17 le licenze,
 # E9 le stesse sull'unita' estesa, A7 l'editor in italiano (con le finestre, dopo la prima apertura dal lanciatore; sempre
 # le sonde dello script della lingua), A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il
-# silenzio del lanciatore), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
+# silenzio del lanciatore sull'unita' intatta, stampato accanto al suo controllo positivo: lo stesso lanciatore con una
+# cartella vuota in piu' fra le estensioni lascia acceso il controllo dell'insieme, poi la cartella si toglie e
+# estensioni e impostazioni si confrontano con prima), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
 # all'avvio, con un controllo negativo senza lanciatore, e la pagina dei codec sul suo chrome.exe (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
 # dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre), E6 le guide
@@ -29,8 +32,8 @@
 # temporanea del PC, che compiti e debug dell'editor usano come ogni programma; un figlio appeso, che non ha un tempo massimo;
 # che cosa Chromium decodifica senza le finestre (la pagina dei codec apre Chromium), e il controllo positivo sul dato vero
 # della pagina dei codec (la release ufficiale, a mano a ogni versione di Chromium: qui solo le sonde del verdetto);
-# nel silenzio di A9, un controllo dell'insieme che il lanciatore non ha avviato (zero processi vale anche per "mai partito":
-# l'avviso vero lo prova insieme.py --sonde, non il lanciatore).
+# un controllo dell'insieme che il lanciatore non riesce ad avviare sul PC di chi usa l'unita' (il lanciatore non lo
+# segnala: il gate prova solo che qui parte); che cosa dice la finestra di avviso (le frasi le provano le sonde di insieme.py).
 
 [CmdletBinding()]
 param(
@@ -164,6 +167,56 @@ function Apri([string]$exe, [string]$argomenti, [hashtable]$ambiente) {
     [void][Diagnostics.Process]::Start($psi)
 }
 
+# --- A9, il controllo positivo dal lanciatore. La differenza finta e' una cartella vuota fra le estensioni dell'editor:
+# insieme.py la conta ("cartella senza package.json"), l'editor non la carica (non ha un manifesto), e si toglie con
+# un Remove-Item. Le fotografie di U15 guardano fuori dall'unita' e U12, la verifica e l'insieme dopo l'uso girano a
+# cartella gia' tolta. Il predicato e' un pythonw dell'unita' con insieme.py nella riga di comando ancora acceso qualche
+# secondo dopo l'apertura: sull'unita' intatta lo script esce subito, con la differenza resta sulla finestra di avviso.
+function Impronta([string]$f) {
+    if (-not [IO.File]::Exists($f)) { return 'assente' }
+    $h = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($h.ComputeHash([IO.File]::ReadAllBytes($f))).Replace('-', '') } finally { $h.Dispose() }
+}
+
+# Lo stato che il passo tocca: le voci della cartella delle estensioni e le impostazioni dell'utente, byte per byte.
+function Stato-Insieme() {
+    $est = Join-Path $Rad 'vscodium\data\extensions'
+    $voci = @(Get-ChildItem -LiteralPath $est -Force | ForEach-Object { $_.Name } | Sort-Object)
+    return ('voci ' + ($voci -join '|') + '; settings.json ' + (Impronta (Join-Path $Rad 'vscodium\data\user-data\User\settings.json')))
+}
+
+function Insieme-Accesi() {
+    return @(Get-CimInstance Win32_Process -Filter "Name = 'pythonw.exe'" | Where-Object { $_.ExecutablePath -and (Sotto $_.ExecutablePath) -and $_.CommandLine -and $_.CommandLine.ToLower().Contains('insieme.py') }).Count
+}
+
+# $finta: il nome della cartella finta; vuoto, nessuna differenza (il controllo negativo della prova del passo).
+function Avviso-Dal-Lanciatore([string]$finta) {
+    $cartella = ''
+    if ($finta) {
+        $cartella = Join-Path $Rad ('vscodium\data\extensions\' + $finta)
+        if (Test-Path -LiteralPath $cartella) { throw "la cartella finta c'e' gia': $cartella" }
+    }
+    $prima = Stato-Insieme
+    $accesi = 0
+    try {
+        if ($cartella) { [void][IO.Directory]::CreateDirectory($cartella) }
+        Apri (Join-Path $Rad 'VSCodium.exe') '' $null
+        $inizio = Get-Date
+        while (((Get-Date) - $inizio).TotalSeconds -lt 60) {
+            if ((Insieme-Accesi) -ge 1 -and @(ProcessiUnita | Where-Object { $_.Name -eq 'VSCodium.exe' }).Count -ge 3) { break }
+            Start-Sleep -Seconds 2
+        }
+        Start-Sleep -Seconds 5
+        $accesi = Insieme-Accesi
+    }
+    finally {
+        Chiudi-Tutto
+        if ($cartella -and (Test-Path -LiteralPath $cartella)) { Remove-Item -LiteralPath $cartella -Recurse -Force }
+    }
+    $dopo = Stato-Insieme
+    return New-Object PSObject -Property @{ Accesi = $accesi; Prima = $prima; Dopo = $dopo; Uguale = ($prima -ceq $dopo) }
+}
+
 try {
     $Qui = Split-Path -Parent $MyInvocation.MyCommand.Definition
     $Rad = [IO.Path]::GetFullPath($Unita).TrimEnd('\')
@@ -231,6 +284,15 @@ try {
         $Nominano = @($Tcf | Where-Object { [IO.File]::ReadAllText($_, $Utf8).ToLower().Contains($Esc) }).Count
         Scrivi "    lingua: cache italiane con tcf.json $($Tcf.Count), che nominano questa radice $Nominano; sonda radice discendente $SondaSu (atteso False)"
         Annota 'A7' 'editor in italiano dal lanciatore' $(if ($SondaSu) { 2 } elseif ($Tcf.Count -ge 1 -and $Nominano -eq $Tcf.Count) { 0 } else { 1 })
+        # A9, il controllo positivo: lo stesso lanciatore con una differenza finta deve far restare acceso il controllo
+        # dell'insieme (la finestra di avviso). Senza, lo zero dell'apertura 1 varrebbe anche per "mai partito". Dopo
+        # l'apertura 1, che misura il silenzio sull'unita' intatta, e dopo A7, che ne legge la cache della lingua.
+        Scrivi '=== apertura 1b, dal lanciatore con una differenza finta'
+        $Positivo = Avviso-Dal-Lanciatore 'sonda-gate-insieme'
+        Scrivi "    A9: pythonw dell'unita' accesi senza differenze $Avvisi (silenzio), con insieme.py e la differenza finta $($Positivo.Accesi) (avviso)"
+        Annota 'A9' "controllo positivo dal lanciatore: con la differenza finta pythonw con insieme.py accesi $($Positivo.Accesi)" $(if ($Positivo.Accesi -ge 1) { 0 } else { 1 })
+        if (-not $Positivo.Uguale) { Scrivi "    prima: $($Positivo.Prima)"; Scrivi "    dopo:  $($Positivo.Dopo)" }
+        Annota 'A9' 'differenza finta tolta: estensioni e impostazioni come prima' $(if ($Positivo.Uguale) { 0 } else { 1 })
         Scrivi '=== apertura 2, con una cartella e un file'
         # Lo stesso ambiente che da' il lanciatore, che non accetta una cartella da aprire: senza il PATH clangd sarebbe un altro.
         # Nell'estesa anche le sue variabili, come prepara_estesa di lancia.c: progetti contiene i progetti Rust, rust-analyzer si
@@ -486,7 +548,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 35 } else { 21 }
+    $Attesi = if ($Finestre) { 37 } else { 21 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
