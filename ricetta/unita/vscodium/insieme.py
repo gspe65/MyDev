@@ -5,6 +5,7 @@
     <unita>\\python\\python.exe -I -B <unita>\\vscodium\\insieme.py --scrivi <id=versione>...
                                                   il costruttore: scrive extensions.allowed e stampa il campo estensioni
     <unita>\\python\\python.exe -I -B <unita>\\vscodium\\insieme.py --sonde       il verdetto su dati sbagliati, senza scrivere
+                                                  nell'unita' (le cartelle finte in una temporanea, tolta alla fine)
 
 Si confrontano, col campo "estensioni" di unita.json:
 - le cartelle di vscodium\\data\\extensions (nome e versione dal loro package.json), tolte quelle che l'editor ha
@@ -12,11 +13,13 @@ Si confrontano, col campo "estensioni" di unita.json:
 - l'impronta sha256 di vscodium\\resources\\app\\product.json;
 - extensions.allowed nelle impostazioni dell'utente dell'editor, che deve dire le stesse estensioni alle stesse versioni.
   Le impostazioni si leggono come le legge l'editor, che accetta commenti (// e /* */) e virgole finali: tolti gli uni
-  e le altre fuori dalle stringhe, il resto deve essere JSON. Impostazioni che non si leggono e impostazione tolta sono
-  due differenze diverse, con due frasi diverse.
+  e le altre fuori dalle stringhe, il resto deve essere JSON; un file vuoto o di soli commenti e' un oggetto vuoto, come
+  per l'editor. Impostazioni che non si leggono (col motivo: la riga dell'errore, il commento /* mai chiuso) e
+  impostazione tolta sono due differenze diverse, con due frasi diverse.
 Se qualcosa non torna, all'avvio una finestra dice che cosa e' cambiato, che MyDev non garantisce piu' l'unita' e come
 tornare a quella garantita; l'editor parte lo stesso. Sull'unita' intatta, nessuna finestra.
-La radice si ricava dalla posizione di questo file, mai dalla cartella di lavoro. Nulla si scrive fuori dall'unita'.
+La radice si ricava dalla posizione di questo file, mai dalla cartella di lavoro. Nulla si scrive fuori dall'unita',
+se non la cartella temporanea delle sonde.
 
 Uscite: 0 uguale (o scritto), 1 diverso (o rosso del costruttore, o sonde rotte), 2 fermo (non si e' potuto leggere).
 
@@ -30,6 +33,7 @@ import json
 import os
 import pathlib
 import sys
+import tempfile
 
 TITOLO = "MyDev - l'editor non e' piu' quello garantito"
 
@@ -92,9 +96,19 @@ def salta(testo, i):
     return i
 
 
+def spazi(pezzo):
+    """Un pezzo tolto dal testo, fatto di spazi con gli stessi a capo: righe e colonne di un errore restano quelle del file."""
+    return "".join(c if c == "\n" else " " for c in pezzo)
+
+
+class CommentoAperto(ValueError):
+    """Un commento /* che il testo non chiude mai."""
+
+
 def leggi_jsonc(testo):
     """Il testo come lo legge l'editor: commenti // e /* */ e virgole finali prima di } e ] tolti fuori dalle stringhe,
-    il resto letto come JSON stretto (ValueError se non lo e')."""
+    il resto letto come JSON stretto (ValueError se non lo e'). Un testo vuoto o di soli commenti e spazi e' un oggetto
+    vuoto, come per l'editor; un /* mai chiuso e' CommentoAperto, con la sua riga."""
     fuori, i, n = [], 0, len(testo)
     while i < n:
         c = testo[i]
@@ -106,45 +120,60 @@ def leggi_jsonc(testo):
             i = j + 1
         elif testo.startswith("//", i):
             j = testo.find("\n", i)
-            i = n if j < 0 else j
+            j = n if j < 0 else j
+            fuori.append(spazi(testo[i:j]))
+            i = j
         elif testo.startswith("/*", i):
             j = testo.find("*/", i + 2)
             if j < 0:
-                raise ValueError("commento /* senza chiusura")
-            fuori.append(" ")
+                raise CommentoAperto(f"il commento aperto con /* alla riga {testo.count(chr(10), 0, i) + 1} non e' chiuso da */")
+            fuori.append(spazi(testo[i:j + 2]))
             i = j + 2
         elif c == "," and salta(testo, i + 1) < n and testo[salta(testo, i + 1)] in "}]":
+            fuori.append(" ")
             i += 1
         else:
             fuori.append(c)
             i += 1
-    return json.loads("".join(fuori))
+    pulito = "".join(fuori)
+    if not pulito.strip(" \t\r\n"):
+        return {}
+    return json.loads(pulito)
 
 
-# Le impostazioni dell'utente che non si leggono: una differenza diversa da extensions.allowed tolta.
-ILLEGGIBILI = "illeggibili"
+class Illeggibili:
+    """Le impostazioni dell'utente che non si leggono, col motivo: una differenza diversa da extensions.allowed tolta."""
+
+    def __init__(self, motivo):
+        self.motivo = motivo
 
 
 def consentite_da_testo(testo):
-    """extensions.allowed dal testo delle impostazioni: il valore, None se tolta, ILLEGGIBILI se il testo non si legge."""
+    """extensions.allowed dal testo delle impostazioni: il valore, None se tolta, Illeggibili se il testo non si legge."""
     try:
         imp = leggi_jsonc(testo)
-    except ValueError:
-        return ILLEGGIBILI
+    except CommentoAperto as e:
+        return Illeggibili(str(e))
+    except json.JSONDecodeError as e:
+        return Illeggibili(f"errore di scrittura alla riga {e.lineno}, colonna {e.colno}")
+    except ValueError as e:
+        return Illeggibili(f"il testo non e' JSON: {e}")
     if not isinstance(imp, dict):
-        return ILLEGGIBILI
+        return Illeggibili("il testo non e' un oggetto tra parentesi graffe { }")
     return imp.get("extensions.allowed")
 
 
 def consentite(radice):
-    """extensions.allowed delle impostazioni dell'unita': None se il file o la chiave mancano, ILLEGGIBILI se non si legge."""
+    """extensions.allowed delle impostazioni dell'unita': None se il file o la chiave mancano, Illeggibili se non si legge."""
     f = radice / "vscodium" / "data" / "user-data" / "User" / "settings.json"
     if not f.is_file():
         return None
     try:
         testo = f.read_text(encoding="utf-8-sig")
-    except (OSError, ValueError):
-        return ILLEGGIBILI
+    except UnicodeDecodeError:
+        return Illeggibili("il file non e' testo UTF-8")
+    except (OSError, ValueError) as e:
+        return Illeggibili(f"il file non si apre: {e.__class__.__name__}")
     return consentite_da_testo(testo)
 
 
@@ -163,8 +192,8 @@ def giudica(dichiarato, viste, prodotto, ammesse):
             d.append(f"estensione {k}: versione {viste[k]} invece di {att[k]}")
     if prodotto != dichiarato["prodotto"]:
         d.append("vscodium\\resources\\app\\product.json e' cambiato" if prodotto else "manca vscodium\\resources\\app\\product.json")
-    if ammesse is ILLEGGIBILI:
-        d.append("le impostazioni dell'utente (vscodium\\data\\user-data\\User\\settings.json) non si leggono: "
+    if isinstance(ammesse, Illeggibili):
+        d.append(f"le impostazioni dell'utente (vscodium\\data\\user-data\\User\\settings.json) non si leggono ({ammesse.motivo}): "
                  "non si puo' controllare l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme")
     elif ammesse is None:
         d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata tolta")
@@ -205,7 +234,7 @@ def verifica(radice):
     print(f"estensioni nelle cartelle: {len(viste)} ({', '.join(f'{k}@{v}' for k, v in viste.items())})")
     print(f"product.json: {impronta(radice / 'vscodium' / 'resources' / 'app' / 'product.json')}")
     a = consentite(radice)
-    stato = ("assente" if a is None else "impostazioni illeggibili" if a is ILLEGGIBILI
+    stato = ("assente" if a is None else f"impostazioni illeggibili ({a.motivo})" if isinstance(a, Illeggibili)
              else f"{len(a)} voci" if isinstance(a, dict) else "non e' un oggetto")
     print(f"extensions.allowed: {stato}")
     for x in diff:
@@ -249,8 +278,45 @@ def scrivi(radice, attese):
     return 0
 
 
+def sonde_cartelle():
+    """Le sonde di installate(), quella del dato vero, su una cartella extensions finta: sta in una cartella temporanea
+    del sistema, mai nell'unita', ed e' tolta alla fine."""
+    with tempfile.TemporaryDirectory(prefix="mydev-insieme-sonde-") as t:
+        radice = pathlib.Path(t)
+        est = radice / "vscodium" / "data" / "extensions"
+
+        def metti(rel, testo):
+            p = est / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(testo, encoding="utf-8")
+
+        metti("a.uno-1.0.0/package.json", json.dumps({"publisher": "A", "name": "Uno", "version": "1.0.0"}))
+        metti("b.due-2.0.0/package.json", json.dumps({"publisher": "b", "name": "due", "version": "2.0.0"}))
+        metti(".obsolete", json.dumps({"b.due-2.0.0": True}))
+        metti("vuota-1.0.0/LEGGIMI.txt", "nessun package.json")
+        metti("rotta-1.0.0/package.json", "{ non e' JSON")
+        metti("senza-nome-1.0.0/package.json", json.dumps({"version": "1.0.0"}))
+        metti("extensions.json", "[]")
+        viste = installate(radice)
+        dich = {"insieme": {"a.uno": "1.0.0"}, "prodotto": "abc"}
+        verdetto = giudica(dich, viste, "abc", {"a.uno": ["1.0.0"]})
+        metti(".obsolete", "{ non e' JSON")
+        senza_obsolete = installate(radice)
+    return [
+        ("cartelle: nome e versione dal package.json, nome in minuscolo", viste.get("a.uno") == "1.0.0"),
+        ("cartelle: quella segnata in .obsolete non si conta", "b.due" not in viste),
+        ("cartelle: una cartella senza package.json si conta", viste.get("(cartella senza package.json) vuota-1.0.0") == "?"),
+        ("cartelle: un package.json illeggibile si conta", viste.get("(package.json illeggibile) rotta-1.0.0") == "?"),
+        ("cartelle: un package.json senza nome si conta come illeggibile", viste.get("(package.json illeggibile) senza-nome-1.0.0") == "?"),
+        ("cartelle: un file accanto alle cartelle non e' un'estensione, e non ce ne sono altre", len(viste) == 4),
+        ("cartelle: la cartella senza package.json e' un'estensione in piu' nel verdetto",
+         any("in piu': (cartella senza package.json) vuota-1.0.0" in x for x in verdetto)),
+        ("cartelle: .obsolete illeggibile, la cartella che segnava si conta", senza_obsolete.get("b.due") == "2.0.0"),
+    ]
+
+
 def sonde():
-    """Una sonda per ogni ramo del verdetto, con giudica: quella del dato vero."""
+    """Una sonda per ogni ramo del verdetto, con giudica: quella del dato vero; e i rami delle cartelle, con installate."""
     att = {"a.uno": "1.0.0", "b.due": "2.0.0"}
     dich = {"insieme": att, "prodotto": "abc"}
     amm = {k: [v] for k, v in att.items()}
@@ -261,15 +327,32 @@ def sonde():
     con_stringa = '{"workbench.colorTheme": "x // non e\' un commento /* nemmeno questo", "extensions.allowed": ' + a_json + "}"
     senza_chiave = '{\n  // tolta\n  "editor.fontSize": 14,\n}\n'
     rotto = '{\n  "editor.fontSize": 14\n  "extensions.allowed": ' + a_json + "\n}\n"
+    # L'errore alla riga 4 del file, dopo un commento di due righe e una virgola finale tolti.
+    rotto_dopo_commento = '{\n  /* due\n     righe */ "editor.fontSize": [14,],\n  "extensions.allowed" ' + a_json + "\n}\n"
+    vuoto = ""
+    soli_commenti = "// solo una nota\n\n/* e un blocco\n   di due righe */\n  \t\n"
+    aperto = '{\n  "editor.fontSize": 14,\n  /* aperto e mai chiuso\n  "extensions.allowed": ' + a_json + "\n}\n"
     tolta = giudica(dich, dict(att), "abc", consentite_da_testo(senza_chiave))
     illeggibile = giudica(dich, dict(att), "abc", consentite_da_testo(rotto))
+    da_vuoto = giudica(dich, dict(att), "abc", consentite_da_testo(vuoto))
+    da_commenti = giudica(dich, dict(att), "abc", consentite_da_testo(soli_commenti))
+    da_aperto = giudica(dich, dict(att), "abc", consentite_da_testo(aperto))
+    da_rotto_dopo = giudica(dich, dict(att), "abc", consentite_da_testo(rotto_dopo_commento))
     casi = [
         ("impostazioni con commenti: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_commento)) == []),
         ("impostazioni con virgole finali: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_virgole)) == []),
         ("// e /* dentro una stringa: non sono commenti", giudica(dich, dict(att), "abc", consentite_da_testo(con_stringa)) == []),
         ("extensions.allowed tolta dal testo", len(tolta) == 1 and "e' stata tolta" in tolta[0]),
-        ("impostazioni illeggibili, con una frase diversa da tolta",
-         len(illeggibile) == 1 and "non si leggono" in illeggibile[0] and illeggibile != tolta),
+        ("impostazioni illeggibili, con una frase diversa da tolta e la riga dell'errore",
+         len(illeggibile) == 1 and "non si leggono (errore di scrittura alla riga 3, colonna 3)" in illeggibile[0] and illeggibile != tolta),
+        ("errore dopo un commento di due righe: la riga e la colonna sono quelle del file",
+         len(da_rotto_dopo) == 1 and "non si leggono (errore di scrittura alla riga 4, colonna 24)" in da_rotto_dopo[0]),
+        ("impostazioni vuote: extensions.allowed tolta, non illeggibili",
+         len(da_vuoto) == 1 and "e' stata tolta" in da_vuoto[0]),
+        ("impostazioni di soli commenti e spazi: extensions.allowed tolta, non illeggibili",
+         len(da_commenti) == 1 and "e' stata tolta" in da_commenti[0]),
+        ("commento /* mai chiuso: illeggibili, col motivo e la riga",
+         len(da_aperto) == 1 and "non si leggono (il commento aperto con /* alla riga 3 non e' chiuso da */)" in da_aperto[0]),
         ("intatta: nessuna differenza", giudica(dich, dict(att), "abc", amm) == []),
         ("estensione in piu'", any("in piu': c.tre" in x for x in giudica(dich, {**att, "c.tre": "1"}, "abc", amm))),
         ("estensione mancante", any("manca l'estensione b.due" in x for x in giudica(dich, {"a.uno": "1.0.0"}, "abc", amm))),
@@ -279,7 +362,7 @@ def sonde():
         ("extensions.allowed tolta", any("extensions.allowed" in x and "tolta" in x for x in giudica(dich, dict(att), "abc", None))),
         ("extensions.allowed allargata", any("extensions.allowed" in x and "cambiata" in x for x in giudica(dich, dict(att), "abc", {**amm, "c.tre": ["1"]}))),
         ("unita.json senza il campo", any("unita.json" in x for x in giudica(None, dict(att), "abc", amm))),
-    ]
+    ] + sonde_cartelle()
     for nome, ok in casi:
         print(f"  sonda {'OK' if ok else 'ROTTA'}: {nome}")
     rotte = sum(1 for _, ok in casi if not ok)

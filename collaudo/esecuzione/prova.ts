@@ -23,6 +23,11 @@
 // prima dal `compile` del Python dell'unità, in un processo solo e senza scrivere nulla accanto ai sorgenti, e solo ciò che compila
 // si esegue.
 //
+// Una differenza dichiarata ha anche la sua forma, per esecutore: il genere dell'esito e i suoi tratti che non cambiano da una
+// corsa all'altra («senza esito: uscita 1, ZeroDivisionError», «senza esito: non finito in 10 s», «differenza: output diverso dalla
+// riga 1; error atteso …, ottenuto nessuno»). Un esito non verde di un'altra forma nello slot dichiarato è rosso, con la forma
+// attesa e quella osservata. Una forma che cambiasse fra due corse si dichiara non fissata, col perché, e si conta a parte.
+//
 // Gli esiti sono `ESITI_ATTESI`, i casi per 6 esecutori: `DA_UN_PROGRAMMA` vengono da un programma compilato ed eseguito, gli altri
 // (i casi dei file con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del
 // caso. Le costanti sono controllate a ogni corsa e i numeri si stampano (all'etichetta v1.0.0: 1506, 1392 e 114).
@@ -36,8 +41,9 @@
 // - l'editor: l'esempio dall'editor è una prova con la finestra, a parte;
 // - che i casi siano quelli giusti: li scrive AlgoDesign;
 // - un ingresso con una riga vuota: il corpus non ne ha (il conteggio si stampa); gli ingressi con spazi sì, e sono una prova;
-// - la forma di una differenza dichiarata: una voce di `DICHIARATE` ammette qualunque esito non verde del suo caso e dei suoi
-//   esecutori (salvo «non compila», sempre rosso), non solo quello del motivo scritto.
+// - i valori dentro una differenza dichiarata: la forma tiene la riga dove l'output comincia a essere diverso, i codici e i blocchi
+//   degli errori, l'uscita e il nome dell'eccezione del Python, non il valore stampato né il resto dello stderr; che la forma
+//   corrisponda al motivo scritto lo controlla chi la scrive, misurandola.
 
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -57,45 +63,76 @@ const ESITI_ATTESI = (CASI_DEL_PROGRAMMA + CASI_DI_FUNZIONI) * ESECUTORI.length;
 const DA_UN_PROGRAMMA = ESITI_ATTESI - CASI_CON_ERRORE_STATICO * ESECUTORI.length;
 const SECONDI_DI_UN_PROGRAMMA = 10;
 const SECONDI_DEL_MOTORE = 300;
-const PROVE_ATTESE = 12;
+const PROVE_ATTESE = 13;
 
 type Specie = "unita" | "generatore" | "linguaggio";
 type Esecutore = (typeof ESECUTORI)[number];
-/** Le differenze per nome del caso (`tappa/file#caso`, o `tappa/file#funzione/caso`): gli esecutori in cui c'è, la specie, il motivo. */
-type Dichiarate = Readonly<Record<string, { readonly esecutori: readonly Esecutore[]; readonly specie: Specie; readonly motivo: string }>>;
+/** La forma attesa di una differenza in un esecutore: una forma (o più, in alternativa) come la scrive `esitoDi`, oppure una forma
+ * non fissata, col perché, che ammette qualunque esito non verde. La chiave è un esecutore, o un compilatore (`python`, `gcc`,
+ * `clang`: le due lingue), o `c` (gcc e clang), o `tutti`: vale la più precisa. */
+type FormaAttesa = string | readonly string[] | { readonly nonFissata: string };
+type Forme = Readonly<Partial<Record<Esecutore | "python" | "gcc" | "clang" | "c" | "tutti", FormaAttesa>>>;
+/** Le differenze per nome del caso (`tappa/file#caso`, o `tappa/file#funzione/caso`): gli esecutori in cui c'è, la specie, il motivo
+ * e la forma attesa per esecutore. */
+type Dichiarate = Readonly<Record<string, { readonly esecutori: readonly Esecutore[]; readonly specie: Specie; readonly motivo: string; readonly forme: Forme }>>;
 const TUTTI: readonly Esecutore[] = ESECUTORI;
 // I calcoli che il codice generato non controlla per scelta di AlgoDesign, che lo dice nel commento in testa a ogni programma
 // generato, nella guida per lo studente e nelle note di rilascio: l'interprete li ferma, il C e il Python fanno ciò che fanno.
 const NON_CONTROLLATO = "calcolo che il codice generato non controlla (lo dicono il commento in testa al programma e la guida per lo studente di AlgoDesign)";
-const linguaggio = (cosa: string): Dichiarate[string] => ({ esecutori: TUTTI, specie: "linguaggio", motivo: `${cosa}: ${NON_CONTROLLATO}` });
+const linguaggio = (cosa: string, forme: Forme): Dichiarate[string] => ({ esecutori: TUTTI, specie: "linguaggio", motivo: `${cosa}: ${NON_CONTROLLATO}`, forme });
 // Il limite delle azioni è una regola dell'interprete, che il programma generato non ha: un limite voluto del generatore, non un
 // difetto da segnalare (la guida per lo studente lo dice).
 const LIMITE = "limite voluto del generatore: il programma generato non ha il limite delle azioni dell'interprete (lo dice la guida per lo studente di AlgoDesign)";
+// Le forme, scritte come le scrive `esitoDi`: misurate su due corse, uguali fra le due e fra le due lingue.
+const NON_FINITO = `senza esito: non finito in ${SECONDI_DI_UN_PROGRAMMA} s`;
+/** Il Python che si ferma con un'eccezione: uscita 1 e il nome dell'eccezione nello stderr. */
+const eccezione = (nome: string): string => `senza esito: uscita 1, ${nome}`;
+/** Il programma C che cade senza scrivere nulla nello stderr (148 e 149: le uscite di clang sui trabocchi e sulla divisione). */
+const caduto = (uscita: number): string => `senza esito: uscita ${uscita}, stderr vuoto`;
+/** Un programma che finisce senza l'errore dell'atteso; con `riga`, anche l'output è diverso da quella riga. */
+const senzaErrore = (errore: string, riga?: number): string => `differenza: ${riga === undefined ? "" : `output diverso dalla riga ${riga}; `}error atteso ${errore}, ottenuto nessuno`;
 const DICHIARATE: Dichiarate = {
-  "tappa-1/divisione-per-zero#divisione-per-zero": linguaggio("divisione intera per zero; il programma di clang cade, il Python solleva ZeroDivisionError"),
-  "tappa-1/indice-fuori#indice-fuori": linguaggio("indice fuori dal vettore; il C legge fuori, il Python solleva IndexError"),
-  "tappa-1/intero-minimo-diviso-meno-uno#intero-minimo-diviso-meno-uno": linguaggio("trabocco di un intero; gcc e clang danno esiti diversi, il Python non ha il limite dei 32 bit"),
-  "tappa-1/opposto-intero-minimo#opposto-intero-minimo": linguaggio("trabocco di un intero; il Python non ha il limite dei 32 bit"),
-  "tappa-1/overflow-fattoriale#overflow-fattoriale": linguaggio("trabocco del fattoriale di 13, uno dei dodici esempi; il C stampa un valore sbagliato, il Python quello giusto senza limite"),
-  "tappa-1/reale-fuori-intervallo#reale-fuori-intervallo": linguaggio("reale fuori dall'intervallo degli interi convertito in intero"),
-  "tappa-1/reale-non-finito#reale-non-finito": linguaggio("reale che diventa infinito; il C lo stampa, il Python solleva un'eccezione"),
-  "tappa-1/senza-valore-booleano#senza-valore-booleano": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione"),
-  "tappa-1/senza-valore-carattere#senza-valore-carattere": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione"),
-  "tappa-1/senza-valore-intero#senza-valore-intero": linguaggio("dato letto senza valore; il valore di clang cambia da una corsa all'altra"),
-  "tappa-1/senza-valore-reale#senza-valore-reale": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione"),
-  "tappa-1/senza-valore-stringa#senza-valore-stringa": linguaggio("dato letto senza valore; il C può scrivere byte che non sono testo"),
-  "tappa-1/troppi-passi#troppi-passi": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; il programma non finisce` },
-  "tappa-2/per-overflow-contatore#per-overflow-contatore": linguaggio("trabocco del contatore di un per; il programma C non finisce"),
-  "tappa-3/reale-fuori-intervallo-parametro#reale-fuori-intervallo-parametro": linguaggio("reale fuori dall'intervallo degli interi convertito in intero, in un parametro"),
-  "tappa-3/riferimento-senza-valore-in-esecuzione#senza valore": linguaggio("dato senza valore passato per riferimento e letto"),
-  "tappa-3/uscita-con-valore-prima#uscita-con-valore-prima": linguaggio("parametro per uscita letto prima di avere un valore: il C riceve il valore di chi chiama, il Python solleva UnboundLocalError (per AlgoDesign una divergenza voluta)"),
-  "tappa-3/uscita-letta-prima#uscita-letta-prima": linguaggio("parametro per uscita letto senza valore"),
-  "tappa-3/uscita-non-assegnata#uscita-non-assegnata": linguaggio("parametro per uscita mai assegnato e letto dopo (per AlgoDesign una divergenza voluta)"),
-  "tappa-4/passi-fuori-dal-ciclo#passi-fuori-dal-ciclo": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; in una ricorsione` },
-  "tappa-4/sequenza-di-fibonacci#ventisei": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; in una ricorsione dentro un ciclo, uno dei dodici esempi` },
-  "tipi/copia-con-un-campo-senza-valore#copia-con-un-campo-senza-valore": linguaggio("campo di un record letto senza valore nella copia"),
-  "tipi/indice-fuori-dalla-matrice#indice-fuori-dalla-matrice": linguaggio("indice fuori da una matrice; il valore di clang cambia da una corsa all'altra"),
-  "tipi/riferimento-a-un-record-senza-valore#senza-valore": linguaggio("record senza nessun campo con un valore passato per riferimento"),
+  "tappa-1/divisione-per-zero#divisione-per-zero": linguaggio("divisione intera per zero; il programma di clang cade, il Python solleva ZeroDivisionError", {
+    python: eccezione("ZeroDivisionError"), gcc: senzaErrore("division_by_zero@b1"), clang: caduto(148) }),
+  "tappa-1/indice-fuori#indice-fuori": linguaggio("indice fuori dal vettore; il C legge fuori, il Python solleva IndexError", {
+    python: eccezione("IndexError"), c: senzaErrore("index_out_of_range@b1", 1) }),
+  "tappa-1/intero-minimo-diviso-meno-uno#intero-minimo-diviso-meno-uno": linguaggio("trabocco di un intero; gcc e clang danno esiti diversi, il Python non ha il limite dei 32 bit", {
+    python: senzaErrore("integer_overflow@b3", 2), gcc: senzaErrore("integer_overflow@b3"), clang: caduto(149) }),
+  "tappa-1/opposto-intero-minimo#opposto-intero-minimo": linguaggio("trabocco di un intero; il Python non ha il limite dei 32 bit", { tutti: senzaErrore("integer_overflow@b3", 2) }),
+  "tappa-1/overflow-fattoriale#overflow-fattoriale": linguaggio("trabocco del fattoriale di 13, uno dei dodici esempi; il C stampa un valore sbagliato, il Python quello giusto senza limite", {
+    tutti: senzaErrore("integer_overflow@b2", 1) }),
+  "tappa-1/reale-fuori-intervallo#reale-fuori-intervallo": linguaggio("reale fuori dall'intervallo degli interi convertito in intero", { tutti: senzaErrore("real_to_integer_out_of_range@b1", 1) }),
+  "tappa-1/reale-non-finito#reale-non-finito": linguaggio("reale che diventa infinito; il C lo stampa, il Python solleva un'eccezione", {
+    python: eccezione("ZeroDivisionError"), c: senzaErrore("non_finite_real@b1", 1) }),
+  "tappa-1/senza-valore-booleano#senza-valore-booleano": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione", {
+    python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b1", 1) }),
+  "tappa-1/senza-valore-carattere#senza-valore-carattere": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione", {
+    python: eccezione("UnboundLocalError"), gcc: senzaErrore("uninitialized@b1", 1), clang: "differenza: error atteso uninitialized@b1, ottenuto invalid_character_code@b1" }),
+  "tappa-1/senza-valore-intero#senza-valore-intero": linguaggio("dato letto senza valore; il valore di clang cambia da una corsa all'altra", {
+    python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b1", 1) }),
+  "tappa-1/senza-valore-reale#senza-valore-reale": linguaggio("dato letto senza valore; il C legge ciò che trova, il Python solleva un'eccezione", {
+    python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b1", 1) }),
+  "tappa-1/senza-valore-stringa#senza-valore-stringa": linguaggio("dato letto senza valore; il C può scrivere byte che non sono testo", {
+    python: eccezione("UnboundLocalError"), gcc: senzaErrore("uninitialized@b1", 1), clang: "senza esito: uscita 0, lo stdout o lo stderr non è UTF-8" }),
+  "tappa-1/troppi-passi#troppi-passi": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; il programma non finisce`, forme: { tutti: NON_FINITO } },
+  "tappa-2/per-overflow-contatore#per-overflow-contatore": linguaggio("trabocco del contatore di un per; il programma C non finisce", {
+    python: senzaErrore("integer_overflow@b1"), c: NON_FINITO }),
+  "tappa-3/reale-fuori-intervallo-parametro#reale-fuori-intervallo-parametro": linguaggio("reale fuori dall'intervallo degli interi convertito in intero, in un parametro", {
+    tutti: senzaErrore("real_to_integer_out_of_range@b1", 1) }),
+  "tappa-3/riferimento-senza-valore-in-esecuzione#senza valore": linguaggio("dato senza valore passato per riferimento e letto", {
+    python: eccezione("TypeError"), c: senzaErrore("reference_without_value@b4", 1) }),
+  "tappa-3/uscita-con-valore-prima#uscita-con-valore-prima": linguaggio("parametro per uscita letto prima di avere un valore: il C riceve il valore di chi chiama, il Python solleva UnboundLocalError (per AlgoDesign una divergenza voluta)", {
+    python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b4", 1) }),
+  "tappa-3/uscita-letta-prima#uscita-letta-prima": linguaggio("parametro per uscita letto senza valore", { python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b4", 1) }),
+  "tappa-3/uscita-non-assegnata#uscita-non-assegnata": linguaggio("parametro per uscita mai assegnato e letto dopo (per AlgoDesign una divergenza voluta)", {
+    python: eccezione("UnboundLocalError"), c: senzaErrore("uninitialized@b2", 1) }),
+  "tappa-4/passi-fuori-dal-ciclo#passi-fuori-dal-ciclo": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; in una ricorsione`, forme: { tutti: senzaErrore("too_many_steps@b8", 1) } },
+  "tappa-4/sequenza-di-fibonacci#ventisei": { esecutori: TUTTI, specie: "generatore", motivo: `${LIMITE}; in una ricorsione dentro un ciclo, uno dei dodici esempi`, forme: { tutti: senzaErrore("too_many_steps@b2", 25) } },
+  "tipi/copia-con-un-campo-senza-valore#copia-con-un-campo-senza-valore": linguaggio("campo di un record letto senza valore nella copia", { tutti: senzaErrore("uninitialized@b2", 1) }),
+  "tipi/indice-fuori-dalla-matrice#indice-fuori-dalla-matrice": linguaggio("indice fuori da una matrice; il valore di clang cambia da una corsa all'altra", {
+    python: eccezione("IndexError"), c: senzaErrore("index_out_of_range@b1", 1) }),
+  "tipi/riferimento-a-un-record-senza-valore#senza-valore": linguaggio("record senza nessun campo con un valore passato per riferimento", {
+    python: eccezione("TypeError"), c: senzaErrore("reference_without_value@b4", 1) }),
 };
 
 let fatte = 0;
@@ -358,19 +395,45 @@ console.log(`programmi Python controllati ${sorgentiPython.length} in ${((perfor
 // --- Le esecuzioni e gli esiti, uno per caso ed esecutore.
 type Esito =
   | { genere: "verde"; ottenuto?: Atteso; tagliato?: boolean }
-  | { genere: "differenza"; dettaglio: string; ottenuto: Atteso; tagliato: boolean }
-  | { genere: "senza esito"; dettaglio: string }
+  | { genere: "differenza"; dettaglio: string; forma: string; ottenuto: Atteso; tagliato: boolean }
+  | { genere: "senza esito"; dettaglio: string; forma: string }
   | { genere: "non compila"; dettaglio: string };
 const esiti = new Map<string, Esito>(); // `${id}|${esecutore}`
 const utf8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
 
-/** L'esito di un ottenuto contro l'atteso del caso: la funzione di AlgoDesign, un caso alla volta. */
+/** La riga (da 1) dove due output cominciano a essere diversi. */
+function rigaDiversa(a: string, b: string): number {
+  const ra = a.split("\n");
+  const rb = b.split("\n");
+  let i = 0;
+  while (i < ra.length && i < rb.length && ra[i] === rb[i]) i++;
+  return i + 1;
+}
+/** La forma di un esito senza esito: il genere e i tratti del dettaglio che non dipendono dalla corsa. Del testo dello stderr resta
+ * solo il nome dell'eccezione del Python (o «stderr vuoto», o «stderr non vuoto»): una traccia porta i percorsi della cartella di
+ * lavoro. */
+function formaSenzaEsito(dettaglio: string): string {
+  const u = /^uscita (\S+), stderr (".*")$/s.exec(dettaglio);
+  if (u === null) return `senza esito: ${dettaglio.slice(0, 160)}`;
+  const err = JSON.parse(u[2]!) as string;
+  const eccezioni = [...err.matchAll(/\b([A-Z][A-Za-z]*(?:Error|Exception))\b/g)].map((m) => m[1]!);
+  const tratto = err === "" ? "stderr vuoto" : eccezioni.length > 0 ? eccezioni.at(-1)! : "stderr non vuoto";
+  return `senza esito: uscita ${u[1]}, ${tratto}`;
+}
+
+/** L'esito di un ottenuto contro l'atteso del caso: la funzione di AlgoDesign, un caso alla volta. La forma di una differenza dice
+ * i campi diversi senza i valori: per l'output la riga dove comincia a essere diverso (e se è tagliato), per errori e avvisi
+ * l'atteso e l'ottenuto, che sono codici e blocchi. */
 function esitoDi(atteso: Atteso, o: Ottenuto): Esito {
-  if ("senzaEsito" in o) return { genere: "senza esito", dettaglio: o.senzaEsito };
+  if ("senzaEsito" in o) return { genere: "senza esito", dettaglio: o.senzaEsito, forma: formaSenzaEsito(o.senzaEsito) };
   const e = esitoDelCaso(atteso, o.atteso, o.tagliato);
   if (e.raggiunto && e.avvisi === undefined) return { genere: "verde", ottenuto: o.atteso, tagliato: o.tagliato };
   const campi = [...e.differenze.map((d) => `${d.campo}: atteso ${JSON.stringify(d.atteso).slice(0, 120)}, ottenuto ${JSON.stringify(d.ottenuto).slice(0, 120)}`), ...(e.avvisi ? [`avvisi: attesi ${e.avvisi.attesi}, ottenuti ${e.avvisi.ottenuti}`] : [])];
-  return { genere: "differenza", dettaglio: campi.join("; "), ottenuto: o.atteso, tagliato: o.tagliato };
+  const tratti = [
+    ...e.differenze.map((d) => (d.campo === "output" ? `output diverso dalla riga ${rigaDiversa(d.atteso, d.ottenuto)}${o.tagliato ? ", tagliato" : ""}` : `${d.campo} atteso ${d.atteso}, ottenuto ${d.ottenuto}`)),
+    ...(e.avvisi ? [`avvisi attesi ${e.avvisi.attesi}, ottenuti ${e.avvisi.ottenuti}`] : []),
+  ];
+  return { genere: "differenza", dettaglio: campi.join("; "), forma: `differenza: ${tratti.join("; ")}`, ottenuto: o.atteso, tagliato: o.tagliato };
 }
 function ottenutoDi(f: Fine, voce: Voce, righe: readonly Riga[], lingua: string, d: DaEseguire): Ottenuto {
   if (f.scaduto) return { senzaEsito: `non finito in ${SECONDI_DI_UN_PROGRAMMA} s` };
@@ -433,14 +496,27 @@ const nomina = (k: string): string => {
   const [file, caso] = id.split("#") as [string, string];
   return `file ${file}, caso ${caso}, linguaggio ${m === "python" ? "python" : `c (${m})`}, lingua ${l}`;
 };
-type Giudizio = { rossi: string[]; perSpecie: Record<Specie, number>; verdi: number };
+/** Le chiavi di `Forme` che valgono per un esecutore, dalla più precisa. */
+const chiaviDi = (x: Esecutore): (keyof Forme)[] => {
+  const m = x.split(" ")[0] as "python" | "gcc" | "clang";
+  return [x, m, ...(m === "python" ? [] : (["c"] as const)), "tutti"];
+};
+const formaAttesaDi = (forme: Forme, x: Esecutore): FormaAttesa | undefined => chiaviDi(x).map((c) => forme[c]).find((f) => f !== undefined);
+const comeElenco = (f: string | readonly string[]): readonly string[] => (typeof f === "string" ? [f] : f);
+type Giudizio = { rossi: string[]; perSpecie: Record<Specie, number>; verdi: number; formeFissate: number; formeNonFissate: string[] };
 function giudica(e: ReadonlyMap<string, Esito>, attese: readonly string[], dichiarate: Dichiarate): Giudizio {
   const rossi: string[] = [];
   const perSpecie: Record<Specie, number> = { unita: 0, generatore: 0, linguaggio: 0 };
   let verdi = 0;
+  let formeFissate = 0;
+  const formeNonFissate: string[] = [];
   const ids = new Set(attese.map((k) => k.split("|")[0]!));
   for (const k of e.keys()) if (!attese.includes(k)) rossi.push(`ROSSO esito fuori elenco: ${k}`);
-  for (const id of Object.keys(dichiarate)) if (!ids.has(id)) rossi.push(`ROSSO dichiarata senza caso nel corpus: ${id}`);
+  for (const [id, d] of Object.entries(dichiarate)) {
+    if (!ids.has(id)) rossi.push(`ROSSO dichiarata senza caso nel corpus: ${id}`);
+    // Una forma per una chiave che non tocca nessun esecutore della voce non vale per nulla: è un errore della tabella.
+    for (const c of Object.keys(d.forme) as (keyof Forme)[]) if (!d.esecutori.some((x) => chiaviDi(x).includes(c))) rossi.push(`ROSSO forma per un esecutore che la voce non ha: ${id}, ${c}`);
+  }
   for (const k of attese) {
     const x = e.get(k);
     const [id, esecutore] = k.split("|") as [string, Esecutore];
@@ -451,14 +527,25 @@ function giudica(e: ReadonlyMap<string, Esito>, attese: readonly string[], dichi
     else if (x.genere === "verde") {
       if (dichiarata) rossi.push(`ROSSO dichiarata e non avvenuta (${dich.specie}): ${nomina(k)}`);
       else verdi++;
-    } else if (dichiarata) perSpecie[dich.specie]++;
-    else rossi.push(`ROSSO differenza non dichiarata, ${x.genere}: ${nomina(k)}: ${x.dettaglio}`);
+    } else if (dichiarata) {
+      // La differenza è dichiarata per lo slot: deve avere anche la forma scritta per il suo esecutore.
+      const attesa = formaAttesaDi(dich.forme, esecutore);
+      if (attesa === undefined) rossi.push(`ROSSO dichiarata senza forma attesa (${dich.specie}): ${nomina(k)}: osservata «${x.forma}»`);
+      else if (typeof attesa === "object" && "nonFissata" in attesa) {
+        perSpecie[dich.specie]++;
+        formeNonFissate.push(`${id}|${esecutore}`);
+      } else if (comeElenco(attesa).includes(x.forma)) {
+        perSpecie[dich.specie]++;
+        formeFissate++;
+      } else rossi.push(`ROSSO dichiarata con un'altra forma (${dich.specie}): ${nomina(k)}: attesa «${comeElenco(attesa).join("» o «")}», osservata «${x.forma}»`);
+    } else rossi.push(`ROSSO differenza non dichiarata, ${x.genere}: ${nomina(k)}: ${x.dettaglio}`);
   }
-  return { rossi, perSpecie, verdi };
+  return { rossi, perSpecie, verdi, formeFissate, formeNonFissate };
 }
 
 const vero = giudica(esiti, previste, DICHIARATE);
 console.log(`esiti: ${esiti.size} su ${previste.length} previsti, dichiarati ${ESITI_ATTESI}; verdi ${vero.verdi}, differenze dichiarate: unità ${vero.perSpecie.unita}, generatore ${vero.perSpecie.generatore}, linguaggio ${vero.perSpecie.linguaggio}; rossi ${vero.rossi.length}`);
+console.log(`forme delle differenze dichiarate: fissate ${vero.formeFissate}, non fissate ${vero.formeNonFissate.length}${vero.formeNonFissate.length > 0 ? ` [${vero.formeNonFissate.join(", ")}]` : ""}`);
 for (const r of vero.rossi) console.log(`  ${r}`);
 for (const [id, v] of Object.entries(DICHIARATE)) console.log(`  DICHIARATA ${v.specie} ${id} [${v.esecutori.join(", ")}]: ${v.motivo}`);
 prova("gli esiti sono quelli dichiarati, elemento per elemento", previste.length === ESITI_ATTESI && esiti.size === ESITI_ATTESI && esecuzioni.length + esitiNonCompila === DA_UN_PROGRAMMA && decisiDalloStatico === ESITI_ATTESI - DA_UN_PROGRAMMA,
@@ -501,7 +588,7 @@ const r2 = await compila(gcc, sorgenteGuasto, join(lavoro, "sonda-non-compila.ex
 const idGuasto = "tappa-1/overflow-fattoriale#overflow-fattoriale";
 const conGuasto = new Map(esiti);
 conGuasto.set(`${idGuasto}|gcc it`, r2.ok ? { genere: "verde" } : { genere: "non compila", dettaglio: r2.testo });
-const conDichiarata: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["gcc it"], specie: "linguaggio", motivo: "sonda" } };
+const conDichiarata: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["gcc it"], specie: "linguaggio", motivo: "sonda", forme: {} } };
 const s2 = giudica(conGuasto, previste, conDichiarata).rossi.filter((r) => r.includes(nomina(`${idGuasto}|gcc it`)));
 prova("sonda: un programma che non compila è rosso «non compila», mai una differenza, anche dichiarato", !r2.ok && s2.length === 1 && s2[0]!.startsWith("ROSSO NON COMPILA"), `compila ${r2.ok}; ${s2.join(" | ")}`);
 
@@ -518,14 +605,34 @@ console.log(`      sonda Python: controllati 2, non compilati ${r5.size} [${[...
 const conGuastoPy = new Map(esiti);
 const erroreDelGuasto = r5.get(sorgenteGuastoPy);
 conGuastoPy.set(`${idGuasto}|python it`, erroreDelGuasto !== undefined ? { genere: "non compila", dettaglio: erroreDelGuasto } : { genere: "verde" });
-const conDichiarataPy: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["python it"], specie: "linguaggio", motivo: "sonda" } };
+const conDichiarataPy: Dichiarate = { ...DICHIARATE, [idGuasto]: { esecutori: ["python it"], specie: "linguaggio", motivo: "sonda", forme: {} } };
 const s5 = giudica(conGuastoPy, previste, conDichiarataPy).rossi.filter((r) => r.includes(nomina(`${idGuasto}|python it`)));
 prova("sonda: un programma Python che non compila è rosso «non compila», mai una differenza, anche dichiarato", r5.size === 1 && erroreDelGuasto !== undefined && s5.length === 1 && s5[0]!.startsWith("ROSSO NON COMPILA"), `non compilati ${[...r5.keys()].join(", ")}; ${s5.join(" | ")}`);
+
+// La forma di una differenza dichiarata: nello slot di un caso dichiarato passa l'esito vero di un altro caso dichiarato, di un'altra
+// forma (la divisione per zero del Python che, invece di ZeroDivisionError, non finisce). Il verdetto deve dirlo rosso, con la forma
+// attesa e quella osservata. Una sonda che non altera la forma, o che il verdetto non vede, è un fermo: senza di lei il verde delle
+// dichiarate non sarebbe un dato.
+const SONDA_FORMA = "tappa-1/divisione-per-zero#divisione-per-zero|python it";
+const OSPITE_FORMA = "tappa-1/troppi-passi#troppi-passi|python it";
+const ospite = esiti.get(OSPITE_FORMA);
+const [idForma, exForma] = SONDA_FORMA.split("|") as [string, Esecutore];
+const attesaForma = formaAttesaDi(DICHIARATE[idForma]?.forme ?? {}, exForma);
+if (ospite === undefined || ospite.genere === "verde" || ospite.genere === "non compila") fermo(`la sonda della forma non ha l'esito da far passare: ${OSPITE_FORMA} è ${ospite?.genere ?? "assente"}`);
+if (attesaForma === undefined || (typeof attesaForma === "object" && "nonFissata" in attesaForma)) fermo(`la sonda della forma vuole uno slot con la forma fissata: ${SONDA_FORMA}`);
+if (comeElenco(attesaForma).includes(ospite.forma)) fermo(`la sonda della forma non altera la forma: ${SONDA_FORMA} e ${OSPITE_FORMA} hanno la stessa, «${ospite.forma}»`);
+const conForma = new Map(esiti);
+conForma.set(SONDA_FORMA, ospite);
+const s6 = giudica(conForma, previste, DICHIARATE).rossi.filter((r) => !vero.rossi.includes(r));
+const accesa = s6.length === 1 && s6[0]!.startsWith("ROSSO dichiarata con un'altra forma") && s6[0]!.includes(nomina(SONDA_FORMA)) && s6[0]!.includes(`attesa «${comeElenco(attesaForma).join("» o «")}»`) && s6[0]!.includes(`osservata «${ospite.forma}»`);
+prova("sonda: in uno slot dichiarato un esito di un'altra forma è rosso, con la forma attesa e quella osservata", accesa, s6.join(" | ") || "nessuna riga nuova: il verdetto ha preso l'esito per una differenza dichiarata");
+if (s6[0] !== undefined) console.log(`      come si legge: ${s6[0].slice(0, 260)}`);
+if (!accesa) fermo("la sonda della forma non si accende: il verdetto non distingue la forma di una differenza dichiarata");
 
 // I due versi dell'elenco: una dichiarata su un caso verde, e un esito che manca.
 const verde = previste.find((k) => esiti.get(k)?.genere === "verde") ?? fermo("nessun esito verde per la sonda");
 const [idVerde, exVerde] = verde.split("|") as [string, Esecutore];
-const s3 = giudica(esiti, previste, { ...DICHIARATE, [idVerde]: { esecutori: [exVerde], specie: "generatore", motivo: "sonda" } }).rossi.filter((r) => !vero.rossi.includes(r));
+const s3 = giudica(esiti, previste, { ...DICHIARATE, [idVerde]: { esecutori: [exVerde], specie: "generatore", motivo: "sonda", forme: {} } }).rossi.filter((r) => !vero.rossi.includes(r));
 const senzaUno = new Map(esiti);
 senzaUno.delete(verde);
 const s4 = giudica(senzaUno, previste, DICHIARATE).rossi.filter((r) => !vero.rossi.includes(r));
