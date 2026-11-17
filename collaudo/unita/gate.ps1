@@ -4,7 +4,7 @@
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
 # Con -Finestre apre l'editor quattro volte, cinque nell'estesa (le ultime due per S-E1, che apre anche la finestra
-# "Salva con nome" di Windows e la preme con Invio solo se e' davanti), e Chromium due volte (dal lanciatore e, per il controllo negativo,
+# "Salva con nome" di Windows e la preme: coi tasti solo se e' davanti, col messaggio al pulsante anche dietro), e Chromium due volte (dal lanciatore e, per il controllo negativo,
 # senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
 # stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
 # Senza, i percorsi si cercano a file fermi e tracce e ascolti dell'editor non si misurano: l'esito lo dice.
@@ -19,13 +19,14 @@
 # le sonde dello script della lingua), A9 l'insieme garantito delle estensioni (dopo l'uso; con le finestre anche il
 # silenzio del lanciatore), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
-# all'avvio, con un controllo negativo senza lanciatore (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
+# all'avvio, con un controllo negativo senza lanciatore, e la pagina dei codec sul suo chrome.exe (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
 # dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre).
 #
 # Che cosa NON guarda: la chiavetta (la si indica come radice); le prove delle estensioni e del nucleo, che hanno le loro;
 # una richiesta di privilegi di un programma lanciato a mano dentro l'unita'; le voci di PATH dell'utente; la cartella
 # temporanea del PC, che compiti e debug dell'editor usano come ogni programma; un figlio appeso, che non ha un tempo massimo;
-# che cosa Chromium decodifica (la pagina dei codec e' una misura a parte, fuori dal kit: qui solo l'avvio, il profilo e la pagina);
+# che cosa Chromium decodifica senza le finestre (la pagina dei codec apre Chromium), e il controllo positivo sul dato vero
+# della pagina dei codec (la release ufficiale, a mano a ogni versione di Chromium: qui solo le sonde del verdetto);
 # nel silenzio di A9, un controllo dell'insieme che il lanciatore non ha avviato (zero processi vale anche per "mai partito":
 # l'avviso vero lo prova insieme.py --sonde, non il lanciatore).
 
@@ -316,6 +317,16 @@ try {
         $MotoreS = $ScritteS -and ([IO.File]::ReadAllText($PrefS, $Utf8).Contains('duckduckgo.com'))
         Scrivi "    sonda: processi accesi $ChromeS; preferenze scritte $ScritteS; pagina dell'unita' $PaginaS; motore della barra $MotoreS; finestre: $($TitoliS -join ' | ')"
         Annota 'A13' 'controllo negativo: senza lanciatore ne'' primo avvio, pagina e motore falsi' $(if ($ChromeS -lt 1 -or $TitoliS.Count -lt 1 -or -not $ScritteS) { 2 } elseif (-not $PaginaS -and -not $MotoreS) { 0 } else { 1 })
+        # A13, che cosa Chromium decodifica: la pagina dei codec (collaudo\codec, dal repository come le licenze) sul
+        # chrome.exe dell'unita', con un profilo nuovo nella cartella di lavoro: H.264, H.265 e AAC rifiutati, VP9, AV1 e
+        # Opus riprodotti. Il chrome.dll dell'unita' importa ffmpeg.dll alla partenza: senza quel file la pagina e' un fermo
+        # (misurato). Poi le sonde del verdetto; il controllo positivo sul dato vero (la release ufficiale che decodifica
+        # H.264) si misura a ogni versione nuova di Chromium, fuori dal gate.
+        Scrivi '=== A13: la pagina dei codec sul Chromium dell''unita'''
+        $Codec = '-X utf8 -B "' + (Join-Path (Split-Path -Parent $Qui) 'codec\prova_codec.py') + '"'
+        $null = Passo 'A13' 'codec' $Py ($Codec + ' --chromium "' + (Join-Path $Rad 'chromium\chrome.exe') + '" --profilo "' + (Join-Path $Lav 'codec  profilo') + '" --uscita "' + (Join-Path $Lav 'codec') + '" --nome unita --atteso senza')
+        $null = Passo 'A13' 'codec-sonde' $Py ($Codec + ' --sonde')
+        Chiudi-Tutto
 
         # E1: lo scenario S-E1 dello studente nell'editor dell'unita' (dal flowchart al punto d'arresto, con la finestra
         # "Salva con nome" vera di Windows), con l'ambiente che il gate da' all'editor, quello del lanciatore. Il flowchart
@@ -471,7 +482,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 32 } else { 20 }
+    $Attesi = if ($Finestre) { 34 } else { 20 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }

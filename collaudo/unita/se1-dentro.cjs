@@ -4,7 +4,7 @@
 //
 // La pagina si legge dal suo DOM coi comandi di prova dell'estensione (esistono solo con ALGO_PROVA=1, che se1.py dà all'editor);
 // i clic sono clic veri sugli elementi della pagina. La finestra «Salva con nome» è quella VERA di Windows: la preme dialogo.ps1
-// (Invio, solo con la finestra davanti). «▶ Compila ed esegui» e «Passo passo» sono i comandi dei due pulsanti dell'estensione per
+// (Invio o Alt+S solo con la finestra davanti; il messaggio al pulsante anche dietro). «▶ Compila ed esegui» e «Passo passo» sono i comandi dei due pulsanti dell'estensione per
 // il C; il numero si scrive nel terminale con sendText; il punto d'arresto si mette dove lo mette il clic sul margine.
 //
 // Che cosa NON guarda: i passi 1–6 (lanciatore, «File», «Apri cartella…»): l'editor parte con la cartella `progetti` dagli

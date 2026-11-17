@@ -134,10 +134,10 @@
    ]
   },
   {
-   "file": "chromium-senza-codec-dda9e2e48b9f.tar.gz",
-   "fonte": "https://codeload.github.com/gspe65/chromium-senza-codec/tar.gz/dda9e2e48b9fa5fa6a003e4dfe3b3b2a2b5402fc",
-   "byte": 408721,
-   "sha256": "2ee8691ddfc27930ca36a43cef746716197ce5e61aa71d403f07ab0b2620bbcc",
+   "file": "chromium-senza-codec-25693ae36f5c.tar.gz",
+   "fonte": "https://codeload.github.com/gspe65/chromium-senza-codec/tar.gz/25693ae36f5cd173c1896c52a0c0e5f5e98c9beb",
+   "byte": 409864,
+   "sha256": "816df5e2fd58e4177ac693e287f2bc707e2fd5fc31ecc01884317ba98e707265",
    "componenti": [
     "browser/chromium"
    ]

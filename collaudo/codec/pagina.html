@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Pagina dei codec</title>
+<style>
+  body { font: 15px/1.4 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  table { border-collapse: collapse; margin: 8px 0; }
+  th, td { border: 1px solid #999; padding: 3px 8px; text-align: left; }
+  td.si { background: #cfc; } td.no { background: #fcc; }
+  #riproduzione video { width: 160px; height: 120px; margin: 2px; background: #000; }
+  #riproduzione audio { width: 160px; }
+  pre { font-size: 11px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Pagina dei codec</h1>
+<p id="programma"></p>
+<p>Per ogni formato: le tre domande al programma (<code>canPlayType</code>, <code>MediaSource.isTypeSupported</code>,
+<code>MediaCapabilities.decodingInfo</code> per file e per MSE) e la riproduzione di un campione a una sola traccia.
+«Decodifica» è la riproduzione: il tempo avanza oltre 0,3 s e, per i video, almeno un fotogramma decodificato.</p>
+<p id="stato">in corso…</p>
+<table id="tabella">
+  <thead><tr><th>formato</th><th>canPlayType</th><th>MSE</th><th>decodingInfo file</th><th>decodingInfo MSE</th><th>decodifica</th><th>dettaglio</th></tr></thead>
+  <tbody></tbody>
+</table>
+<div id="riproduzione"></div>
+<pre id="esito"></pre>
+<script>
+'use strict';
+const CAMPIONI = [
+  { id: 'H.264', tipo: 'video', file: 'campioni/h264.mp4', mime: 'video/mp4; codecs="avc1.4D400D"' },
+  { id: 'H.265', tipo: 'video', file: 'campioni/h265.mp4', mime: 'video/mp4; codecs="hvc1.1.6.L60.B0"' },
+  { id: 'AAC',   tipo: 'audio', file: 'campioni/aac.m4a',  mime: 'audio/mp4; codecs="mp4a.40.2"' },
+  { id: 'VP9',   tipo: 'video', file: 'campioni/vp9.webm', mime: 'video/webm; codecs="vp09.00.10.08"' },
+  { id: 'AV1',   tipo: 'video', file: 'campioni/av1.webm', mime: 'video/webm; codecs="av01.0.00M.08"' },
+  { id: 'Opus',  tipo: 'audio', file: 'campioni/opus.webm', mime: 'audio/webm; codecs="opus"' },
+];
+
+function configurazione(c, tipo) {
+  const conf = { type: tipo };
+  if (c.tipo === 'video') conf.video = { contentType: c.mime, width: 320, height: 240, bitrate: 300000, framerate: 25 };
+  else conf.audio = { contentType: c.mime, channels: '1', bitrate: 128000, samplerate: 48000 };
+  return conf;
+}
+
+async function domande(c) {
+  const r = {};
+  const el = document.createElement(c.tipo);
+  r.canPlayType = el.canPlayType(c.mime);
+  r.mse = (typeof MediaSource !== 'undefined') ? MediaSource.isTypeSupported(c.mime) : null;
+  for (const [chiave, tipo] of [['infoFile', 'file'], ['infoMse', 'media-source']]) {
+    try {
+      const i = await navigator.mediaCapabilities.decodingInfo(configurazione(c, tipo));
+      r[chiave] = i.supported;
+    } catch (e) { r[chiave] = 'eccezione: ' + e.name; }
+  }
+  return r;
+}
+
+function riproduci(c) {
+  return new Promise((risolvi) => {
+    const el = document.createElement(c.tipo);
+    el.muted = true; el.preload = 'auto'; el.controls = true; el.title = c.id;
+    let fatto = false;
+    const fine = (esito, motivo) => {
+      if (fatto) return; fatto = true; clearTimeout(timer);
+      const q = el.getVideoPlaybackQuality ? el.getVideoPlaybackQuality() : null;
+      risolvi({ decodifica: esito, motivo, tempo: Math.round(el.currentTime * 100) / 100,
+        fotogrammi: q ? q.totalVideoFrames : null,
+        errore: el.error ? (el.error.code + ' ' + el.error.message) : null });
+    };
+    el.addEventListener('error', () => fine(false, 'evento error'));
+    el.addEventListener('timeupdate', () => {
+      if (el.currentTime <= 0.3) return;
+      if (c.tipo === 'video' && el.getVideoPlaybackQuality().totalVideoFrames < 1) return;
+      fine(true, 'riprodotto');
+    });
+    const timer = setTimeout(() => fine(false, 'tempo scaduto (10 s)'), 10000);
+    document.getElementById('riproduzione').appendChild(el);
+    el.src = c.file;
+    const p = el.play();
+    if (p) p.catch((e) => fine(false, 'play: ' + e.name));
+  });
+}
+
+function cella(tr, v) {
+  const td = document.createElement('td');
+  td.textContent = String(v);
+  if (v === true || v === 'probably' || v === 'maybe') td.className = 'si';
+  else if (v === false || v === '') td.className = 'no';
+  if (v === '') td.textContent = '""';
+  tr.appendChild(td);
+}
+
+async function principale() {
+  document.getElementById('programma').textContent = 'programma: ' + navigator.userAgent;
+  const risultati = [];
+  for (const c of CAMPIONI) {
+    const d = await domande(c);
+    const p = await riproduci(c);
+    const r = Object.assign({ formato: c.id, mime: c.mime, file: c.file }, d, p);
+    risultati.push(r);
+    const tr = document.createElement('tr');
+    cella(tr, c.id); cella(tr, d.canPlayType); cella(tr, d.mse); cella(tr, d.infoFile); cella(tr, d.infoMse);
+    cella(tr, p.decodifica);
+    cella(tr, p.motivo + ', t=' + p.tempo + (p.fotogrammi !== null ? ', fotogrammi=' + p.fotogrammi : '') + (p.errore ? ', ' + p.errore : ''));
+    document.querySelector('#tabella tbody').appendChild(tr);
+  }
+  const esito = { programma: navigator.userAgent, quando: new Date().toISOString(), risultati };
+  document.getElementById('esito').textContent = JSON.stringify(esito, null, 1);
+  let stato = 'finito';
+  if (location.protocol.startsWith('http')) {
+    try {
+      const r = await fetch('/esito', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(esito) });
+      stato += r.ok ? ', esito consegnato al server' : ', consegna rifiutata: ' + r.status;
+    } catch (e) { stato += ', consegna fallita: ' + e.name; }
+  }
+  document.getElementById('stato').textContent = stato;
+}
+principale();
+</script>
+</body>
+</html>

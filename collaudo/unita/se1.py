@@ -14,8 +14,8 @@ Con --controllo: la stessa corsa col pacchetto della 0.2.0 (`algo-codice-0.0.1.v
 dalla voce della ricetta all'etichetta) al posto dell'estensione dell'unità, spenta: deve essere rossa al passo 7 (nessuna pagina).
 Il verde del controllo è quel rosso, e nessun altro.
 
-Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare: l'editor non ha scritto gli esiti, la finestra di dialogo non è venuta
-davanti, la cartella del flowchart c'era già, il pacchetto della 0.2.0 non si scarica).
+Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare: l'editor non ha scritto gli esiti, la finestra di dialogo non si è
+chiusa con «Salva», la cartella del flowchart c'era già, il pacchetto della 0.2.0 non si scarica).
 
 Che cosa NON guarda: i passi 1–6 (il doppio clic sul lanciatore, «File», «Apri cartella…», la cartella): l'editor parte con la
 cartella `progetti` dagli argomenti; il lanciatore lo provano le aperture del gate (A7, A9). Il clic sul margine come gesto del
@@ -149,7 +149,7 @@ if o.controllo:
 ultimo = fatti[-1] if fatti else None
 dialogo = next((x["visto"].get("dialogo") for x in fatti if x["n"] == 11), None) or {}
 if ultimo is not None and ultimo["n"] == 11 and not ultimo["riuscito"] and dialogo.get("trovato") and not dialogo.get("premuto"):
-    fermo(f"la finestra di dialogo non è venuta davanti: {dialogo.get('motivo')}")
+    fermo(f"la finestra di dialogo non si è chiusa con «Salva»: {dialogo.get('motivo')}")
 rossi = []
 if [x["n"] for x in fatti] != PASSI or not all(x["riuscito"] for x in fatti):
     rossi.append("non tutti i passi sono riusciti, nell'ordine dello scenario")
