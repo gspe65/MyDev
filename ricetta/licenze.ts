@@ -27,18 +27,25 @@ const ESTERNI = [
   "Bun, licenza MIT, con JavaScriptCore e WebCore di WebKit sotto LGPL-2.0 e tinycc sotto LGPL-2.1: https://bun.sh/docs/project/licensing",
   "Node.js, licenza MIT, con le licenze dei suoi componenti: https://github.com/nodejs/node/blob/main/LICENSE",
   "Git, licenza GPL-2.0-only: https://github.com/git/git/blob/master/COPYING",
-  "Visual Studio Code, licenza Microsoft del prodotto, solo per la prova nell'editor: https://code.visualstudio.com/license",
 ];
 
 /** I pacchetti che non portano un file di licenza: un altro che manchi è un rosso, non un'omissione. */
-const SENZA_TESTO = ["@napi-rs/keyring-win32-x64-msvc", "bun-types", "isarray"];
+const SENZA_TESTO = ["bun-types"];
 
-/** I testi che un pacchetto porta fuori dalla sua radice: la metà di una licenza composta, per esempio. */
-const TESTI_ALTROVE: Readonly<Record<string, readonly string[]>> = { pako: ["lib/zlib/README"] };
+/** I testi che un pacchetto porta fuori dalla sua radice: la metà di una licenza composta, o la licenza di una libreria incorporata. */
+const TESTI_ALTROVE: Readonly<Record<string, readonly string[]>> = { typescript: ["vendor/vscode-jsonrpc/License.txt"] };
 
 const dipendenze = (JSON.parse(readFileSync(join(RADICE, "package.json"), "utf8")) as { devDependencies: Record<string, string> }).devDependencies;
-/** Pacchetti veri e testi veri, che l'elenco deve contenere: un elenco che li perde è rotto, anche se i conteggi tornano. Le versioni vengono da `package.json`. */
-const CONTROLLI_POSITIVI = [...["typescript", "@vscode/vsce", "@vscode/test-electron"].map((n) => `${n} ${dipendenze[n]}, licenza`), "Permission is hereby granted", "Attribution 4.0 International", "Jean-loup Gailly"];
+/** Le dipendenze dirette, tutte con la licenza in un file a parte alla radice del pacchetto. */
+const DIRETTE_DI_CONTROLLO = ["typescript", "@types/node", "@types/bun"];
+const senzaVersione = DIRETTE_DI_CONTROLLO.filter((n) => dipendenze[n] === undefined);
+if (senzaVersione.length > 0) fermo(`controlli positivi senza una dipendenza in package.json: ${senzaVersione.join(", ")}`);
+/**
+ * Pacchetti veri e testi veri, che l'elenco deve contenere: un elenco che li perde è rotto, anche se i conteggi tornano. Le versioni vengono
+ * da `package.json`. `*AS IS*`, con gli asterischi, è solo nel testo che `typescript` porta in una sottocartella: senza la voce in
+ * `TESTI_ALTROVE` sparisce.
+ */
+const CONTROLLI_POSITIVI = [...DIRETTE_DI_CONTROLLO.map((n) => `${n} ${dipendenze[n]}, licenza`), "Permission is hereby granted", "Attribution 4.0 International", "THE SOFTWARE IS PROVIDED *AS IS*"];
 
 type Pacchetto = { nome: string; versione: string; licenza: string; repository: string; file: string[]; cartella: string };
 
