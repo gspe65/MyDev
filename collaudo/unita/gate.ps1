@@ -23,7 +23,8 @@
 # estensioni e impostazioni si confrontano con prima), A16 il codice generato dal .vsix dell'unita' che compila e gira sui casi d'uso del corpus (Bun e
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
 # all'avvio, con un controllo negativo senza lanciatore, e la pagina dei codec sul suo chrome.exe (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
-# dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo (con le finestre), E6 le guide
+# dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo, e l'editor che dal lanciatore si apre
+# sulla cartella progetti (con le finestre), E6 le guide
 # leggibili (ogni guida .md nostra con la sua copia HTML in guide, tabelle e blocchi di codice uguali, l'indice e la pagina
 # di Chromium che lo collega, con le sonde del verdetto).
 #
@@ -268,6 +269,23 @@ try {
         $Avvisi = @(ProcessiUnita | Where-Object { $_.Name -eq 'pythonw.exe' }).Count
         Annota 'A9' "nessun avviso dal lanciatore: pythonw dell'unita' accesi $Avvisi" $(if ($Avvisi -eq 0) { 0 } else { 1 })
         Chiudi-Tutto
+        # E1: il lanciatore apre l'editor sulla cartella progetti (lo studente vede subito la cartella del flowchart, e le
+        # finestre per aprire un file partono da li'). L'editor scrive lo stato di una cartella aperta in
+        # workspaceStorage\<id>\workspace.json, con la cartella come indirizzo file:///; sull'unita' mai aperta prima, senza
+        # l'argomento del lanciatore, nessuno di questi file nomina progetti. La sonda: una cartella vicina non conta.
+        function NominaProgetti([string]$testo) {
+            $m = [regex]::Match($testo, '"folder"\s*:\s*"file:///([^"]+)"')
+            if (-not $m.Success) { return $false }
+            $p = [Uri]::UnescapeDataString($m.Groups[1].Value).Replace('/', '\').TrimEnd('\')
+            return $p.ToLower() -eq (Join-Path $Rad 'progetti').ToLower()
+        }
+        $Ws = Join-Path $Rad 'vscodium\data\user-data\User\workspaceStorage'
+        $Wj = @()
+        if ([IO.Directory]::Exists($Ws)) { $Wj = @(Get-ChildItem -LiteralPath $Ws -Directory | ForEach-Object { Join-Path $_.FullName 'workspace.json' } | Where-Object { [IO.File]::Exists($_) }) }
+        $SuiProgetti = @($Wj | Where-Object { NominaProgetti ([IO.File]::ReadAllText($_, $Utf8)) }).Count
+        $SondaVicina = NominaProgetti ('{"folder":"file:///' + (Join-Path $Rad 'progetti\c-comuni').Replace('\', '/') + '"}')
+        Scrivi "    cartella dal lanciatore: stati di cartella $($Wj.Count), che nominano progetti di questa radice $SuiProgetti; sonda cartella vicina $SondaVicina (atteso False)"
+        Annota 'E1' "l'editor dal lanciatore si apre sulla cartella progetti" $(if ($SondaVicina) { 2 } elseif ($SuiProgetti -ge 1) { 0 } else { 1 })
         # A7: l'editor aperto dal lanciatore ha caricato l'italiano. La cache delle traduzioni nasce solo se la lingua di
         # argv.json ha un pacchetto installato (misurato: col pacchetto e senza la lingua non nasce), e tcf.json deve
         # nominare questa radice: una cache rimasta da un'altra cartella lascerebbe in inglese le estensioni incorporate.
@@ -395,13 +413,13 @@ try {
         # E1: lo scenario S-E1 dello studente nell'editor dell'unita' (dal flowchart al punto d'arresto, con la finestra
         # "Salva con nome" vera di Windows), con l'ambiente che il gate da' all'editor, quello del lanciatore. Il flowchart
         # non e' mai stato aperto: le aperture prima non lo toccano. Poi il controllo positivo: la stessa corsa col pacchetto
-        # della 0.2.0 deve essere rossa al passo 7 (nessuna pagina). I file dello scenario se1.py li toglie dall'unita'.
+        # della 0.2.0 deve essere rossa al passo 3 (nessuna pagina). I file dello scenario se1.py li toglie dall'unita'.
         Scrivi '=== E1: lo scenario S-E1 nell''editor dell''unita'''
         $GitPc = Get-Command git -ErrorAction SilentlyContinue
         if ($null -eq $GitPc) { Annota 'E1' 'S-E1: git non c''e' 2; Annota 'E1' 'S-E1 controllo positivo: git non c''e' 2 }
         else {
             $Se1 = '-X utf8 -B "' + (Join-Path $Kit 'se1.py') + '" --unita "' + $Rad + '" --lavoro "' + (Join-Path $Lav 'se1') + '" --kit "' + $Kit + '" --repo "' + (Split-Path -Parent (Split-Path -Parent $Qui)) + '" --git "' + $GitPc.Source + '"'
-            foreach ($giro in @(@{ Nome = 'se1'; Arg = ''; Cosa = 'S-E1 dalla pagina al punto d''arresto' }, @{ Nome = 'se1-controllo'; Arg = ' --controllo'; Cosa = 'S-E1 controllo positivo: col pacchetto della 0.2.0 rosso al passo 7' })) {
+            foreach ($giro in @(@{ Nome = 'se1'; Arg = ''; Cosa = 'S-E1 dalla pagina al punto d''arresto' }, @{ Nome = 'se1-controllo'; Arg = ' --controllo'; Cosa = 'S-E1 controllo positivo: col pacchetto della 0.2.0 rosso al passo 3' })) {
                 $r = Lancia $Py ($Se1 + $giro.Arg) $Ambiente
                 [IO.File]::WriteAllText((Join-Path $Lav ($giro.Nome + '.log')), $r.Testo, $Utf8)
                 foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo)') { Scrivi "    $riga" } }
@@ -548,7 +566,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 37 } else { 21 }
+    $Attesi = if ($Finestre) { 38 } else { 21 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }
