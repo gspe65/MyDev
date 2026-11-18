@@ -9,7 +9,8 @@
 // il riferimento dell'inventario è allora quel commit, senza etichetta. Lo zip della release si verifica in tutti e due i modi e resta
 // nel deposito: è il nucleo che le estensioni già distribuite portano (`collaudo/algo/prova.ts`), e la conformità lo prova ancora.
 //
-// Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare). Un'impronta sbagliata è un rosso e non fa riscaricare nulla.
+// Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare). Un'impronta sbagliata è un rosso e non fa riscaricare nulla. Nel modo
+// dal commit, un Bun diverso da quello dichiarato (`dal_commit.bun`) è un fermo prima di costruire: i byte non sarebbero confrontabili.
 //
 // L'adattatore resta in questo repository per i tipi: qui si confronta col punto d'ingresso di AlgoDesign al commit dell'etichetta, a specificatori
 // uguali, perché i tipi siano quelli del file che si usa.
@@ -24,8 +25,7 @@
 // Che cosa NON guarda:
 // - che il pacchetto si comporti come i sorgenti: lo dice la prova di conformità;
 // - che il file della release sia stato costruito davvero da quell'etichetta: si confronta con l'impronta dichiarata;
-// - gli altri file dello zip;
-// - nel modo dal commit, la versione di Bun: si stampa accanto a quella dichiarata, e decide l'impronta (un altro Bun può dare altri byte).
+// - gli altri file dello zip.
 
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -134,6 +134,8 @@ if (dalCommit === undefined) {
 console.log("il file della release resta nel deposito (lo portano le estensioni distribuite) e non si scrive al posto del pacchetto");
 const ingresso = join(estratto, "app", "entrypoint", "index.ts");
 if (!existsSync(ingresso)) fermo(`manca l'estratto del punto d'ingresso: ${ingresso} (bun ricetta/nucleo/estrai.ts)`);
+// Un altro Bun può dare altri byte dagli stessi sorgenti: non si misura, come nel gemello del repository dell'estensione.
+if (Bun.version !== dalCommit.bun) fermo(`bun ${Bun.version}, pacchetto.json dichiara la costruzione dal commit con bun ${dalCommit.bun}: i byte non sono confrontabili`);
 const temporanea = mkdtempSync(join(tmpdir(), "nucleo  costruzione-"));
 process.on("exit", () => rmSync(temporanea, { recursive: true, force: true }));
 const costruito = join(temporanea, "algodesign-core.cjs");

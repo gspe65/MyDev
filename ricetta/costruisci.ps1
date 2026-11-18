@@ -56,7 +56,9 @@ $Variabili = @(
     'vscodium/data/user-data/languagepacks.json',
     'nginx/conf/nginx.conf'
 )
-# Dove nascono file con l'uso dell'unita', non con la costruzione: per la verifica non sono estranei.
+# Dove nascono file con l'uso dell'unita', non con la costruzione: per la verifica non sono estranei. Una voce senza * e' un
+# prefisso (ammette ogni file sotto di lei); una con * e' un modello, letto da verifica.ps1: * vale dentro un nome, **/ vale
+# zero o piu' cartelle.
 $NatiDallUso = @(
     'home/',
     'progetti/',
@@ -68,8 +70,9 @@ $NatiDallUso = @(
     'python/Lib/site-packages/',
     'python/Scripts/',
     # Il Python incorporato in lldb: lldb-dap (il passo passo) all'avvio scrive i __pycache__ dei moduli che carica
-    # (misurato con lo scenario dello studente nel gate: cinque .pyc di encodings/). I file dell'elenco restano controllati.
-    'llvm/python/lib/',
+    # (misurato con lo scenario dello studente nel gate: cinque .pyc di encodings/). Solo quelli: un .py, un .pth o un .pyd
+    # nuovi sotto llvm/python/lib/ sono estranei. I file dell'elenco restano controllati.
+    'llvm/python/lib/**/__pycache__/*.pyc',
     'msys64/etc/hosts',
     'msys64/etc/mtab',
     'msys64/etc/networks',
@@ -81,6 +84,15 @@ $Metadati = @('.BUILDINFO', '.MTREE', '.PKGINFO', '.INSTALL')
 function Scrivi([string]$t) { [Console]::Out.WriteLine($t) }
 function Rosso([string]$m) { Scrivi "ROSSO: $m"; Scrivi 'ESITO: ROSSO'; exit 1 }
 function Fermo([string]$m) { Scrivi "FERMO: $m"; Scrivi 'ESITO: FERMO'; exit 2 }
+
+# Il rosso dei file del deposito che l'elenco non nomina: il totale, i primi tre per nome e il rimedio. La regola resta: ogni
+# variante il suo deposito, e un file in piu' e' un rosso anche se nessun passo della costruzione lo leggerebbe. Un .parte resta
+# solo se il processo e' stato ucciso a meta' scaricamento: si dice che cosa e'.
+function MessaggioEstranei([string[]]$estranei, [string]$deposito) {
+    $primi = @($estranei | Select-Object -First 3 | ForEach-Object { if ($_.EndsWith('.parte')) { $_ + ' (resto di uno scaricamento interrotto)' } else { $_ } })
+    $altri = if ($estranei.Count -gt 3) { ' e altri ' + ($estranei.Count - 3) } else { '' }
+    return 'file estraneo nel deposito, totale ' + $estranei.Count + ': ' + ($primi -join ', ') + $altri + '. L''elenco dei componenti non lo nomina: si sposta fuori dal deposito (' + $deposito + ') o si cancella, poi si rilancia'
+}
 
 function Campo($voce, [string]$nome) {
     $p = $voce.PSObject.Properties[$nome]
@@ -279,11 +291,7 @@ try {
         if ($s -ne $v.sha256) { Rosso "$($v.nome): impronta $s invece di $($v.sha256): $rel" }
     }
     $Estranei = @([IO.Directory]::EnumerateFiles($Dep, '*', [IO.SearchOption]::AllDirectories) | ForEach-Object { $_.Substring($Dep.Length + 1).Replace('\', '/') } | Where-Object { -not $Attesi.ContainsKey($_) })
-    if ($Estranei.Count -gt 0) {
-        # Un .parte resta solo se il processo e' stato ucciso a meta' scaricamento: si dice che cosa e'.
-        $Resto = if ($Estranei[0].EndsWith('.parte')) { ': resto di uno scaricamento interrotto, si cancella' } else { '' }
-        Rosso "file estraneo nel deposito: $($Estranei[0])$Resto (totale $($Estranei.Count))"
-    }
+    if ($Estranei.Count -gt 0) { Rosso (MessaggioEstranei $Estranei $Dep) }
     Scrivi "deposito verificato: voci $(@($Dati.scaricati).Count) piu' $($Release.Count) della release, scaricate ora $Scaricati"
 
     # --- I componenti.

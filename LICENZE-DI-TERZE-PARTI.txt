@@ -17,7 +17,7 @@ Bun, licenza MIT, con JavaScriptCore e WebCore di WebKit sotto LGPL-2.0 e tinycc
 Node.js, licenza MIT, con le licenze dei suoi componenti: https://github.com/nodejs/node/blob/main/LICENSE
 Git, licenza GPL-2.0-only: https://github.com/git/git/blob/master/COPYING
 
-I pacchetti di sviluppo: 6. Si usano per costruire e provare, e non entrano nel pacchetto dell'estensione
+I pacchetti di sviluppo: 6. Si usano per costruire e provare, e non entrano nell'unità
 
 @types/bun 1.4.2, licenza MIT, https://github.com/DefinitelyTyped/DefinitelyTyped.git: testo [3]
 @types/node 26.6.6, licenza MIT, https://github.com/DefinitelyTyped/DefinitelyTyped.git: testo [3]

@@ -7,8 +7,8 @@
 # Che cosa NON guarda:
 # - i file dichiarati variabili, di cui controlla solo la presenza;
 # - che i programmi funzionino;
-# - che cosa contengono i file nati dall'uso sotto i prefissi dichiarati in unita.json: si contano e basta; fa
-#   eccezione una cartella di estensione nuova sotto vscodium/data/extensions/, che e' un ESTRANEO;
+# - che cosa contengono i file nati dall'uso sotto i prefissi dichiarati in unita.json (o che ne seguono i modelli, le voci
+#   con *): si contano e basta; fa eccezione una cartella di estensione nuova sotto vscodium/data/extensions/, che e' un ESTRANEO;
 # - le cartelle vuote: l'elenco ha solo file, e una copia che le perde non si vede.
 # Una radice di disco (E:\) si legge come una cartella qualsiasi.
 
@@ -20,6 +20,20 @@ Set-StrictMode -Version 2
 
 function Scrivi([string]$t) { [Console]::Out.WriteLine($t) }
 function Fermo([string]$m) { Scrivi "FERMO: $m"; Scrivi 'ESITO: FERMO'; exit 2 }
+
+# Un file nato dall'uso: una voce di nati_dall_uso senza * e' un prefisso, confrontato carattere per carattere; una con * e' un
+# modello di tutto il percorso, dove * vale dentro un nome (mai una barra) e **/ vale zero o piu' cartelle.
+function NatoDallUso([string]$rel, $nati) {
+    foreach ($q in $nati) {
+        if ($q.IndexOf('*') -lt 0) {
+            if ($rel.StartsWith($q, [StringComparison]::Ordinal)) { return $true }
+            continue
+        }
+        $rx = '^' + ([regex]::Escape($q) -replace '\\\*\\\*/', '(?:[^/]+/)*' -replace '\\\*', '[^/]*') + '$'
+        if ([regex]::IsMatch($rel, $rx)) { return $true }
+    }
+    return $false
+}
 
 try {
     $Radice = [IO.Path]::GetFullPath($Unita).TrimEnd('\')
@@ -66,9 +80,7 @@ try {
                 $Errori.Add("ESTRANEO: $rel (un'estensione che la costruzione non ha installato)")
                 continue
             }
-            $ammesso = $false
-            foreach ($q in $Nati) { if ($rel.StartsWith($q, [StringComparison]::Ordinal)) { $ammesso = $true; break } }
-            if ($ammesso) { $NatiVisti++ } else { $Errori.Add("ESTRANEO: $rel") }
+            if (NatoDallUso $rel $Nati) { $NatiVisti++ } else { $Errori.Add("ESTRANEO: $rel") }
             continue
         }
         $atteso = $Attesi[$rel]
@@ -79,7 +91,7 @@ try {
     }
     foreach ($k in $Attesi.Keys) { if (-not $Presenti.ContainsKey($k)) { $Errori.Add("MANCA: $k") } }
 
-    Scrivi "file nell'elenco: $($Attesi.Count), con impronta controllata: $Controllati, nati dall'uso: $NatiVisti (prefissi dichiarati: $($Nati.Count)), errori: $($Errori.Count)"
+    Scrivi "file nell'elenco: $($Attesi.Count), con impronta controllata: $Controllati, nati dall'uso: $NatiVisti (voci dichiarate, prefissi o modelli: $($Nati.Count)), errori: $($Errori.Count)"
     if ($Errori.Count -gt 0) {
         $Errori | Sort-Object | Select-Object -First 30 | ForEach-Object { Scrivi "  $_" }
         Scrivi 'ESITO: ROSSO'
