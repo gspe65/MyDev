@@ -2,9 +2,11 @@
 
 **Compilatore:** **solo `gcc`**
 
-Un lavoro che durerebbe 10 secondi viene interrotto dopo 3 da un `SIGALRM`. E' il modo piu' semplice di mettere un timeout su qualcosa che potrebbe non finire mai.
+Un lavoro che durerebbe 10 secondi viene interrotto dopo 3 da un `SIGALRM`. È il modo più semplice di mettere un timeout su qualcosa che potrebbe non finire mai.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-processi/16-allarme`
 
 ```bash
 make
@@ -27,4 +29,4 @@ Cambia `LAVORO_LUNGO` a 1: ora il lavoro finisce prima, `alarm(0)` disdice la sv
 
 Poi rimetti 10 e aggiungi `sa.sa_flags = SA_RESTART;`. Il programma si ferma lo stesso a 3 secondi: `SA_RESTART` riprende una `read` o una `write` interrotte, ma non una `sleep`.
 
-> Un timeout piu' fine (millisecondi, e su un canale specifico) si fa con `poll`: e' il progetto 20.
+> Un timeout più fine (millisecondi, e su un canale specifico) si fa con `poll`: è il progetto 20.

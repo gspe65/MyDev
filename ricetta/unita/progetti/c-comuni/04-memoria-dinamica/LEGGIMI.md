@@ -6,6 +6,8 @@ Un array la cui dimensione si decide durante l'esecuzione: `malloc` per chiederl
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-comuni/04-memoria-dinamica`
+
 ```bash
 make
 ./memoria.exe
@@ -28,6 +30,6 @@ clang -g -fsanitize=address -o memoria.exe main.c
 ./memoria.exe
 ```
 
-Ti dice esattamente che hai scritto fuori dall'array e a quale riga. E' il modo piu' rapido per capire un errore di memoria.
+Ti dice esattamente che hai scritto fuori dall'array e a quale riga. È il modo più rapido per capire un errore di memoria.
 
 > Le **perdite** di memoria (dimenticare la `free`) non sono invece rilevabili su Windows: per quelle serve un vero Linux.

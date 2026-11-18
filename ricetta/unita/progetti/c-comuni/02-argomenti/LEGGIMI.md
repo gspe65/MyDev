@@ -2,9 +2,11 @@
 
 **Compilatore:** **tutti e due**
 
-Mostra come un programma riceve dati dalla riga di comando e come comunica alla shell se e' andato tutto bene.
+Mostra come un programma riceve dati dalla riga di comando e come comunica alla shell se è andato tutto bene.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-comuni/02-argomenti`
 
 ```bash
 make
@@ -27,6 +29,6 @@ argomenti ricevuti : 3
 ## Prova tu
 
 Fai in modo che il programma sommi due numeri passati come argomenti.
-Ti servira' `atoi(argv[1])` (in `<stdlib.h>`).
+Ti servirà `atoi(argv[1])` (in `<stdlib.h>`).
 
-> Compilato con `gcc`, `argv[0]` esce senza `.exe`; con `clang` esce come percorso Windows completo (`C:\...\argomenti.exe`). E' il primo posto in cui i due mondi si vedono, e non e' un errore.
+> Compilato con `gcc`, `argv[0]` esce senza `.exe`; con `clang` esce come percorso Windows completo (`C:\...\argomenti.exe`). È il primo posto in cui i due mondi si vedono, e non è un errore.

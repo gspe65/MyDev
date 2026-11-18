@@ -6,6 +6,8 @@ Crea `elenco.txt`, lo rilegge e conta le righe. Le stesse funzioni (`fopen`, `fp
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-comuni/03-file-testo`
+
 ```bash
 make
 ./file.exe

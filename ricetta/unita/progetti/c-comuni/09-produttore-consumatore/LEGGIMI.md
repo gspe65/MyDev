@@ -2,9 +2,11 @@
 
 **Compilatore:** **tutti e due**
 
-Il problema di sincronizzazione piu' classico. Due thread si passano dieci pezzi attraverso un magazzino da quattro posti, senza mai controllare a vuoto: chi non puo' procedere dorme.
+Il problema di sincronizzazione più classico. Due thread si passano dieci pezzi attraverso un magazzino da quattro posti, senza mai controllare a vuoto: chi non può procedere dorme.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-comuni/09-produttore-consumatore`
 
 ```bash
 make
@@ -26,8 +28,8 @@ finito. Pezzi rimasti in magazzino: 0
 
 ## Prova tu
 
-Cambia `POSTI` da 4 a 1 e rilancia: vedrai molte piu' attese, perche' i due thread devono alternarsi a ogni pezzo.
+Cambia `POSTI` da 4 a 1 e rilancia: vedrai molte più attese, perché i due thread devono alternarsi a ogni pezzo.
 
-Poi cambia il `while (quanti == 0)` del consumatore in `if`: sembra funzionare lo stesso, ed e' proprio questo il problema. Con piu' consumatori quel programma sbaglia, e sbaglia di rado: sono i bug peggiori.
+Poi cambia il `while (quanti == 0)` del consumatore in `if`: sembra funzionare lo stesso, ed è proprio questo il problema. Con più consumatori quel programma sbaglia, e sbaglia di rado: sono i bug peggiori.
 
 > L'ordine esatto delle righe cambia a ogni esecuzione: dipende da come il sistema operativo alterna i due thread.

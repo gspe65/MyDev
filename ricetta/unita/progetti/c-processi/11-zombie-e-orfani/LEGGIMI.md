@@ -6,6 +6,8 @@ Mostra dal vivo le due situazioni che si citano sempre a lezione: un figlio mort
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-processi/11-zombie-e-orfani`
+
 ```bash
 make
 ./zombie.exe
@@ -30,8 +32,8 @@ make
 
 ## Prova tu
 
-L'ultima riga arriva **dopo** che il terminale e' gia' tornato ad aspettarti: il figlio orfano continua a girare anche se chi lo ha creato ha finito.
+L'ultima riga arriva **dopo** che il terminale è già tornato ad aspettarti: il figlio orfano continua a girare anche se chi lo ha creato ha finito.
 
-Per vedere lo zombie con i tuoi occhi apri un **secondo** terminale da `Terminale.exe` e, mentre il programma e' fermo nel `sleep(1)`, scrivi `ps`. Il figlio compare ancora nell'elenco, pur essendo gia' morto.
+Per vedere lo zombie con i tuoi occhi apri un **secondo** terminale da `Terminale.exe` e, mentre il programma è fermo nel `sleep(1)`, scrivi `ps`. Il figlio compare ancora nell'elenco, pur essendo già morto.
 
-> Il numero del "nuovo padre" dell'orfano dipende dal sistema: puo' essere `1` o un altro processo di servizio. Quello che conta e' che **cambia**.
+> Il numero del "nuovo padre" dell'orfano dipende dal sistema: può essere `1` o un altro processo di servizio. Quello che conta è che **cambia**.

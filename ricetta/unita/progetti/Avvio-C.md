@@ -1,4 +1,4 @@
-# Progetti C
+# I comandi essenziali del C
 
 Ambiente portabile con **GCC 15** (MSYS2), **clang 23** (llvm-mingw) e **GNU Make**, eseguiti dentro bash (mintty).
 

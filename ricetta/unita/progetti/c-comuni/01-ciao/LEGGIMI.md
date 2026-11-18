@@ -2,9 +2,11 @@
 
 **Compilatore:** **tutti e due** (`gcc` e `clang`)
 
-Stampa una riga ed esce. Se questo funziona, l'ambiente e' a posto.
+Stampa una riga ed esce. Se questo funziona, l'ambiente è a posto.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-comuni/01-ciao`
 
 ```bash
 make

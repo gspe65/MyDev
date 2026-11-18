@@ -7,6 +7,8 @@ Non serve sapere niente in anticipo: si comincia dal doppio clic.
 
 ## 1. Partire
 
+Se lavori nell'editor, apri `VSCodium.exe`, apri un file `.c` del progetto e usa **▶ Compila ed esegui** nella barra in basso: lo spiega la guida dell'unità (`README.md`). Questa guida segue la strada del terminale.
+
 Doppio clic su **`Terminale.exe`**, nella cartella `MyDev`. Si apre il
 terminale, già nella cartella dei progetti.
 
@@ -143,39 +145,39 @@ e ti indica la riga. È il modo più rapido di trovare un errore di memoria.
 ## 5. La mappa dei progetti
 
 Ventuno progetti numerati, in ordine, più `simple` e `multifile`, i due da cui
-si parte. Ognuno dei ventuno ha il suo `LEGGIMI.md` con i comandi, l'output
+si parte, descritti in `Avvio-C.md`. Ognuno dei ventuno ha il suo `LEGGIMI.md` con i comandi, l'output
 atteso e un esercizio.
 
 ### `c-comuni/` — funzionano con **tutti e due** i compilatori
 
 | | | |
 |---|---|---|
-| 01 | `01-ciao` | il primo programma |
-| 02 | `02-argomenti` | `argc`/`argv` e il valore di uscita |
-| 03 | `03-file-testo` | `fopen`, `fprintf`, `fgets` |
-| 04 | `04-memoria-dinamica` | `malloc`, `realloc`, `free` |
-| 05 | `05-struct-file-binario` | `struct`, `fwrite`, `fread` |
-| 06 | `06-redirezione` | `dup2`: come la shell fa `programma > file` |
-| 07 | `07-thread` | `pthread`, mutex, *race condition* |
-| 08 | `08-thread-asincrono` | far partire un lavoro senza bloccarsi |
-| 09 | `09-produttore-consumatore` | variabili di condizione |
+| 01 | [`01-ciao`](c-comuni/01-ciao/LEGGIMI.md) | il primo programma |
+| 02 | [`02-argomenti`](c-comuni/02-argomenti/LEGGIMI.md) | `argc`/`argv` e il valore di uscita |
+| 03 | [`03-file-testo`](c-comuni/03-file-testo/LEGGIMI.md) | `fopen`, `fprintf`, `fgets` |
+| 04 | [`04-memoria-dinamica`](c-comuni/04-memoria-dinamica/LEGGIMI.md) | `malloc`, `realloc`, `free` |
+| 05 | [`05-struct-file-binario`](c-comuni/05-struct-file-binario/LEGGIMI.md) | `struct`, `fwrite`, `fread` |
+| 06 | [`06-redirezione`](c-comuni/06-redirezione/LEGGIMI.md) | `dup2`: come la shell fa `programma > file` |
+| 07 | [`07-thread`](c-comuni/07-thread/LEGGIMI.md) | `pthread`, mutex, *race condition* |
+| 08 | [`08-thread-asincrono`](c-comuni/08-thread-asincrono/LEGGIMI.md) | far partire un lavoro senza bloccarsi |
+| 09 | [`09-produttore-consumatore`](c-comuni/09-produttore-consumatore/LEGGIMI.md) | variabili di condizione |
 
 ### `c-processi/` — funzionano **solo con `gcc`**
 
 | | | |
 |---|---|---|
-| 10 | `10-fork` | un processo diventa due |
-| 11 | `11-zombie-e-orfani` | cosa succede se non aspetti i figli |
-| 12 | `12-exec` | il processo diventa un altro programma |
-| 13 | `13-pipe` | due processi che si parlano |
-| 14 | `14-fifo` | la pipe con un nome sul disco |
-| 15 | `15-segnali` | `sigaction`, `Ctrl+C`, `kill` |
-| 16 | `16-allarme` | `alarm`: una scadenza sul lavoro |
-| 17 | `17-memoria-condivisa` | `mmap`: memoria in comune fra processi |
-| 18 | `18-semafori` | mutua esclusione fra processi |
-| 19 | `19-processi-asincroni` | `waitpid` con `WNOHANG` |
-| 20 | `20-attesa-con-timeout` | `poll`: aspettare, ma non per sempre |
-| 21 | `21-socket` | due processi che si parlano via rete |
+| 10 | [`10-fork`](c-processi/10-fork/LEGGIMI.md) | un processo diventa due |
+| 11 | [`11-zombie-e-orfani`](c-processi/11-zombie-e-orfani/LEGGIMI.md) | cosa succede se non aspetti i figli |
+| 12 | [`12-exec`](c-processi/12-exec/LEGGIMI.md) | il processo diventa un altro programma |
+| 13 | [`13-pipe`](c-processi/13-pipe/LEGGIMI.md) | due processi che si parlano |
+| 14 | [`14-fifo`](c-processi/14-fifo/LEGGIMI.md) | la pipe con un nome sul disco |
+| 15 | [`15-segnali`](c-processi/15-segnali/LEGGIMI.md) | `sigaction`, `Ctrl+C`, `kill` |
+| 16 | [`16-allarme`](c-processi/16-allarme/LEGGIMI.md) | `alarm`: una scadenza sul lavoro |
+| 17 | [`17-memoria-condivisa`](c-processi/17-memoria-condivisa/LEGGIMI.md) | `mmap`: memoria in comune fra processi |
+| 18 | [`18-semafori`](c-processi/18-semafori/LEGGIMI.md) | mutua esclusione fra processi |
+| 19 | [`19-processi-asincroni`](c-processi/19-processi-asincroni/LEGGIMI.md) | `waitpid` con `WNOHANG` |
+| 20 | [`20-attesa-con-timeout`](c-processi/20-attesa-con-timeout/LEGGIMI.md) | `poll`: aspettare, ma non per sempre |
+| 21 | [`21-socket`](c-processi/21-socket/LEGGIMI.md) | due processi che si parlano via rete |
 
 ### Un percorso possibile
 

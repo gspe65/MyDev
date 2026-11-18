@@ -6,6 +6,8 @@ Il programma si manda un `SIGUSR1` da solo, poi cattura il `Ctrl+C` (`SIGINT`) i
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-processi/15-segnali`
+
 ```bash
 make
 ./segnali.exe
@@ -35,4 +37,4 @@ kill -INT 1140     # come un Ctrl+C
 kill -USR1 1140
 ```
 
-Poi prova `kill -KILL 1140`: quello **non** e' catturabile, e il programma muore all'istante. E' il motivo per cui `kill -9` funziona sempre — e per cui non lascia al programma il tempo di salvare niente.
+Poi prova `kill -KILL 1140`: quello **non** è catturabile, e il programma muore all'istante. È il motivo per cui `kill -9` funziona sempre — e per cui non lascia al programma il tempo di salvare niente.
