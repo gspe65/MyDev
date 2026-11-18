@@ -3,11 +3,15 @@
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File collaudo\unita\gate.ps1 -Unita <cartella con spazi doppi> [-Vsix <file>] [-Altro "<percorso>;<percorso>"] [-Finestre]
 #
-# Con -Finestre apre l'editor cinque volte, sei nell'estesa (le prime due dal lanciatore, la seconda con una differenza finta
-# per il controllo positivo di A9, che apre la finestra di avviso dell'insieme; le ultime due per S-E1, che apre anche la finestra
-# "Salva con nome" di Windows e la preme: coi tasti solo se e' davanti, col messaggio al pulsante anche dietro), e Chromium due volte (dal lanciatore e, per il controllo negativo,
-# senza), e fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
-# stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente).
+# Con -Finestre apre l'editor cinque volte, sei nell'estesa: apertura 1 e apertura 1b dal lanciatore (la 1b con una differenza
+# finta per il controllo positivo di A9, che apre la finestra di avviso dell'insieme), apertura 2 con progetti e un file C,
+# nell'estesa apertura 3 con un progetto Rust, e le due corse di S-E1 (la prima apre anche la finestra "Salva con nome" di
+# Windows e la preme: coi tasti solo se e' davanti, col messaggio al pulsante anche dietro; il controllo positivo si ferma
+# prima). Apre Chromium tre volte, sulla base e sull'estesa: dal lanciatore, senza lanciatore per il controllo negativo di A13,
+# e la pagina dei codec di A13 (prova_codec.py). A16 fa girare l'eseguibile dell'editor come Node, senza finestra, anche senza
+# -Finestre. Fotografa cartelle e registro: la finestra puo' prendere la tastiera. Con -Finestre l'unita' non deve essere mai
+# stata aperta: se home\chromium esiste gia', A13 e' un fermo (il motore della barra verrebbe da un'apertura precedente); se
+# l'editor ha gia' stati di cartella (workspaceStorage) prima dell'apertura 1, E1 dell'apertura 1 e' un fermo.
 # Senza, i percorsi si cercano a file fermi e tracce e ascolti dell'editor non si misurano: l'esito lo dice.
 # Il lavoro sta accanto all'unita', in una cartella che finisce con spazi doppi, e il kit gira da una sua copia li' dentro.
 # Su una copia, la cartella in cui l'unita' e' stata costruita si legge da extensions.json e si cerca anche quella.
@@ -218,6 +222,33 @@ function Avviso-Dal-Lanciatore([string]$finta) {
     return New-Object PSObject -Property @{ Accesi = $accesi; Prima = $prima; Dopo = $dopo; Uguale = ($prima -ceq $dopo) }
 }
 
+# --- E1, l'editor dal lanciatore sulla cartella progetti. L'editor scrive lo stato di una cartella aperta in
+# workspaceStorage\<id>\workspace.json, con la cartella come indirizzo file:///. Le tre funzioni le usa il gate e le chiama
+# anche la sonda senza finestre (le estrae da questo file), su una copia finta della sola cartella workspaceStorage.
+function NominaProgetti([string]$testo, [string]$radice) {
+    $m = [regex]::Match($testo, '"folder"\s*:\s*"file:///([^"]+)"')
+    if (-not $m.Success) { return $false }
+    $p = [Uri]::UnescapeDataString($m.Groups[1].Value).Replace('/', '\').TrimEnd('\')
+    return $p.ToLower() -eq (Join-Path $radice 'progetti').ToLower()
+}
+function Stati-Di-Cartella([string]$radice) {
+    $cartellaStati = Join-Path $radice 'vscodium\data\user-data\User\workspaceStorage'
+    $fileStati = @()
+    if ([IO.Directory]::Exists($cartellaStati)) { $fileStati = @(Get-ChildItem -LiteralPath $cartellaStati -Directory | ForEach-Object { Join-Path $_.FullName 'workspace.json' } | Where-Object { [IO.File]::Exists($_) }) }
+    $codifica = New-Object Text.UTF8Encoding($false)
+    $suProgetti = @($fileStati | Where-Object { NominaProgetti ([IO.File]::ReadAllText($_, $codifica)) $radice }).Count
+    return New-Object PSObject -Property @{ Totale = $fileStati.Count; SuiProgetti = $suProgetti }
+}
+# Il verdetto: fermo se la sonda della cartella vicina si accende o se la copia aveva gia' stati di cartella prima
+# dell'apertura 1 (uno stato vecchio su progetti darebbe il verde qualunque cosa faccia il lanciatore); poi verde se uno
+# stato nomina progetti, rosso se no.
+function Esito-E1($prima, $dopo, [bool]$vicina) {
+    if ($vicina) { return 2 }
+    if ($prima.Totale -gt 0) { return 2 }
+    if ($dopo.SuiProgetti -ge 1) { return 0 }
+    return 1
+}
+
 try {
     $Qui = Split-Path -Parent $MyInvocation.MyCommand.Definition
     $Rad = [IO.Path]::GetFullPath($Unita).TrimEnd('\')
@@ -260,6 +291,9 @@ try {
     if ($Finestre) {
         Scrivi '=== U15: prima fotografia'
         $null = Passo 'U15' 'foto-prima' $Py ('-X utf8 -B "' + (Join-Path $Kit 'tracce.py') + '" foto "' + $Rip + '" prima')
+        # E1, la premessa: la copia mai aperta, cioe' nessuno stato di cartella dell'editor prima dell'apertura 1.
+        $StatiPrima = Stati-Di-Cartella $Rad
+        Scrivi "    stati di cartella dell'editor prima dell'apertura 1: $($StatiPrima.Totale), su progetti $($StatiPrima.SuiProgetti) (atteso 0: copia mai aperta)"
         Scrivi '=== apertura 1, dal lanciatore'
         Apri (Join-Path $Rad 'VSCodium.exe') '' $null
         Attendi-Editor
@@ -270,22 +304,14 @@ try {
         Annota 'A9' "nessun avviso dal lanciatore: pythonw dell'unita' accesi $Avvisi" $(if ($Avvisi -eq 0) { 0 } else { 1 })
         Chiudi-Tutto
         # E1: il lanciatore apre l'editor sulla cartella progetti (lo studente vede subito la cartella del flowchart, e le
-        # finestre per aprire un file partono da li'). L'editor scrive lo stato di una cartella aperta in
-        # workspaceStorage\<id>\workspace.json, con la cartella come indirizzo file:///; sull'unita' mai aperta prima, senza
-        # l'argomento del lanciatore, nessuno di questi file nomina progetti. La sonda: una cartella vicina non conta.
-        function NominaProgetti([string]$testo) {
-            $m = [regex]::Match($testo, '"folder"\s*:\s*"file:///([^"]+)"')
-            if (-not $m.Success) { return $false }
-            $p = [Uri]::UnescapeDataString($m.Groups[1].Value).Replace('/', '\').TrimEnd('\')
-            return $p.ToLower() -eq (Join-Path $Rad 'progetti').ToLower()
-        }
-        $Ws = Join-Path $Rad 'vscodium\data\user-data\User\workspaceStorage'
-        $Wj = @()
-        if ([IO.Directory]::Exists($Ws)) { $Wj = @(Get-ChildItem -LiteralPath $Ws -Directory | ForEach-Object { Join-Path $_.FullName 'workspace.json' } | Where-Object { [IO.File]::Exists($_) }) }
-        $SuiProgetti = @($Wj | Where-Object { NominaProgetti ([IO.File]::ReadAllText($_, $Utf8)) }).Count
-        $SondaVicina = NominaProgetti ('{"folder":"file:///' + (Join-Path $Rad 'progetti\c-comuni').Replace('\', '/') + '"}')
-        Scrivi "    cartella dal lanciatore: stati di cartella $($Wj.Count), che nominano progetti di questa radice $SuiProgetti; sonda cartella vicina $SondaVicina (atteso False)"
-        Annota 'E1' "l'editor dal lanciatore si apre sulla cartella progetti" $(if ($SondaVicina) { 2 } elseif ($SuiProgetti -ge 1) { 0 } else { 1 })
+        # finestre per aprire un file partono da li'). La premessa "copia mai aperta" e' misurata prima dell'apertura 1
+        # ($StatiPrima): con zero stati di cartella prima, uno stato su progetti dopo e' nato dall'apertura 1, cioe' dal
+        # lanciatore; con uno stato gia' presente il passo e' un fermo. La sonda: una cartella vicina non conta.
+        $StatiDopo = Stati-Di-Cartella $Rad
+        $SondaVicina = NominaProgetti ('{"folder":"file:///' + (Join-Path $Rad 'progetti\c-comuni').Replace('\', '/') + '"}') $Rad
+        Scrivi "    cartella dal lanciatore: stati di cartella $($StatiDopo.Totale), che nominano progetti di questa radice $($StatiDopo.SuiProgetti); prima dell'apertura 1 $($StatiPrima.Totale); sonda cartella vicina $SondaVicina (atteso False)"
+        $CosaE1 = if ($StatiPrima.Totale -gt 0) { "l'editor dal lanciatore sulla cartella progetti: fermo, la copia non e' 'mai aperta' ($($StatiPrima.Totale) stati di cartella gia' presenti prima dell'apertura 1), serve un'unita' mai aperta" } else { "l'editor dal lanciatore si apre sulla cartella progetti" }
+        Annota 'E1' $CosaE1 (Esito-E1 $StatiPrima $StatiDopo $SondaVicina)
         # A7: l'editor aperto dal lanciatore ha caricato l'italiano. La cache delle traduzioni nasce solo se la lingua di
         # argv.json ha un pacchetto installato (misurato: col pacchetto e senza la lingua non nasce), e tcf.json deve
         # nominare questa radice: una cache rimasta da un'altra cartella lascerebbe in inglese le estensioni incorporate.
@@ -312,7 +338,8 @@ try {
         if (-not $Positivo.Uguale) { Scrivi "    prima: $($Positivo.Prima)"; Scrivi "    dopo:  $($Positivo.Dopo)" }
         Annota 'A9' 'differenza finta tolta: estensioni e impostazioni come prima' $(if ($Positivo.Uguale) { 0 } else { 1 })
         Scrivi '=== apertura 2, con una cartella e un file'
-        # Lo stesso ambiente che da' il lanciatore, che non accetta una cartella da aprire: senza il PATH clangd sarebbe un altro.
+        # Lo stesso ambiente che da' il lanciatore, che apre sempre e solo la cartella progetti e non accetta un file da aprire
+        # (qui servono progetti e main.c, per accendere clangd): senza il PATH clangd sarebbe un altro.
         # Nell'estesa anche le sue variabili, come prepara_estesa di lancia.c: progetti contiene i progetti Rust, rust-analyzer si
         # accende gia' qui, e senza CARGO_HOME lancia il cargo del profilo dell'utente, se sul PC c'e'.
         # I nomi di questo elenco si confrontano con quelli del lanciatore e dei collegamenti di ripiego (ambienti.py).
@@ -422,7 +449,7 @@ try {
             foreach ($giro in @(@{ Nome = 'se1'; Arg = ''; Cosa = 'S-E1 dalla pagina al punto d''arresto' }, @{ Nome = 'se1-controllo'; Arg = ' --controllo'; Cosa = 'S-E1 controllo positivo: col pacchetto della 0.2.0 rosso al passo 3' })) {
                 $r = Lancia $Py ($Se1 + $giro.Arg) $Ambiente
                 [IO.File]::WriteAllText((Join-Path $Lav ($giro.Nome + '.log')), $r.Testo, $Utf8)
-                foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo)') { Scrivi "    $riga" } }
+                foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo|impostazioni del debug|barra di stato|sonde del giudice)') { Scrivi "    $riga" } }
                 Annota 'E1' $giro.Cosa $r.Uscita
                 Chiudi-Tutto
             }

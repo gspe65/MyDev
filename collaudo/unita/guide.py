@@ -12,9 +12,15 @@ essere uguali; ogni collegamento relativo di una copia deve portare a un file de
 copia, e ogni suo collegamento deve portare a un file; la pagina di Chromium
 (`chromium/benvenuto.html`) deve collegare l'indice.
 
-Il verdetto è una funzione sola, attraversata dal dato vero e dalle sonde false in coda: una copia tolta, una copia in
-più, una tabella persa, un blocco di codice perso, un collegamento rotto in una copia, un collegamento dell'indice tolto,
-la pagina di Chromium senza l'indice. Ogni sonda deve dare il rosso col proprio nome, e solo quello.
+Le coppie si contano contro un atteso dichiarato per variante (COPPIE: la base e l'estesa, riconosciuta dall'elenco come la
+riconosce il lanciatore, da `programmi/Git/cmd/git.exe`): una guida entrata o uscita dal perimetro scende o sale insieme dalla
+sorgente e dalla copia, e senza l'atteso resterebbe verde.
+
+Il verdetto è una funzione sola, attraversata dal dato vero e dalle sonde false in coda, una per ramo: una copia tolta, una
+copia in più, una tabella persa, un blocco di codice perso, un collegamento rotto in una copia, un recinto di codice non
+chiuso nel sorgente, un collegamento dell'indice tolto, l'indice tolto, un collegamento dell'indice a un file che non c'è, la
+pagina di Chromium senza l'indice, la pagina di Chromium tolta, una guida tolta con la sua copia (le coppie contro l'atteso).
+Ogni sonda deve dare il rosso col proprio nome, e solo quello.
 
 Che cosa NON guarda: che il testo della copia sia quello del sorgente parola per parola, né l'aspetto della pagina (lo
 guarda un occhio, nel cancello d'usabilità); i blocchi di codice rientrati di quattro spazi e le tabelle senza la riga
@@ -33,6 +39,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 INDICE = "guide/indice.html"
 BENVENUTO = "chromium/benvenuto.html"
+# Le coppie guida e copia attese per variante, misurate sulle unità costruite (base 24, estesa 49). Una guida nuova o tolta
+# cambia questo numero nello stesso commit.
+COPPIE = {"base": 24, "estesa": 49}
+# Il segno dell'estesa nell'elenco dell'unità, lo stesso file con cui la riconoscono il lanciatore e il gate.
+SEGNO_ESTESA = "programmi/Git/cmd/git.exe"
 
 
 def fermo(m):
@@ -85,9 +96,11 @@ def copia_di(rel):
     return "guide/" + rel[: -len(".md")] + ".html"
 
 
-def giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti):
+def giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti, variante):
     """Il verdetto, uguale per il dato vero e per le sonde: torna l'elenco dei difetti, ciascuno col nome del file."""
     difetti = []
+    if len(guide) != COPPIE[variante]:
+        difetti.append(f"guide nostre {len(guide)}, attese {COPPIE[variante]} nella variante {variante}: una guida entrata o uscita dal perimetro")
     attese = {copia_di(g): g for g in guide}
     for g in guide:
         if copia_di(g) not in copie:
@@ -139,8 +152,9 @@ def main():
         fermo(f"manca {f}")
     elenco = [r.split("  ", 1)[1] for r in f.read_text(encoding="utf-8").splitlines() if "  " in r]
     esistenti = set(elenco)
+    variante = "estesa" if SEGNO_ESTESA in esistenti else "base"
     guide, copie = guide_e_copie(elenco)
-    print(f"file nell'elenco dell'unità: {len(elenco)}; guide nostre: {len(guide)}; copie: {len(copie)}")
+    print(f"file nell'elenco dell'unità: {len(elenco)}; variante {variante}; guide nostre: {len(guide)}, attese {COPPIE[variante]}; copie: {len(copie)}")
     if not guide:
         fermo("nessuna guida nell'elenco dell'unità")
 
@@ -162,7 +176,7 @@ def main():
             tot[k] += s[k]
     print(f"nei sorgenti: tabelle {tot['tabelle']}, blocchi di codice {tot['codice']}")
 
-    difetti = giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti)
+    difetti = giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti, variante)
     for d in difetti:
         print(f"ROSSO: {d}")
 
@@ -196,13 +210,29 @@ def main():
         "Chromium senza l'indice": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
                                          benvenuto=(benvenuto or "").replace("indice.html", "altro.html")),
                                     f"la pagina di Chromium non collega l'indice: {BENVENUTO}"),
+        # Un recinto in più in coda: i blocchi interi restano quanti erano (la divisione per due), il recinto resta aperto.
+        "recinto non chiuso": (dict(guide=guide, copie=copie, sorgenti={**sorgenti, scelta: sorgenti[scelta] + "\n```\n"}, pagine=pag),
+                               f"recinto di codice non chiuso nel sorgente: {scelta}"),
+        # Senza indice le copie non si cercano nell'indice: il solo difetto è l'indice che manca.
+        "indice tolto": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag, indice=None), f"manca l'indice: {INDICE}"),
+        "indice con un collegamento rotto": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
+                                                  indice=(indice or "") + '<a href="non-c-e.html">x</a>'),
+                                             "collegamento dell'indice a un file che non c'è: guide/non-c-e.html"),
+        "pagina di Chromium tolta": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag, benvenuto=None),
+                                     f"manca la pagina di Chromium: {BENVENUTO}"),
+        # La guida esce dal perimetro con la sua copia: sorgente e copia scendono insieme, e solo l'atteso lo vede. Il difetto
+        # atteso si riconosce senza i numeri: se il dato vero e' gia' fuori dall'atteso, la sonda non e' misurabile (togliere
+        # una guida potrebbe ritrovare l'atteso per caso) e l'esito resta il rosso del dato vero.
+        "guida tolta con la sua copia": (dict(guide=[g for g in guide if g != scelta], copie=[c for c in copie if c != cs],
+                                              sorgenti=sorgenti, pagine=pag),
+                                         "guide nostre "),
     }
     spente = []
     for nome, (dati, atteso) in sonde.items():
         attesi = atteso if isinstance(atteso, list) else [atteso]
         dati.setdefault("indice", indice)
         dati.setdefault("benvenuto", benvenuto)
-        d = giudica(esistenti=esistenti | {"guide/progetti/in-piu.html"}, **dati)
+        d = giudica(esistenti=esistenti | {"guide/progetti/in-piu.html"}, variante=variante, **dati)
         nuovi = [x for x in d if x not in difetti]
         # Accesa: ogni difetto atteso c'è, per intero all'inizio della riga, e la sonda non ne fa nascere altri. Se il dato vero
         # ha già il difetto della sonda, la sonda non si può misurare: lo si dice, e l'esito resta il rosso del dato vero.
@@ -213,13 +243,14 @@ def main():
         print(f"sonda «{nome}» su {scelta}: {'ACCESA' if acceso else 'SPENTA'} ({'; '.join(nuovi) or 'nessun difetto nuovo'})")
         if not acceso:
             spente.append(nome)
+    print(f"sonde: {len(sonde) - len(spente)} non spente su {len(sonde)}")
     if spente:
         fermo(f"sonde che non si accendono: {', '.join(spente)}")
     if difetti:
         print(f"difetti: {len(difetti)}")
         print("ESITO: ROSSO")
         sys.exit(1)
-    print(f"coppie: {len(guide)}, tabelle e blocchi uguali, indice e pagina di Chromium collegati")
+    print(f"coppie: {len(guide)}, attese {COPPIE[variante]} ({variante}), tabelle e blocchi uguali, indice e pagina di Chromium collegati")
     print("ESITO: VERDE")
 
 
