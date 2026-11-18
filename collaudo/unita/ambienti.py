@@ -10,13 +10,16 @@ comune e per quella dell'unita' estesa, con le eccezioni dichiarate qui sotto. I
 (vscodium\\<nome>.py: la lingua, l'insieme delle estensioni) che il lanciatore di VSCodium e il suo .bat di ripiego
 lanciano: gli stessi nomi nei due versi. E le righe di comando intere, fra il lanciatore (i letterali di componi) e i
 .bat di ripiego (VSCodium.bat, Chromium.bat), con la radice al posto di %ls e di %BASE%: per ogni script dell'editor
-interprete (python o pythonw), opzioni e argomenti; per Chromium eseguibile, profilo, opzioni e pagina d'avvio. Infine
+interprete (python o pythonw), opzioni e argomenti; per l'editor eseguibile e argomenti (la cartella dei progetti su cui
+si apre); per Chromium eseguibile, profilo, opzioni e pagina d'avvio. Una riga diversa nomina gli argomenti che sono
+solo nell'una o solo nell'altra. Infine
 l'interprete che il passo A9 del gate conta fra i processi accesi deve essere quello con cui il lanciatore avvia
 l'insieme: con un altro, A9 conterebbe zero per sempre.
 
 Con --sonde, in coda: un nome tolto da una copia e uno aggiunto devono dare DIVERSO, e cosi' uno script tolto dal
-ripiego; e, passando dal lettore dei .bat, l'interprete dell'insieme cambiato, un'opzione tolta alla lingua e
-un'opzione tolta a Chromium; e un interprete diverso contato dal gate.
+ripiego; e, passando dal lettore dei .bat, l'interprete dell'insieme cambiato, un'opzione tolta alla lingua,
+un'opzione tolta a Chromium e la cartella dei progetti tolta all'editor (il DIVERSO deve nominarla); e un interprete
+diverso contato dal gate.
 
 Uscite: 0 verde, 1 rosso (nomina le variabili), 2 fermo (un file manca, o una copia non si legge).
 
@@ -104,11 +107,18 @@ def confronta_script(lanciatore, ripiego):
 
 
 def chiave_comando(riga):
-    """Lo script dell'editor o Chromium che la riga lancia, o None."""
+    """Lo script dell'editor, l'editor o Chromium che la riga lancia, o None."""
     m = re.search(r'\\vscodium\\(\w+)\.py"', riga)
     if m:
         return m.group(1)
+    if '\\vscodium\\VSCodium.exe"' in riga:
+        return "editor"
     return "chromium" if '\\chromium\\chrome.exe"' in riga else None
+
+
+def argomenti(riga):
+    """Le parole di una riga di comando: un tratto fra virgolette (con gli spazi dentro) o una parola senza spazi."""
+    return re.findall(r'"[^"]*"|\S+', riga)
 
 
 def comandi_lanciatore(testo):
@@ -147,7 +157,12 @@ def confronta_comandi(lanciatore, ripiego):
         elif a is None:
             d.append(f"comando di {k}: nel ripiego e non nel lanciatore")
         elif a != b:
-            d.append(f"comando di {k}: lanciatore [{a}] ripiego [{b}]")
+            # Gli argomenti dell'uno che l'altro non ha, per nome: un argomento tolto si legge senza confrontare due righe a occhio.
+            pa, pb = argomenti(a), argomenti(b)
+            solo_l = [x for x in pa if x not in pb]
+            solo_r = [x for x in pb if x not in pa]
+            nomi = "; ".join([f"solo nel lanciatore {x}" for x in solo_l] + [f"solo nel ripiego {x}" for x in solo_r]) or "stessi argomenti, in un altro ordine o ripetuti"
+            d.append(f"comando di {k}: {nomi}: lanciatore [{a}] ripiego [{b}]")
     return d
 
 
@@ -220,9 +235,10 @@ def main():
     print(f"righe di comando: lanciatore {len(cl)} ({' '.join(sorted(cl))}), ripiego {len(cr)} ({' '.join(sorted(cr))})")
     for k in sorted(cl):
         print(f"  {k}: {cl[k]}")
-    # Il lettore deve aver visto ogni script dell'editor e Chromium: un comando non letto non si confronta.
-    if set(cl) != sl | {"chromium"}:
-        fermo(f"righe di comando del lanciatore lette {sorted(cl)}, attese {sorted(sl | {'chromium'})}")
+    # Il lettore deve aver visto ogni script dell'editor, l'editor e Chromium: un comando non letto non si confronta. Il ripiego
+    # che non ha una riga la dice DIVERSO (nel lanciatore e non nel ripiego), non qui.
+    if set(cl) != sl | {"editor", "chromium"}:
+        fermo(f"righe di comando del lanciatore lette {sorted(cl)}, attese {sorted(sl | {'editor', 'chromium'})}")
     contato = interprete_gate(leggi("collaudo/unita/gate.ps1"))
     print(f"interprete contato da A9 nel gate: {contato}")
     diff = confronta(l, copie) + confronta_script(sl, sr) + confronta_comandi(cl, cr) + confronta_interprete(cl, contato)
@@ -238,17 +254,22 @@ def main():
                  "script tolto": bool(confronta_script(sl, sr - {sorted(sr)[-1]}))}
         # Le righe di comando: una mutazione del testo del .bat, riletta dallo stesso lettore. Ogni mutazione deve
         # toccare il testo una volta sola, o la sonda non prova nulla.
+        # L'ultimo elemento, se c'e', e' cio' che il DIVERSO deve nominare.
         mutazioni = [
-            ("interprete dell'insieme", bat_editor, "pythonw.exe\" -I -B \"%BASE%\\vscodium\\insieme.py", "python.exe\" -I -B \"%BASE%\\vscodium\\insieme.py"),
-            ("opzione tolta alla lingua", bat_editor, "-I -B \"%BASE%\\vscodium\\lingua.py", "-B \"%BASE%\\vscodium\\lingua.py"),
-            ("opzione tolta a Chromium", bat_chromium, " --disable-extensions", ""),
+            ("interprete dell'insieme", bat_editor, "pythonw.exe\" -I -B \"%BASE%\\vscodium\\insieme.py", "python.exe\" -I -B \"%BASE%\\vscodium\\insieme.py", None),
+            ("opzione tolta alla lingua", bat_editor, "-I -B \"%BASE%\\vscodium\\lingua.py", "-B \"%BASE%\\vscodium\\lingua.py", None),
+            ("opzione tolta a Chromium", bat_chromium, " --disable-extensions", "", None),
+            ("cartella dei progetti tolta all'editor", bat_editor, "VSCodium.exe\" \"%BASE%\\progetti\"", "VSCodium.exe\"",
+             "comando di editor: solo nel lanciatore \"<R>\\progetti\""),
         ]
-        for nome, testo, vecchio, nuovo in mutazioni:
+        for nome, testo, vecchio, nuovo, nomina in mutazioni:
             toccate = testo.count(vecchio)
             mutato = comandi_ripiego(testo.replace(vecchio, nuovo))
             altro = bat_chromium if testo is bat_editor else bat_editor
-            esiti[nome] = toccate == 1 and bool(confronta_comandi(cl, {**comandi_ripiego(altro), **mutato}))
-            print(f"  sonda {nome}: occorrenze toccate {toccate}")
+            righe = confronta_comandi(cl, {**comandi_ripiego(altro), **mutato})
+            esiti[nome] = toccate == 1 and bool(righe) and (nomina is None or any(r.startswith(nomina) for r in righe))
+            # Non «DIVERSO:»: il gate riporta quelle righe come differenze vere.
+            print(f"  sonda {nome}: occorrenze toccate {toccate}" + "".join(f"\n    la sonda vede: {r}" for r in righe))
         esiti["interprete contato dal gate"] = bool(confronta_interprete(cl, "python.exe" if contato != "python.exe" else "pythonw.exe"))
         print("sonde: " + " ".join(f"{k}={'DIVERSO' if v else 'UGUALE'}" for k, v in esiti.items()))
         print(f"sonde accese: {sum(esiti.values())} su {len(esiti)}")
