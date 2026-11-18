@@ -7,8 +7,8 @@
 // (Invio o Alt+S solo con la finestra davanti; il messaggio al pulsante anche dietro). «▶ Compila ed esegui» e «Passo passo» sono i comandi dei due pulsanti dell'estensione per
 // il C; il numero si scrive nel terminale con sendText; il punto d'arresto si mette dove lo mette il clic sul margine.
 //
-// Che cosa NON guarda: i passi 1–6 (lanciatore, «File», «Apri cartella…»): l'editor parte con la cartella `progetti` dagli
-// argomenti, il lanciatore lo provano le aperture del gate; i pixel dello schermo (la foto della finestra di dialogo si guarda a
+// Che cosa NON guarda: i passi 1–2 (lanciatore, cartella `flowchart`): l'editor parte con la cartella `progetti` dagli
+// argomenti, come dal lanciatore, e il lanciatore lo provano le aperture del gate; i pixel dello schermo (la foto della finestra di dialogo si guarda a
 // occhio); il clic sul margine come gesto del puntatore.
 
 const { spawn } = require("node:child_process");
@@ -91,23 +91,23 @@ exports.run = async () => {
 
 async function scenario() {
   const cartella = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? null;
-  passo("1-6", "l'editor dell'unità con la cartella progetti", { cartella }, cartella !== null && cartella.toLowerCase() === join(SE1_UNITA, "progetti").toLowerCase());
+  passo("1-2", "l'editor dell'unità con la cartella progetti", { cartella }, cartella !== null && cartella.toLowerCase() === join(SE1_UNITA, "progetti").toLowerCase());
 
-  // 7. Il flowchart, come lo apre un clic in «Esplora risorse»: l'editor predefinito per quel file.
+  // 3. Il flowchart, come lo apre un clic in «Esplora risorse»: l'editor predefinito per quel file.
   await vscode.extensions.getExtension("gilan65.algodesign-code")?.activate();
   await vscode.commands.executeCommand("vscode.open", vscode.Uri.file(SE1_ALGO));
   const p7 = await aspetta((f) => f.versione > 0 && f.titolo !== "" && f.disegno.svg !== null, 30000);
   await pausa(500);
   const v7 = vistaAttiva();
-  passo(7, "lettura-intero.algo", { vista: v7, titolo: p7?.titolo ?? null, schede: p7?.funzioni ?? null, disegno: p7?.disegno.svg !== null && p7?.disegno.svg !== undefined, codice: p7?.codice !== null && p7?.codice !== undefined }, v7.tipo === "pagina" && v7.viewType === "algo.pagina" && p7 !== null && p7.disegno.svg !== null && p7.codice !== null);
+  passo(3, "lettura-intero.algo", { vista: v7, titolo: p7?.titolo ?? null, schede: p7?.funzioni ?? null, disegno: p7?.disegno.svg !== null && p7?.disegno.svg !== undefined, codice: p7?.codice !== null && p7?.codice !== undefined }, v7.tipo === "pagina" && v7.viewType === "algo.pagina" && p7 !== null && p7.disegno.svg !== null && p7.codice !== null);
 
-  // 8–9. «Linguaggio» → «C»: il codice C, in italiano.
+  // 4–5. «Linguaggio» → «C»: il codice C, in italiano.
   await foto('[data-scelta="c"]');
   const p9 = await aspetta((f) => f.linguaggi.some((x) => x.nome === "C" && x.attivo), 5000);
-  passo("8-9", "«Linguaggio» → «C»", { linguaggi: p9?.linguaggi, lingue: p9?.lingue, inizio: (p9?.codice ?? "").slice(0, 60) }, p9?.linguaggi.some((x) => x.nome === "C" && x.attivo) && p9.lingue.some((x) => x.nome === "italiano" && x.attivo) && (p9.codice ?? "").includes("int main("));
+  passo("4-5", "«Linguaggio» → «C»", { linguaggi: p9?.linguaggi, lingue: p9?.lingue, inizio: (p9?.codice ?? "").slice(0, 60) }, p9?.linguaggi.some((x) => x.nome === "C" && x.attivo) && p9.lingue.some((x) => x.nome === "italiano" && x.attivo) && (p9.codice ?? "").includes("int main("));
   const codice = p9.codice;
 
-  // 10–11. «Salva il codice come…», poi «Salva» nella finestra VERA di Windows (dialogo.ps1, Invio).
+  // 6–7. «Salva il codice come…», poi «Salva» nella finestra VERA di Windows (dialogo.ps1, Invio).
   const fileC = join(SE1_ALGO, "..", "lettura-intero.c");
   const fuori = join(SE1_LAVORO, "dialogo.json");
   const ps = join(process.env.SystemRoot, "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
@@ -116,7 +116,7 @@ async function scenario() {
     p.on("exit", (c) => r(c));
   });
   const p10 = await foto("#salva-codice");
-  passo(10, "«Salva il codice come…»", { comando: p10?.salvataggio.comando ?? null }, p10 !== null && p10.salvataggio.comando !== null);
+  passo(6, "«Salva il codice come…»", { comando: p10?.salvataggio.comando ?? null }, p10 !== null && p10.salvataggio.comando !== null);
   const uscitaDialogo = await lato;
   // dialogo.ps1 scrive UTF-8 senza BOM.
   const dialogo = existsSync(fuori) ? JSON.parse(readFileSync(fuori, "utf8")) : null;
@@ -124,27 +124,28 @@ async function scenario() {
   await attendi(() => vscode.window.activeTextEditor?.document.uri.fsPath.toLowerCase() === fileC.toLowerCase(), 10000);
   const scritto = existsSync(fileC) ? readFileSync(fileC, "utf8") : null;
   const attivo = vscode.window.activeTextEditor?.document.uri.fsPath ?? null;
-  passo(11, "«Salva»", { dialogo, uscitaDialogo, riga: p11?.salvataggio.riga ?? null, attivo, uguale: scritto !== null && scritto.replace(/\r\n/g, "\n").replace(/\n$/, "") === codice }, uscitaDialogo === 0 && scritto !== null && scritto.replace(/\r\n/g, "\n").replace(/\n$/, "") === codice && attivo !== null && attivo.toLowerCase() === fileC.toLowerCase());
+  passo(7, "«Salva»", { dialogo, uscitaDialogo, riga: p11?.salvataggio.riga ?? null, attivo, uguale: scritto !== null && scritto.replace(/\r\n/g, "\n").replace(/\n$/, "") === codice }, uscitaDialogo === 0 && scritto !== null && scritto.replace(/\r\n/g, "\n").replace(/\n$/, "") === codice && attivo !== null && attivo.toLowerCase() === fileC.toLowerCase());
 
-  // 12–13. «▶ Compila ed esegui», poi 21 e Invio: nel terminale 42.
+  // 8–9. «▶ Compila ed esegui», poi 21 e Invio: nel terminale 42. La riga prima del programma comincia con «Eseguo
+  // lettura-intero.exe» (dall'estensione per il C 0.0.2 seguita da ciò che dice di scrivere lì).
   const programmaC = () => vscode.window.terminals.filter((t) => t.creationOptions?.name === "Programma C" && t.exitStatus === undefined).at(-1);
   await vscode.commands.executeCommand("c-run.compilaEdEsegui");
-  const pronto = await attendi(async () => (await testoDel(programmaC())).includes("Eseguo lettura-intero.exe:"), 90000);
+  const pronto = await attendi(async () => (await testoDel(programmaC())).includes("Eseguo lettura-intero.exe"), 90000);
   await pausa(1000);
   programmaC()?.sendText("21", true);
   await attendi(async () => (await testoDel(programmaC())).includes("(finito:"), 30000);
   const t13 = await testoDel(programmaC());
-  const dopo = t13.split("Eseguo lettura-intero.exe:").at(-1) ?? "";
-  passo("12-13", "«▶ Compila ed esegui», 21 e Invio", { pronto, terminale: t13.slice(-600) }, pronto && /(^|\D)42(\D|$)/.test(dopo) && dopo.includes("(finito: uscita 0)"));
+  const dopo = t13.split("Eseguo lettura-intero.exe").at(-1) ?? "";
+  passo("8-9", "«▶ Compila ed esegui», 21 e Invio", { pronto, terminale: t13.slice(-600) }, pronto && /(^|\D)42(\D|$)/.test(dopo) && dopo.includes("(finito: uscita 0)"));
 
-  // 14. Il punto d'arresto sulla riga di printf (dove lo mette il clic sul margine).
+  // 10. Il punto d'arresto sulla riga di printf (dove lo mette il clic sul margine).
   const ed = vscode.window.visibleTextEditors.find((x) => x.document.uri.fsPath.toLowerCase() === fileC.toLowerCase()) ?? (await vscode.window.showTextDocument(vscode.Uri.file(fileC), { preview: false }));
   const righe = ed.document.getText().split("\n");
   const riga = righe.findIndex((r) => r.includes("printf(") && r.includes("n * 2"));
   vscode.debug.addBreakpoints([new vscode.SourceBreakpoint(new vscode.Location(ed.document.uri, new vscode.Position(riga, 0)))]);
-  passo(14, "clic sul margine della riga di printf", { riga: riga + 1 }, riga >= 0);
+  passo(10, "clic sul margine della riga di printf", { riga: riga + 1 }, riga >= 0);
 
-  // 15–16. «Passo passo», poi 21: fermo su quella riga, n = 21.
+  // 11–12. «Passo passo», poi 21: fermo su quella riga, n = 21.
   eventi.length = 0;
   aperti.length = 0;
   let sessione;
@@ -167,5 +168,5 @@ async function scenario() {
   }
   s.dispose();
   vscode.debug.removeBreakpoints(vscode.debug.breakpoints);
-  passo("15-16", "«Passo passo», 21", v16, fermo && v16.riga === riga + 1 && v16.n === "21");
+  passo("11-12", "«Passo passo», 21", v16, fermo && v16.riga === riga + 1 && v16.n === "21");
 }

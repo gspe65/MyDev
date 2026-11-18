@@ -10,7 +10,7 @@ Alla radice ci sono i collegamenti. Ognuno avvia gli strumenti **di questa copia
 
 | Collegamento | Che cosa apre |
 |---|---|
-| `VSCodium.exe` | L'editor. Un progetto si apre con **File → Apri cartella…**, dalla cartella `progetti` |
+| `VSCodium.exe` | L'editor, aperto sulla cartella `progetti`. Un'altra cartella si apre con **File → Apri cartella…** |
 | `Terminale.exe` | Il terminale `bash`, nella cartella `progetti` |
 | `AlgoDesign.exe` | AlgoDesign, per i flowchart |
 | `Neovim.exe` | L'editor Neovim nel terminale |
@@ -25,10 +25,11 @@ L'editor va aperto da qui, non da `vscodium\VSCodium.exe`: il collegamento gli d
 
 I menu dell'editor sono in italiano; qualche voce recente, soprattutto della chat, resta in inglese, perché l'ultimo pacchetto della lingua italiana è di qualche versione prima dell'editor. I comandi valgono per la cartella **del file aperto**: prima apri un sorgente del progetto, per esempio `main.c`, poi lancia il comando.
 
-- **▶ Compila ed esegui** e **Passo passo**, nella barra in basso e in alto a destra con un file `.c` aperto, sono la strada più breve: compilano col `Makefile` della cartella, se c'è, se no il solo file aperto, ed eseguono il programma nel terminale «Programma C», dove scrivi quello che il programma chiede. «Passo passo» si ferma all'inizio di `main`, o ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. Sui progetti di `c-processi` «Passo passo» non funziona, e lo dice: lì usa F5 con «Debug con gcc».
+- **▶ Compila ed esegui** e **Passo passo**, nella barra in basso con un file `.c` aperto (anche accanto alla pagina di un flowchart), col nome del file su cui agiscono, sono la strada più breve: compilano col `Makefile` della cartella, se c'è, se no il solo file aperto, ed eseguono il programma nel terminale «Programma C», dove scrivi quello che il programma legge. «Passo passo» si ferma all'inizio di `main`, o ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga; quando il programma è fermo, accanto alle righe vedi i valori delle variabili (per esempio `n = 21`). Durante il passo passo i due comandi spariscono dalla barra: si continua (▷) o si ferma (□) dalla barra del debug, in alto. Sui progetti di `c-processi` «Passo passo» non funziona, e lo dice: lì usa F5 con «Debug con gcc».
 - **Ctrl+Maiusc+B** compila con `gcc`. Gli errori compaiono nel pannello **Problemi**, sulla riga giusta.
 - Dal menu **Terminale → Esegui attività…** (se la finestra è stretta, **Terminale** sta sotto **···**) trovi gli altri comandi: «Compila con clang», «Esegui il programma gcc», «Esegui il programma clang» e i quattro comandi «ASan», che compilano ed eseguono con e senza il controllo degli errori di memoria. Ogni «Esegui» compila prima. I comandi «ASan» compilano il solo file aperto, non tutti i sorgenti del progetto.
 - **F5** avvia il debug. Nella vista **Esegui con debug** scegli «Debug con gcc» o «Debug con clang»: il programma si compila e si ferma ai punti di interruzione che hai messo cliccando a sinistra dei numeri di riga. F5 usa poi l'ultima scelta.
+- La vista **Esegui con debug** (l'icona con l'insetto, nella barra a sinistra), con le variabili, la pila delle chiamate e i punti di interruzione, non si apre da sola: aprila dall'icona quando ti serve. Per chi la vuole a ogni debug: in **File → Preferenze → Impostazioni** cerca `debug.openDebug` e scegli «openOnSessionStart»; allo stesso modo `debug.showInStatusBar` rimette il debug nella barra in basso e `debug.internalConsoleOptions` la console di debug.
 
 `clang` compila i progetti di `c-comuni`, non quelli di `c-processi`, che usano le chiamate dei processi di POSIX: per quelli serve `gcc`.
 

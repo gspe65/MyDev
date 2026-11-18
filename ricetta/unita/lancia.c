@@ -174,7 +174,9 @@ int WINAPI wWinMain(HINSTANCE a, HINSTANCE b, PWSTR c, int d) {
 
 #if STRUMENTO == VSCODIUM
     prepara_lingua();
-    componi(comando, L"\"%ls\\vscodium\\VSCodium.exe\"", radice);
+    /* L'editor si apre sulla cartella dei progetti: in «Esplora risorse» c'e' subito la cartella del flowchart, e le
+     * finestre di Windows per aprire un file partono da li' (senza, partono dalla cartella personale di chi usa il PC). */
+    componi(comando, L"\"%ls\\vscodium\\VSCodium.exe\" \"%ls\\progetti\"", radice, radice);
     componi(cartella, L"%ls\\progetti", radice);
 #elif STRUMENTO == ALGODESIGN
     componi(comando, L"\"%ls\\algodesign\\AlgoDesign.exe\"", radice);

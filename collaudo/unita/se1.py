@@ -6,19 +6,20 @@ al codice in C salvato accanto, al programma eseguito, al punto d'arresto), come
 L'ambiente è quello che il gate dà all'editor (lo stesso del lanciatore, appaiato da ambienti.py): questo script lo eredita e
 aggiunge solo ALGO_PROVA=1 (i comandi che leggono la pagina) e le variabili della sonda. Il flowchart è `lettura-intero.algo` del
 corpus di AlgoDesign al commit dell'inventario del nucleo, copiato in `progetti/flowchart`; l'editor parte con la cartella
-`progetti` e dentro `se1-dentro.cjs` fa i passi 7–16 (la finestra «Salva con nome» è quella vera di Windows, premuta da
+`progetti` e dentro `se1-dentro.cjs` fa i passi 3–12 (la finestra «Salva con nome» è quella vera di Windows, premuta da
 dialogo.ps1). Alla fine la cartella `progetti/flowchart` si toglie: il programma compilato col passo passo porta il percorso
 assoluto del sorgente, e il gate cerca i percorsi assoluti nell'unità dopo l'uso.
 
 Con --controllo: la stessa corsa col pacchetto della 0.2.0 (`algo-codice-0.0.1.vsix` della release `v0.2.0`, byte e impronta
-dalla voce della ricetta all'etichetta) al posto dell'estensione dell'unità, spenta: deve essere rossa al passo 7 (nessuna pagina).
+dalla voce della ricetta all'etichetta) al posto dell'estensione dell'unità, spenta: deve essere rossa al passo 3 (nessuna pagina).
 Il verde del controllo è quel rosso, e nessun altro.
 
 Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare: l'editor non ha scritto gli esiti, la finestra di dialogo non si è
 chiusa con «Salva», la cartella del flowchart c'era già, il pacchetto della 0.2.0 non si scarica).
 
-Che cosa NON guarda: i passi 1–6 (il doppio clic sul lanciatore, «File», «Apri cartella…», la cartella): l'editor parte con la
-cartella `progetti` dagli argomenti; il lanciatore lo provano le aperture del gate (A7, A9). Il clic sul margine come gesto del
+Che cosa NON guarda: i passi 1–2 (il doppio clic sul lanciatore, la cartella `flowchart`): l'editor parte con la cartella
+`progetti` dagli argomenti, come lo apre il lanciatore; che il lanciatore lo apra lì lo prova E1 nell'apertura 1 del gate, e il
+lanciatore lo provano anche A7 e A9. Il clic sul margine come gesto del
 puntatore (il punto d'arresto si mette con l'interfaccia delle estensioni sulla stessa riga). I pixel: la foto della finestra di
 dialogo resta nella cartella di lavoro, si guarda a occhio.
 """
@@ -46,7 +47,7 @@ o = a.parse_args()
 UNITA, LAVORO, KIT, REPO = Path(o.unita), Path(o.lavoro), Path(o.kit), Path(o.repo)
 
 # I passi dello scenario come li fa la sonda, e le parole che lo studente vede (le etichette dello scenario, in italiano).
-PASSI = ["1-6", 7, "8-9", 10, 11, "12-13", 14, "15-16"]
+PASSI = ["1-2", 3, "4-5", 6, 7, "8-9", 10, "11-12"]
 TETTO = 18
 TITOLO_DELLA_FINESTRA = "Salva il codice come"
 NOME_PROPOSTO = "lettura-intero.c"
@@ -141,14 +142,14 @@ print(f"il .algo dopo lo scenario identico byte per byte: {algo_intatto}")
 
 if o.controllo:
     # Il verde del controllo: i passi 1–6 riusciti, il 7 no (nessuna pagina), nient'altro.
-    giusto = [x["n"] for x in fatti] == ["1-6", 7] and fatti[0]["riuscito"] and not fatti[1]["riuscito"] and fatti[1]["visto"].get("vista", {}).get("tipo") != "pagina"
-    print(f"controllo positivo: rosso al passo 7, senza la pagina: {giusto}")
-    print("ESITO: VERDE (il controllo positivo è rosso dove deve)" if giusto else "ESITO: ROSSO (il controllo positivo non è rosso al passo 7: la prova non discrimina)")
+    giusto = [x["n"] for x in fatti] == ["1-2", 3] and fatti[0]["riuscito"] and not fatti[1]["riuscito"] and fatti[1]["visto"].get("vista", {}).get("tipo") != "pagina"
+    print(f"controllo positivo: rosso al passo 3, senza la pagina: {giusto}")
+    print("ESITO: VERDE (il controllo positivo è rosso dove deve)" if giusto else "ESITO: ROSSO (il controllo positivo non è rosso al passo 3: la prova non discrimina)")
     sys.exit(0 if giusto else 1)
 
 ultimo = fatti[-1] if fatti else None
-dialogo = next((x["visto"].get("dialogo") for x in fatti if x["n"] == 11), None) or {}
-if ultimo is not None and ultimo["n"] == 11 and not ultimo["riuscito"] and dialogo.get("trovato") and not dialogo.get("premuto"):
+dialogo = next((x["visto"].get("dialogo") for x in fatti if x["n"] == 7), None) or {}
+if ultimo is not None and ultimo["n"] == 7 and not ultimo["riuscito"] and dialogo.get("trovato") and not dialogo.get("premuto"):
     fermo(f"la finestra di dialogo non si è chiusa con «Salva»: {dialogo.get('motivo')}")
 rossi = []
 if [x["n"] for x in fatti] != PASSI or not all(x["riuscito"] for x in fatti):
@@ -157,7 +158,7 @@ cartella_attesa = str(UNITA / "progetti" / "flowchart")
 print(f"la finestra di Windows: titolo «{dialogo.get('titolo')}», nome «{dialogo.get('nome')}», cartella «{dialogo.get('cartella')}», pulsante «{dialogo.get('pulsante')}»")
 if dialogo.get("titolo") != TITOLO_DELLA_FINESTRA or dialogo.get("nome") != NOME_PROPOSTO or (dialogo.get("cartella") or "").lower() != cartella_attesa.lower():
     rossi.append("la finestra «Salva con nome» non propone la cartella del flowchart col nome atteso")
-riga = next((x["visto"].get("riga") for x in fatti if x["n"] == 11), None)
+riga = next((x["visto"].get("riga") for x in fatti if x["n"] == 7), None)
 if riga != RIGA_SALVATO:
     rossi.append(f"la pagina non dice dove ha salvato: {riga!r}")
 if not algo_intatto:
@@ -168,8 +169,8 @@ for x in fatti:
     pezzi = str(x["n"]).split("-")
     numeri.update(range(int(pezzi[0]), int(pezzi[-1]) + 1))
 print(f"passi dello scenario: {len(numeri)}, tetto {TETTO}")
-if len(numeri) > TETTO or len(numeri) != 16:
-    rossi.append(f"passi {len(numeri)}: attesi i 16 dello scenario, entro {TETTO}")
+if len(numeri) > TETTO or len(numeri) != 12:
+    rossi.append(f"passi {len(numeri)}: attesi i 12 dello scenario, entro {TETTO}")
 for r in rossi:
     print(f"ROSSO: {r}")
 print("ESITO: ROSSO" if rossi else "ESITO: VERDE")
