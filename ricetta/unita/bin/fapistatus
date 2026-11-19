@@ -3,13 +3,13 @@
 export MYDEV
 PIDFILE="$MYDEV/bin/.fastapi.pid"
 if [ ! -f "$PIDFILE" ]; then
-    echo "FastAPI non e' in esecuzione (nessun file PID)."
+    echo "FastAPI non è in esecuzione (nessun file PID)."
     exit 1
 fi
 PID=$(cat "$PIDFILE")
 if kill -0 "$PID" 2>/dev/null; then
-    echo "FastAPI e' in esecuzione (PID $PID)."
+    echo "FastAPI è in esecuzione (PID $PID)."
 else
-    echo "FastAPI non e' in esecuzione (processo $PID non trovato)."
+    echo "FastAPI non è in esecuzione (processo $PID non trovato)."
     rm -f "$PIDFILE"
 fi

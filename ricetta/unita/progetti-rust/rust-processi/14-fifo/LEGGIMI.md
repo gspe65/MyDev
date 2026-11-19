@@ -24,18 +24,18 @@ ho creato la FIFO 'mio_tubo'. Guardala con:  ls -l mio_tubo
 
 ## Dove sta l'`unsafe`
 
-Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. Il nome del tubo e' scritto `c"mio_tubo"`: le funzioni del C vogliono una stringa che finisce con uno zero, e una stringa normale di Rust non ce l'ha.
+Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. Il nome del tubo è scritto `c"mio_tubo"`: le funzioni del C vogliono una stringa che finisce con uno zero, e una stringa normale di Rust non ce l'ha.
 
 ## Prova tu
 
-**La prova che vale la pena fare** e' con due terminali. In uno:
+**La prova che vale la pena fare** è con due terminali. In uno:
 
 ```bash
 mkfifo tubo
 cat tubo
 ```
 
-`cat` resta li' fermo. Nell'altro terminale:
+`cat` resta lì fermo. Nell'altro terminale:
 
 ```bash
 echo "ciao dall'altro terminale" > tubo

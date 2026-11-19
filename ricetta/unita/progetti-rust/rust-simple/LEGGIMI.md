@@ -1,4 +1,4 @@
-# simple — Il programma piu' piccolo
+# simple — Il programma più piccolo
 
 **Compilatore:** `cargo`
 

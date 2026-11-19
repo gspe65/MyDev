@@ -1,8 +1,8 @@
 # Guida agli strumenti dell'estesa
 
-Questa unita' ha, oltre a quanto descrive `GUIDA-C.md`, Rust, `git` e `gh`. Qui trovi una voce per ogni strumento in piu' e per ogni programma che abbiamo aggiunto noi.
+Questa unità ha, oltre a quanto descrive `GUIDA-C.md`, Rust, `git` e `gh`. Qui trovi una voce per ogni strumento in più e per ogni programma che abbiamo aggiunto noi.
 
-Tutto funziona dal **terminale** dell'unita', e da **VSCodium**, senza installare niente sul PC. Rust e' quello dell'ambiente POSIX dell'unita', lo stesso di `gcc`: per questo `fork`, i segnali e i thread ci sono anche da Rust.
+Tutto funziona dal **terminale** dell'unità, e da **VSCodium**, senza installare niente sul PC. Rust è quello dell'ambiente POSIX dell'unità, lo stesso di `gcc`: per questo `fork`, i segnali e i thread ci sono anche da Rust.
 
 ---
 
@@ -70,7 +70,7 @@ L'estensione di VSCodium che completa il codice e va alla definizione, anche den
 ### I manuali
 **Nell'elenco:** `rust/rust-docs`
 
-Quattro manuali, da leggere senza rete. Apri con un doppio clic, nella cartella dell'unita':
+Quattro manuali, da leggere senza rete. Apri con un doppio clic, nella cartella dell'unità:
 
 | | |
 |---|---|
@@ -84,7 +84,7 @@ Quattro manuali, da leggere senza rete. Apri con un doppio clic, nella cartella 
 ### git
 **Nell'elenco:** `msys/git`
 
-Tiene la storia di un progetto. E' il `git` dell'ambiente POSIX dell'unita', e lo usa anche il pannello di VSCodium.
+Tiene la storia di un progetto. È il `git` dell'ambiente POSIX dell'unità, e lo usa anche il pannello di VSCodium.
 
 ```bash
 git config --global user.name "Il tuo nome"
@@ -95,7 +95,7 @@ git commit -m "primo commit"
 git log --oneline
 ```
 
-Il nome e l'indirizzo restano nell'unita', in `home/.gitconfig`: nulla finisce sul PC.
+Il nome e l'indirizzo restano nell'unità, in `home/.gitconfig`: nulla finisce sul PC.
 
 ### gh
 **Nell'elenco:** `strumenti/gh`
@@ -109,20 +109,20 @@ gh repo list
 gh auth logout
 ```
 
-> ⚠️ **Il token di accesso sta in chiaro nell'unita'**, in `home/.config/gh/hosts.yml`. Chi copia la tua unita' o la tua chiavetta copia anche il token, e puo' agire su GitHub al posto tuo. Su un PC che non e' il tuo, a fine lavoro fai `gh auth logout`: toglie il file, e il login di un `gh` installato su quel PC resta dov'e'.
+> ⚠️ **Il token di accesso sta in chiaro nell'unità**, in `home/.config/gh/hosts.yml`. Chi copia la tua unità o la tua chiavetta copia anche il token, e può agire su GitHub al posto tuo. Su un PC che non è il tuo, a fine lavoro fai `gh auth logout`: toglie il file, e il login di un `gh` installato su quel PC resta dov'è.
 
-> Una sola cosa esce dall'unita'. Se sul PC c'e' un `gh` collegato a un **altro** account, `gh auth login` toglie dal portachiavi di Windows la sua voce «attiva». Quel `gh` continua a funzionare, perche' ne ha una seconda col nome dell'account.
+> Una sola cosa esce dall'unità. Se sul PC c'è un `gh` collegato a un **altro** account, `gh auth login` toglie dal portachiavi di Windows la sua voce «attiva». Quel `gh` continua a funzionare, perché ne ha una seconda col nome dell'account.
 
 ---
 
 ## I programmi nostri
 
-Non li chiami mai direttamente: sono qui perche', se qualcosa non va, tu sappia che cosa sono.
+Non li chiami mai direttamente: sono qui perché, se qualcosa non va, tu sappia che cosa sono.
 
 ### cargo-ponte
 **Nell'elenco:** `cargo-ponte`
 
-In `bin/`. `rust-analyzer` e' un programma Windows e parla con percorsi `C:\...`, `cargo` e' dell'ambiente POSIX e parla con `/c/...`: questo programma traduce fra i due.
+In `bin/`. `rust-analyzer` è un programma Windows e parla con percorsi `C:\...`, `cargo` è dell'ambiente POSIX e parla con `/c/...`: questo programma traduce fra i due.
 
 ### rustc-ponte
 **Nell'elenco:** `rustc-ponte`
@@ -132,12 +132,12 @@ In `bin/`. La stessa cosa per `rustc`.
 ### programmi/Git/cmd/git.exe
 **Nell'elenco:** `git-pannello`
 
-Il pannello git di VSCodium cerca il `git` in `Program Files` prima che nel `PATH`, e sul tuo PC potrebbe trovarne un altro. Questo programma lo fa arrivare al `git` dell'unita'. Dalla sua presenza il lanciatore capisce che l'unita' e' quella estesa.
+Il pannello git di VSCodium cerca il `git` in `Program Files` prima che nel `PATH`, e sul tuo PC potrebbe trovarne un altro. Questo programma lo fa arrivare al `git` dell'unità. Dalla sua presenza il lanciatore capisce che l'unità è quella estesa.
 
 ### bin/gh
 **Nell'elenco:** `gh-comando`
 
-Quando scrivi `gh` nel terminale parte questo comando. Passa tutto al programma vero e aggiunge tre cose: `gh auth login` tiene il token nell'unita', il percorso assoluto di `gh` non finisce in `.gitconfig`, e `gh auth logout` toglie solo il login dell'unita'.
+Quando scrivi `gh` nel terminale parte questo comando. Passa tutto al programma vero e aggiunge tre cose: `gh auth login` tiene il token nell'unità, il percorso assoluto di `gh` non finisce in `.gitconfig`, e `gh auth logout` toglie solo il login dell'unità.
 
 ### Le impostazioni
 **Nell'elenco:** `impostazioni-estesa`

@@ -2,7 +2,7 @@
 
 **Compilatore:** `cargo`
 
-Un servitore e un cliente si scambiano due righe su `127.0.0.1`. E' lo stesso codice che useresti fra due computer diversi: cambia solo l'indirizzo.
+Un servitore e un cliente si scambiano due righe su `127.0.0.1`. È lo stesso codice che useresti fra due computer diversi: cambia solo l'indirizzo.
 
 ## Comandi
 
@@ -25,6 +25,6 @@ Nel blocco `unsafe extern "C"` in cima e in ogni chiamata, e nella struct `Socka
 
 ## Prova tu
 
-Metti una porta fissa al posto dello 0, per esempio `sin_port: 9000u16.to_be()`. Ricompila e lancia il programma **due volte insieme** (il secondo da un altro terminale): il secondo fallisce con `bind: Address already in use`. Una porta puo' essere occupata da un solo programma per volta: e' il motivo per cui i servizi devono mettersi d'accordo sulle porte.
+Metti una porta fissa al posto dello 0, per esempio `sin_port: 9000u16.to_be()`. Ricompila e lancia il programma **due volte insieme** (il secondo da un altro terminale): il secondo fallisce con `bind: Address already in use`. Una porta può essere occupata da un solo programma per volta: è il motivo per cui i servizi devono mettersi d'accordo sulle porte.
 
-> `to_be` e `from_be` convertono i numeri nell'ordine dei byte usato in rete, che puo' essere diverso da quello del processore. Vanno usate sempre, anche in locale.
+> `to_be` e `from_be` convertono i numeri nell'ordine dei byte usato in rete, che può essere diverso da quello del processore. Vanno usate sempre, anche in locale.

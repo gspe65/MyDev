@@ -29,12 +29,12 @@ cargo run
 
 ## Dove sta l'`unsafe`
 
-Nel blocco `unsafe extern "C"` in cima e in ogni chiamata a `fork`, `getpid`, `getppid`, `sleep`, `wait` e `_exit`. Il compilatore non vede zombie e orfani: per lui `fork` e' una funzione come un'altra, e non aspettare un figlio non e' un errore.
+Nel blocco `unsafe extern "C"` in cima e in ogni chiamata a `fork`, `getpid`, `getppid`, `sleep`, `wait` e `_exit`. Il compilatore non vede zombie e orfani: per lui `fork` è una funzione come un'altra, e non aspettare un figlio non è un errore.
 
 ## Prova tu
 
-L'ultima riga arriva **dopo** che il terminale e' gia' tornato ad aspettarti: il figlio orfano continua a girare anche se chi lo ha creato ha finito.
+L'ultima riga arriva **dopo** che il terminale è già tornato ad aspettarti: il figlio orfano continua a girare anche se chi lo ha creato ha finito.
 
-Per vedere lo zombie con i tuoi occhi apri un **secondo** terminale e, mentre il programma e' fermo nel `sleep(1)`, scrivi `ps`. Il figlio compare ancora nell'elenco, pur essendo gia' morto.
+Per vedere lo zombie con i tuoi occhi apri un **secondo** terminale e, mentre il programma è fermo nel `sleep(1)`, scrivi `ps`. Il figlio compare ancora nell'elenco, pur essendo già morto.
 
-> Il numero del "nuovo padre" dell'orfano dipende dal sistema: puo' essere `1` o un altro processo di servizio. Quello che conta e' che **cambia**.
+> Il numero del "nuovo padre" dell'orfano dipende dal sistema: può essere `1` o un altro processo di servizio. Quello che conta è che **cambia**.

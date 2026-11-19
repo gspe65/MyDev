@@ -6,7 +6,7 @@ PROJ="$MYDEV/progetti/fastapi-hello"
 PIDFILE="$MYDEV/bin/.fastapi.pid"
 
 if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
-    echo "FastAPI e' gia' in esecuzione (PID $(cat "$PIDFILE"))."
+    echo "FastAPI è già in esecuzione (PID $(cat "$PIDFILE"))."
     exit 1
 fi
 

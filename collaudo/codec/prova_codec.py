@@ -11,9 +11,13 @@ ciascuno; le loro impronte stanno in campioni.sha256 e si controllano prima di a
 
 Atteso «senza»: H.264, H.265, AAC: tutte le domande «no» e nessuna decodifica; VP9, AV1, Opus: decodifica.
 Atteso «ufficiale» (controllo positivo): H.264 decodifica e canPlayType non vuoto; VP9, AV1, Opus decodifica.
-Che cosa NON guarda: altri formati (MP3, Theora, FLAC...); la decodifica in hardware; i contenuti cifrati.
+Che cosa NON guarda: altri formati (MP3, Theora, FLAC...); la decodifica in hardware; i contenuti cifrati. Le sonde non
+percorrono il gestore delle eccezioni durante la corsa con Chromium (il server, la foto, la chiusura): senza finestre non
+c'è una corsa in cui farlo scattare.
 Uscite: 0 VERDE, 1 ROSSO, 2 FERMO (nessun esito dalla pagina, Chromium assente, profilo già esistente, campioni
 diversi dalle impronte, un esito illeggibile o senza i suoi campi, un'altra eccezione: mai il rosso di un traceback).
+Con --sonde, oltre al verdetto, il gestore delle eccezioni: un esito troncato e uno senza i suoi campi riletti con --rileggi
+devono essere un fermo.
 """
 import argparse
 import hashlib
@@ -108,7 +112,30 @@ def sonde():
         ok += giusto
         print(f"sonda: {nome}: {'ROSSO' if rossi else 'VERDE'} {rossi[:2]} -> {'come atteso' if giusto else 'SBAGLIATA'}")
     print(f"sonde: {ok}/{len(casi)} come attese")
-    return 0 if ok == len(casi) else 1
+    gestori = sonde_dei_gestori()
+    return 0 if ok == len(casi) and gestori else 1
+
+
+def sonde_dei_gestori():
+    """Il gestore delle eccezioni di __main__, percorso senza finestre: lo script rilancia se stesso con --rileggi su un esito
+    troncato e su uno senza i suoi campi. Ciascuno deve uscire 2 con «FERMO: eccezione» ed «ESITO: FERMO», senza traceback:
+    senza il gestore uscirebbe 1, il rosso di un traceback."""
+    import tempfile
+    casi = {"esito troncato": '{"programma": "sonda", "risultati": [', "esito senza i suoi campi": '{"altro": 1}'}
+    accese = 0
+    with tempfile.TemporaryDirectory(prefix="prova-codec-gestori-") as d:
+        for nome, testo in casi.items():
+            f = Path(d) / "esito.json"
+            f.write_text(testo, encoding="utf-8")
+            r = subprocess.run([sys.executable, "-X", "utf8", "-B", str(Path(__file__).resolve()), "--rileggi", str(f), "--atteso", "senza"],
+                               capture_output=True)
+            uscita = (r.stdout + r.stderr).decode("utf-8", "replace")
+            accesa = r.returncode == 2 and "FERMO: eccezione:" in uscita and "ESITO: FERMO" in uscita and "Traceback" not in uscita
+            accese += accesa
+            ultima = [x for x in uscita.splitlines() if x.strip()][-1:] or ["nessuna uscita"]
+            print(f"sonda del gestore: {nome}: uscita {r.returncode}, {ultima[0]} -> {'come attesa' if accesa else 'SBAGLIATA'}")
+    print(f"sonde del gestore: {accese}/{len(casi)} come attese")
+    return accese == len(casi)
 
 
 def foto(percorso, cartella_chromium):

@@ -35,20 +35,26 @@ riconosce come fa il gate: `programmi/Git/cmd/git.exe` nell'unità.
 Il verdetto è una funzione sola (`giudica`), attraversata dal dato vero e dalle sonde del giudice in coda, una per ramo, su un
 esito finto verde alterato in un punto: ogni sonda deve dare il suo rosso o il suo fermo, e solo quello. Il verdetto si calcola
 per intero anche quando un punto è un fermo (la finestra di dialogo che non si è chiusa non nasconde un rosso delle impostazioni),
-e il rosso batte il fermo. Il numero delle sonde è dichiarato (SONDE_ATTESE): uno diverso è un fermo. Con --sonde solo le sonde,
-con l'uscita del loro esito; con --rileggi il verdetto su un esito già scritto: nessuna finestra in tutti e due.
+e il rosso batte il fermo. Il numero delle sonde è dichiarato (SONDE_ATTESE): uno diverso è un fermo. Accanto, le sonde dei
+gestori dei fermi, senza finestre e senza editor (SONDE_DEI_GESTORI_ATTESE): questo script rilanciato su un esito troncato, su
+un esito che manca, su una corsa senza --lavoro e su un'unità finta col flowchart già presente; dialogo.ps1 con -Attesa 0 su
+un'unità finta, con la cartella del suo esito che manca (il suo gestore dell'eccezione) e con quella che c'è (nessuna finestra),
+e il suo esito letto dal giudice. Con --sonde solo le sonde, con l'uscita del loro esito; con --rileggi il verdetto su un esito
+già scritto: nessuna finestra in tutti e due.
 
 Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare: l'editor non ha scritto gli esiti, la finestra di dialogo non si è
 chiusa con «Salva» o dialogo.ps1 si è fermato su un'eccezione o non ha scritto il suo esito, la cartella del flowchart c'era già,
 il pacchetto della 0.2.0 non si scarica, le impostazioni, le configurazioni di lancio o la barra di stato non lette, il comando
 della barra che non c'è, un esito illeggibile o un'altra eccezione, una sonda del giudice che non si accende o non misurabile,
-un numero di sonde diverso da quello dichiarato). Con le sonde, l'esito finto verde che il giudice dice rosso è un rosso.
+un numero di sonde diverso da quello dichiarato, una sonda dei gestori spenta). Con le sonde, l'esito finto verde che il giudice
+dice rosso è un rosso.
 
 Che cosa NON guarda: i passi 1–2 (il doppio clic sul lanciatore, la cartella `flowchart`): l'editor parte con la cartella
 `progetti` dagli argomenti, come lo apre il lanciatore; che il lanciatore lo apra lì lo prova E1 nell'apertura 1 del gate, e il
 lanciatore lo provano anche A7 e A9. Il clic sul margine come gesto del
 puntatore (il punto d'arresto si mette con l'interfaccia delle estensioni sulla stessa riga). I pixel: la foto della finestra di
-dialogo resta nella cartella di lavoro, si guarda a occhio.
+dialogo resta nella cartella di lavoro, si guarda a occhio. Le sonde dei gestori non percorrono il fermo del pacchetto della
+0.2.0 che non si scarica (vuole la rete) né i rami di dialogo.ps1 con una finestra trovata.
 """
 import argparse
 import hashlib
@@ -97,6 +103,8 @@ CONSOLE_ALL_AVVIO = "openOnSessionStart"
 ESTESA = (UNITA / "programmi" / "Git" / "cmd" / "git.exe").exists()
 # Le sonde del giudice, quante ne dichiara questo file: una che sparisce dall'elenco è un fermo.
 SONDE_ATTESE = 27
+# Le sonde dei gestori dei fermi (questo script rilanciato, dialogo.ps1 senza finestre), allo stesso modo.
+SONDE_DEI_GESTORI_ATTESE = 6
 
 
 def fermo(m):
@@ -468,6 +476,72 @@ def sonde_del_giudice(attese, lancio):
     return esito_rossi, esito_fermi
 
 
+def sonde_dei_gestori(attese, lancio):
+    """I gestori dei fermi, percorsi senza finestre e senza editor. Questo script rilanciato: su un esito troncato (il gestore
+    delle eccezioni di __main__), su un esito che manca, su una corsa senza --lavoro, su un'unità finta dove la cartella del
+    flowchart c'è già; ciascuno deve uscire 2 col suo FERMO, senza traceback. dialogo.ps1 con -Attesa 0 (nessuna finestra
+    cercata) e un'unità finta senza processi: con la cartella del suo esito che manca (il suo gestore dell'eccezione: uscita 2,
+    l'esito scritto con «eccezione», e il giudice che lo legge come il fermo dell'eccezione e nient'altro) e con la cartella
+    che c'è (uscita 2, nessuna finestra e nessuna eccezione, e il giudice che lo legge come un rosso dei passi, mai un fermo). Torna
+    (rossi, fermi): fermo una sonda spenta o non misurabile, un numero di sonde diverso da SONDE_DEI_GESTORI_ATTESE."""
+    import tempfile
+    fermi, esiti = [], {}
+    io_stesso = [sys.executable, "-X", "utf8", "-B", str(Path(__file__).resolve())]
+    ps = Path(os.environ.get("SystemRoot") or os.environ.get("windir") or r"C:\Windows") / "System32" / "WindowsPowerShell" / "v1.0" / "powershell.exe"
+    dialogo = Path(__file__).resolve().parent / "dialogo.ps1"
+    with tempfile.TemporaryDirectory(prefix="se1-gestori-") as cartella:
+        t = Path(cartella)
+        finta = t / "unita  finta"
+        (finta / "progetti" / "flowchart").mkdir(parents=True)
+        troncato = t / "troncato.json"
+        troncato.write_text('{"passi": [', encoding="utf-8")
+        base = ["--unita", str(finta), "--repo", str(REPO)]
+        casi = {
+            "esito troncato": (base + ["--rileggi", str(troncato)], "FERMO: eccezione:"),
+            "esito che manca": (base + ["--rileggi", str(t / "manca.json")], "FERMO: l'editor non ha scritto gli esiti"),
+            "corsa senza --lavoro": (base, "FERMO: la corsa vuole --lavoro"),
+            "cartella del flowchart che c'è già": (base + ["--lavoro", str(t / "lavoro"), "--kit", str(t), "--git", "git"],
+                                                   f"FERMO: {finta / 'progetti' / 'flowchart'} c'è già"),
+        }
+        for nome, (argomenti, atteso) in casi.items():
+            r = subprocess.run(io_stesso + argomenti, capture_output=True, timeout=300)
+            testo = (r.stdout + r.stderr).decode("utf-8", "replace")
+            esiti[nome] = r.returncode == 2 and atteso in testo and "ESITO: FERMO" in testo and "Traceback" not in testo
+            print(f"sonde dei gestori: «{nome}»: uscita {r.returncode} -> {'ACCESA' if esiti[nome] else 'SPENTA'}")
+        if not ps.is_file() or not dialogo.is_file():
+            fermi.append(f"le sonde di dialogo.ps1 non si misurano: powershell.exe {ps.is_file()}, dialogo.ps1 {dialogo.is_file()}")
+        else:
+            for nome, uscita, eccezione in (("dialogo.ps1 con la cartella del suo esito che manca", t / "manca" / "dialogo.json", True),
+                                            ("dialogo.ps1 senza finestra", t / "dialogo.json", False)):
+                r = subprocess.run([str(ps), "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(dialogo), "-Unita", str(finta),
+                                    "-Uscita", str(uscita), "-Foto", str(t / "foto.png"), "-Attesa", "0"], capture_output=True, timeout=300)
+                scritto = json.loads(uscita.read_text(encoding="utf-8")) if uscita.is_file() else None
+                e = esito_finto_verde(attese, lancio)
+                e["passi"] = e["passi"][:PASSI.index(7) + 1]
+                e["passi"][-1].update(riuscito=False, visto={"dialogo": scritto, "uscitaDialogo": r.returncode})
+                rossi_g, fermi_g = giudica(e, attese, lancio)
+                if eccezione:
+                    giusto = (isinstance(scritto, dict) and bool(scritto.get("eccezione")) and not scritto.get("premuto")
+                              and "eccezione" in str(scritto.get("motivo")) and not rossi_g
+                              and len(fermi_g) == 1 and fermi_g[0].startswith("dialogo.ps1 si è fermato su un'eccezione"))
+                else:
+                    giusto = (isinstance(scritto, dict) and not scritto.get("trovato") and "eccezione" not in scritto
+                              and str(scritto.get("motivo")).startswith("nessuna finestra di dialogo") and not fermi_g
+                              and any(x.startswith("non tutti i passi sono riusciti") for x in rossi_g))
+                esiti[nome] = r.returncode == 2 and giusto
+                print(f"sonde dei gestori: «{nome}»: uscita {r.returncode}, esito {json.dumps(scritto, ensure_ascii=False)}, "
+                      f"il giudice: rossi {rossi_g}, fermi {fermi_g} -> {'ACCESA' if esiti[nome] else 'SPENTA'}")
+    for nome, acceso in esiti.items():
+        if not acceso:
+            fermi.append(f"sonda dei gestori spenta: {nome}")
+    print(f"sonde dei gestori: {sum(esiti.values())} accese su {len(esiti)}, dichiarate {SONDE_DEI_GESTORI_ATTESE}")
+    if len(esiti) != SONDE_DEI_GESTORI_ATTESE:
+        fermi.append(f"sonde dei gestori nell'elenco {len(esiti)}, dichiarate {SONDE_DEI_GESTORI_ATTESE}")
+    for x in fermi:
+        print(f"sonde dei gestori: FERMO: {x}")
+    return [], fermi
+
+
 def racconta(e, attese, lancio):
     """Ciò che la sonda ha visto, per chi legge il registro del gate."""
     fatti = e.get("passi", [])
@@ -502,7 +576,10 @@ def main():
     if o.sonde:
         print(f"configurazioni di lancio: variante {'estesa' if ESTESA else 'base'}; nella ricetta {len(lancio)} ({', '.join(str(c['nome']) for c in lancio)})")
         sonde_r, sonde_f = sonde_del_giudice(attese, lancio)
-        print({0: "ESITO: VERDE (sonde del giudice)", 1: "ESITO: ROSSO (sonde del giudice)", 2: "ESITO: FERMO (sonde del giudice)"}[uscita_di(sonde_r, sonde_f)])
+        gestori_r, gestori_f = sonde_dei_gestori(attese, lancio)
+        sonde_r, sonde_f = sonde_r + gestori_r, sonde_f + gestori_f
+        print({0: "ESITO: VERDE (sonde del giudice e dei gestori)", 1: "ESITO: ROSSO (sonde del giudice e dei gestori)",
+               2: "ESITO: FERMO (sonde del giudice e dei gestori)"}[uscita_di(sonde_r, sonde_f)])
         sys.exit(uscita_di(sonde_r, sonde_f))
     if o.rileggi:
         uscita = Path(o.rileggi)
@@ -532,6 +609,9 @@ def main():
     sonde_r, sonde_f = sonde_del_giudice(attese, lancio)
     rossi += [f"sonde del giudice: {x}" for x in sonde_r]
     fermi += [f"sonde del giudice: {x}" for x in sonde_f]
+    gestori_r, gestori_f = sonde_dei_gestori(attese, lancio)
+    rossi += [f"sonde dei gestori: {x}" for x in gestori_r]
+    fermi += [f"sonde dei gestori: {x}" for x in gestori_f]
     for r in rossi:
         print(f"ROSSO: {r}")
     for f in fermi:

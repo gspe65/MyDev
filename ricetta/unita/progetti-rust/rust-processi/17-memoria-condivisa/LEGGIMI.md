@@ -2,7 +2,7 @@
 
 **Compilatore:** `cargo`
 
-Dimostra la differenza fra memoria normale e memoria condivisa dopo una `fork`. E' il contraltare del progetto 07: i thread condividono tutto, i processi niente — a meno che tu non lo chieda esplicitamente.
+Dimostra la differenza fra memoria normale e memoria condivisa dopo una `fork`. È il contraltare del progetto 07: i thread condividono tutto, i processi niente — a meno che tu non lo chieda esplicitamente.
 
 ## Comandi
 
@@ -21,9 +21,9 @@ cargo run
 
 ## Dove sta l'`unsafe`
 
-Nel blocco `unsafe extern "C"` in cima, in ogni chiamata, e in ogni accesso a `*c`. Un puntatore grezzo non porta nessuna garanzia: che punti a una pagina valida e che nessun altro la stia toccando lo prometti tu, ed e' scritto nel commento `SICUREZZA`. La promessa regge perche' il padre aspetta il figlio: nel progetto 18 i due lavorano insieme, e infatti serve un semaforo.
+Nel blocco `unsafe extern "C"` in cima, in ogni chiamata, e in ogni accesso a `*c`. Un puntatore grezzo non porta nessuna garanzia: che punti a una pagina valida e che nessun altro la stia toccando lo prometti tu, ed è scritto nel commento `SICUREZZA`. La promessa regge perché il padre aspetta il figlio: nel progetto 18 i due lavorano insieme, e infatti serve un semaforo.
 
 ## Prova tu
 
 Cambia `MAP_SHARED` in `MAP_PRIVATE`, che vale 2, e ricompila.
-Ora anche `condiviso` resta 100: con `MAP_PRIVATE` ogni processo ha la sua copia, e le modifiche non escono da li'.
+Ora anche `condiviso` resta 100: con `MAP_PRIVATE` ogni processo ha la sua copia, e le modifiche non escono da lì.
