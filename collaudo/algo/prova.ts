@@ -59,8 +59,15 @@ const VIETATE = [/my[-_\s]*dev/i, /ricetta[\\/]/, /estratto[\\/]/, /collaudo[\\/
 /** Il lessico del metodo di lavoro, che un pacchetto pubblicato non deve portare (nemmeno in un commento di un foglio di stile):
  *  cercato in OGNI voce del pacchetto, immagini comprese, senza distinguere maiuscole e minuscole. Le tre parole si compongono da
  *  due pezzi: scritte intere in questo file, che è pubblico, sarebbero esse stesse il lessico che il controllo della privacy cerca. */
-const PAROLE_DEL_LESSICO = [["ril", "ievo"], ["valut", "atore"], ["giro", " con"]].map(([a, b]) => `${a}${b}`);
-const LESSICO = PAROLE_DEL_LESSICO.map((p) => new RegExp(p.replace(" ", "\\s+"), "i"));
+// La stessa forma della specie del controllo della privacy (plurale, «con» e «col», chi prova), perché due rilevatori della stessa
+// specie contino allo stesso modo: il più stretto lascerebbe passare nel pacchetto ciò che l'altro segnala nell'albero.
+const RIL = ["ril", "iev"].join("");
+const VALUT = ["valut", "ator"].join("");
+const LESSICO = [
+  new RegExp(`\\b${RIL}[oi]\\b`, "i"),
+  new RegExp(`\\b${VALUT}[ei]\\b`, "i"),
+  new RegExp(`\\bgiro\\s+co[ln]\\s+(?:il\\s+|l'|un\\s+|gli\\s+|due\\s+|tre\\s+)?(?:${VALUT}|utent|alunn)`, "i"),
+];
 
 const cartella = mkdtempSync(join(tmpdir(), "algo  release-"));
 process.on("exit", () => rmSync(cartella, { recursive: true, force: true }));
@@ -116,7 +123,11 @@ prova("tsc sulla prova", tipi.exitCode === 0, `${tipi.stdout.toString()}${tipi.s
 
 // --- La voce della ricetta, e da lì il repository e l'etichetta.
 type Voce = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string; versione: string; estensione: string; commit: string };
-const voce = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === NOME_DELLA_VOCE && v.stato === "release") ?? fermo(`in ricetta/componenti.json non c'è la voce ${NOME_DELLA_VOCE} con stato release`);
+const vocePresa = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === NOME_DELLA_VOCE) ?? fermo(`in ricetta/componenti.json non c'è la voce ${NOME_DELLA_VOCE}`);
+// Una voce allo stato «artefatto» (il pacchetto di una corsa senza release) non ha un file di release da riscaricare: la prova
+// non si può fare, ed è un FERMO col motivo, non un verde e non un rosso.
+if (vocePresa.stato !== "release") fermo(`la voce ${NOME_DELLA_VOCE} è allo stato «${vocePresa.stato}» (${vocePresa.fonte}): non c'è un file di release da provare`);
+const voce = vocePresa;
 const fonte = /^https:\/\/github\.com\/([^/]+\/[^/]+)\/releases\/download\/([^/]+)\/([^/]+)$/.exec(voce.fonte) ?? fermo(`la fonte non è un file di una release di GitHub: ${voce.fonte}`);
 const [, repository, etichetta, nomeDelFile] = fonte as unknown as [string, string, string, string];
 if (nomeDelFile !== voce.file) fermo(`la fonte nomina ${nomeDelFile}, la voce ${voce.file}`);
@@ -345,13 +356,14 @@ if (PROFILO.nucleo) {
 }
 const vietato = ricomposto((m) => (m.set(EXTRA, new TextEncoder().encode(String.raw`module.exports = "C:\MyDev";`)), 1));
 mutazione("una voce in più con un percorso assoluto e il nome del progetto", vietato.zip, vietato.toccate, attesaDi(vietato.zip), [`voce in più: ${EXTRA}`, `${EXTRA}: C:\\`, `${EXTRA}: MyDev`]);
-// Il lessico del metodo in una voce attesa e non legata a un file del repository: le tre parole, la prima con l'iniziale maiuscola,
-// la seconda tutta maiuscola, la terza tutta maiuscola e con due spazi.
+// Il lessico del metodo in una voce attesa e non legata a un file del repository, nelle forme che un rilevatore stretto perde: il
+// plurale con l'iniziale maiuscola, la parola tutta maiuscola, «col» con due spazi e chi prova. L'atteso è il testo che ciascun
+// ramo deve catturare.
 const CON_LESSICO = "extension/dist/extension.cjs";
-const [primaParola, secondaParola, terzaParola] = PAROLE_DEL_LESSICO as [string, string, string];
-const comeScritte = [primaParola.charAt(0).toUpperCase() + primaParola.slice(1), secondaParola.toUpperCase(), terzaParola.toUpperCase().replace(" ", "  ")];
+const comeScritte = [`${RIL.charAt(0).toUpperCase()}${RIL.slice(1)}i`, `${VALUT}e`.toUpperCase(), "GIRO  COL  UTENTE"];
+const catturate = [comeScritte[0]!, comeScritte[1]!, "GIRO  COL  UTENT"];
 const lessico = ricomposto((m) => (m.has(CON_LESSICO) ? (m.set(CON_LESSICO, Buffer.concat([m.get(CON_LESSICO)!, Buffer.from(`\n// ${comeScritte.join(", ")}\n`)])), 1) : 0));
-mutazione("il lessico del metodo in una voce", lessico.zip, lessico.toccate, attesaDi(lessico.zip), comeScritte.map((c) => `${CON_LESSICO}: lessico del metodo «${c}»`));
+mutazione("il lessico del metodo in una voce", lessico.zip, lessico.toccate, attesaDi(lessico.zip), catturate.map((c) => `${CON_LESSICO}: lessico del metodo «${c}»`));
 // Sul file vero, contro la voce vera. L'impronta: un bit dell'ora della prima testata locale, che nessun lettore usa, a byte uguali.
 if (Buffer.from(release.subarray(0, 4)).readUInt32LE(0) !== 0x04034b50) fermo("il file della release non comincia con una testata locale");
 const conAltraImpronta = Buffer.from(release);

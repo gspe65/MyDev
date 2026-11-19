@@ -2818,37 +2818,37 @@
       "nome": "estensione-algo",
       "percorso": "",
       "gruppo": "estensioni",
-      "fonte": "https://github.com/gspe65/AlgoDesign-VSCode/releases/download/v0.0.8/AlgoDesign-Code-0.0.8.vsix",
-      "file": "AlgoDesign-Code-0.0.8.vsix",
-      "byte": 199470,
-      "sha256": "260447516da662a5de63d22a5d5d0bdf64b9f35daa5f5e49d03ad4cfb96f0f82",
-      "versione": "0.0.8",
+      "fonte": "https://github.com/gspe65/AlgoDesign-VSCode/actions/runs/44365183114",
+      "file": "AlgoDesign-Code-0.0.9.vsix",
+      "byte": 203023,
+      "sha256": "01439da22680300a06061f0633a51ec28cd6828408e92455b12d94428a2cf25b",
+      "versione": "0.0.9",
       "estensione": "gilan65.algodesign-code",
-      "commit": "d5193eb30c6ad04cd07410166776d7e009bbf761",
+      "commit": "e3f838b144f01618fa82253f5dd50554460a6348",
       "destinazioni": [
         "vscodium/data/extensions"
       ],
-      "stato": "release",
+      "stato": "artefatto",
       "licenza": "MIT",
-      "motivo": "L'estensione per i file .algo, nella versione di prova: i sorgenti sono nel suo repository (percorso vuoto qui), e il pacchetto lo costruiscono, lo provano con l'editor su tre sistemi e lo attestano le sue Actions all'etichetta del commit dichiarato; collaudo/algo/prova.ts lega il file della release alla voce, all'attestazione, ai sorgenti all'etichetta e al nucleo di ricetta/nucleo/pacchetto.json."
+      "motivo": "L'estensione per i file .algo, nella versione di prova: i sorgenti sono nel suo repository (percorso vuoto qui). Il pacchetto e' quello costruito una volta dalla corsa delle sue Actions all'etichetta v0.0.9 (questo commit) e attestato da quella corsa; provato con l'editor su Windows e Ubuntu, senza la prova su macOS (la macchina non c'era) e quindi senza una release: il file si mette nel deposito dall'artefatto della corsa, con questa impronta. La prova del file della release (collaudo/algo/prova.ts) si fa quando la voce torna a una release."
     },
     {
       "nome": "estensione-c",
       "percorso": "",
       "gruppo": "estensioni",
-      "fonte": "https://github.com/gspe65/C-Run-VSCode/releases/download/v0.0.4/C-Run-0.0.4.vsix",
-      "file": "C-Run-0.0.4.vsix",
-      "byte": 11377,
-      "sha256": "ad62c6412b4b21f1aff710439cc749ef7ba3217a5bae3d9c12af0671d4c15dc2",
-      "versione": "0.0.4",
+      "fonte": "https://github.com/gspe65/C-Run-VSCode/actions/runs/44363034407",
+      "file": "C-Run-0.0.6.vsix",
+      "byte": 12003,
+      "sha256": "eb05cfd47eaacf84ee4853ddaff8f129a8cc3624403309d57a18995554d19d60",
+      "versione": "0.0.6",
       "estensione": "gilan65.c-run",
-      "commit": "7cda9a92a85e7bb1cf7371db6941580cb64ba6c7",
+      "commit": "9fa8fa9c24f939de2343db1d28b702296cf2f74a",
       "destinazioni": [
         "vscodium/data/extensions"
       ],
-      "stato": "release",
+      "stato": "artefatto",
       "licenza": "MIT",
-      "motivo": "L'estensione per i programmi C, nella versione di prova: Compila ed esegui e Passo passo sul file .c aperto (il Makefile se c'e', se no il file da solo con clang; il passo passo con clang e lldb-dap nel terminale integrato). I sorgenti sono nel suo repository (percorso vuoto qui); il pacchetto lo costruiscono, lo provano con l'editor su tre sistemi e lo attestano le sue Actions all'etichetta del commit dichiarato; collaudo/algo/prova.ts --voce estensione-c lega il file della release alla voce, all'attestazione e ai sorgenti all'etichetta."
+      "motivo": "L'estensione per i programmi C, nella versione di prova: Compila ed esegui e Passo passo sul file .c aperto (il Makefile se c'e', se no il file da solo con clang; il passo passo con clang e lldb-dap nel terminale integrato). I sorgenti sono nel suo repository (percorso vuoto qui). Il pacchetto e' quello costruito una volta dalla corsa delle sue Actions all'etichetta v0.0.6 (questo commit) e attestato da quella corsa; provato con l'editor su Windows e Ubuntu, senza la prova su macOS (la macchina non c'era) e quindi senza una release: il file si mette nel deposito dall'artefatto della corsa, con questa impronta. La prova del file della release (collaudo/algo/prova.ts --voce estensione-c) si fa quando la voce torna a una release."
     },
     {
       "nome": "licenze",

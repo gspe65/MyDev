@@ -256,7 +256,9 @@ try {
         Scrivi "albero modificato: $($Sporchi.Count) file, lo dice unita.json"
     }
     # --- Il deposito: le voci scaricate e i file nostri della release (il .vsix), con byte e impronta.
-    $Release = @($Dati.nostri | Where-Object { $_.stato -eq 'release' })
+    # 'artefatto': un pacchetto costruito e attestato da una corsa che non ha fatto la release (la fonte e' la pagina della
+    # corsa, non un file): si legge dal deposito come una release, e se manca lo scaricamento fallisce col rimedio scritto.
+    $Release = @($Dati.nostri | Where-Object { $_.stato -eq 'release' -or $_.stato -eq 'artefatto' })
     CreaCartella $Dep
     $Attesi = @{}
     $Scaricati = 0
