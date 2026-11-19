@@ -48,6 +48,19 @@ AMMESSE = [
     r"TEMP\\[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.tmp$",
     r"TEMP\\__PSScriptPolicyTest_.*$",
 ]
+# L'installatore di Visual Studio, che sul PC di sviluppo parte da solo e scrive nella cartella temporanea (misurato due volte
+# durante il gate con le finestre: i registri dd_BackgroundDownload_<data e ora> e una cartella dal nome casuale 8.3 con dentro
+# Microsoft.VisualStudio.Setup.*). Non e' dell'unita': i registri si ammettono per nome; la cartella dal nome casuale, che
+# potrebbe essere di chiunque, solo INSIEME ai registri nella stessa fotografia. Da sola resta un colpo.
+INSTALLATORE_VS = r"TEMP\\dd_BackgroundDownload_\d{14}[^\\]*\.log$"
+CARTELLA_CASUALE = r"TEMP\\[a-z0-9]{8}\.[a-z0-9]{3}$"
+
+
+def estranee_ammesse(r2):
+    """Le voci nuove dell'installatore di Visual Studio: i suoi registri e, solo con quelli, la sua cartella casuale."""
+    registri = [x for x in r2 if re.match(INSTALLATORE_VS, x)]
+    cartelle = [x for x in r2 if registri and re.match(CARTELLA_CASUALE, x)]
+    return registri + cartelle
 # Chiavi del registro che cambiano a ogni uso del PC, per nome.
 RUMORE = [
     r"\\Explorer\\UserAssist\\",
@@ -165,7 +178,8 @@ def differenze(A, B, ra, rb):
 
 def giudica(r1, r2, nuove, cambiate, valori_nuove):
     """Il verdetto, uguale per il dato vero e per le sonde."""
-    r2_fuori = [x for x in r2 if not any(re.match(a, x) for a in AMMESSE)]
+    estranee = estranee_ammesse(r2)
+    r2_fuori = [x for x in r2 if not any(re.match(a, x) for a in AMMESSE) and x not in estranee]
     r3_colpi, r3_altre, r3_dichiarate = [], [], []
     for k in nuove:
         rumore = any(re.search(p, k) for p in RUMORE)
@@ -251,6 +265,9 @@ def confronta(lavoro, a, b, con_sonde):
     r1, r2, nuove, cambiate = differenze(A, B, ra, rb)
     print(f"grezzi: R1 {len(r1)}, R2 {len(r2)}, registro nuove {len(nuove)}, cambiate {len(cambiate)}")
     v = giudica(r1, r2, nuove, cambiate, rb)
+    # Le estranee ammesse si stampano sul solo dato vero (il giudice gira anche per le sonde).
+    estranee = estranee_ammesse(r2)
+    print(f"R2 estranee, ammesse (l'installatore di Visual Studio): {len(estranee)} {estranee}")
     v[0].extend(speciali_nate(A, B))
     stampa(v)
     if con_sonde:
@@ -263,6 +280,8 @@ def confronta(lavoro, a, b, con_sonde):
             ("R3 hex", ([], [], ["HKEY_CURRENT_USER\\Software\\Sonda2"], []), {"HKEY_CURRENT_USER\\Software\\Sonda2": {'"y"': "hex:" + ",".join(f"{c:02x}" for c in "VSCodium.exe".encode("utf-16-le"))}}),
             ("R3 valore cambiato col nome", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Sonda3", "x", "VSCodium.exe")]), {}),
             ("R3 Chromium non dichiarata", ([], [], ["HKEY_CURRENT_USER\\Software\\Chromium\\SondaNuova"], []), {}),
+            # La cartella dal nome casuale senza i registri dell'installatore: resta un colpo.
+            ("R2 cartella casuale da sola", ([], ["TEMP\\jnahrlea.3ya"], [], []), {}),
         ]
         if RADICE:
             casi.append(("R3 valore con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Sonda4", "x", "C:\\" + RADICE[0] + "\\x")]), {}))
@@ -283,9 +302,11 @@ def confronta(lavoro, a, b, con_sonde):
         # La finestra «Salva con nome» che ricorda la cartella dell'unita': rumore di Explorer, anche con la radice.
         bag = ("HKEY_CURRENT_USER\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\2\\0\\5", '"9"', "C:\\" + (RADICE[0] if RADICE else "x") + "\\progetti")
         ammessa = not rosso(giudica([], ["TEMP\\01234567-89ab-cdef-0123-456789abcdef.tmp"], nuove_ch, [("HKEY_CURRENT_USER\\X\\Explorer\\UserAssist\\Y", '"IFPbqvhz.rkr"', "1"), bag, ("HKEY_CURRENT_USER\\Software\\Sconosciuta", "z", "1"), ("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', '"ABC"')], valori_ch))
+        # Le voci vere dell'installatore misurate il 19/11 (i due registri nuovi e la sua cartella): insieme, ammesse.
+        installatore = not rosso(giudica([], ["TEMP\\dd_BackgroundDownload_20261119163139_00_setup_errors.log", "TEMP\\dd_BackgroundDownload_20261119163058.log", "TEMP\\jnahrlea.3ya"], [], [], {}))
         catena, di = sonde_della_catena(lavoro)
-        print(f"sonde: {accese} accese su {len(casi)}, attese 12; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
-        if accese != len(casi) or len(casi) != 12 or catena != di or not ammessa:
+        print(f"sonde: {accese} accese su {len(casi)}, attese 13; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}; l'installatore con la sua cartella ammesso: {installatore}")
+        if accese != len(casi) or len(casi) != 13 or catena != di or not ammessa or not installatore:
             print("ESITO: FERMO")
             return 2
     if rosso(v):
