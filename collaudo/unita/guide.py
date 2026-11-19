@@ -9,8 +9,11 @@ tranne `guide/indice.html`. Si appaiano nei due versi (una guida senza copia e u
 per ogni coppia le tabelle e i blocchi di codice si contano nel sorgente con le righe del Markdown (riga d'intestazione più
 riga dei trattini; recinti di tre apici inversi) e nella copia con un lettore dell'HTML (`<table>`, `<pre>`), e devono
 essere uguali; ogni collegamento relativo di una copia deve portare a un file dell'elenco. L'indice deve collegare ogni
-copia, e ogni suo collegamento deve portare a un file; la pagina di Chromium
-(`chromium/benvenuto.html`) deve collegare l'indice.
+copia, e ogni suo collegamento deve portare a un file; la riga di che cosa contiene (CONTENUTO del generatore) e le guide
+generali (`README.md` e i `.md` direttamente sotto `progetti/`) si appaiano nei due versi: ogni guida generale la porta
+nell'indice, e nessun'altra voce. La pagina di Chromium (`chromium/benvenuto.html`) deve collegare l'indice, ogni suo
+collegamento relativo deve portare a un file dell'elenco, e gli altri suoi collegamenti si appaiano nei due versi con quelli
+dichiarati (BENVENUTO_ALTRI: la guida dell'unità e la guida al C).
 
 Le coppie si contano contro un atteso dichiarato per variante (COPPIE: la base e l'estesa, riconosciuta dall'elenco come la
 riconosce il lanciatore, da `programmi/Git/cmd/git.exe`): una guida entrata o uscita dal perimetro scende o sale insieme dalla
@@ -19,15 +22,18 @@ sorgente e dalla copia, e senza l'atteso resterebbe verde.
 Il verdetto è una funzione sola, attraversata dal dato vero e dalle sonde false in coda, una per ramo: una copia tolta, una
 copia in più, una tabella persa, un blocco di codice perso, un collegamento rotto in una copia, un recinto di codice non
 chiuso nel sorgente, un collegamento dell'indice tolto, l'indice tolto, un collegamento dell'indice a un file che non c'è, la
-pagina di Chromium senza l'indice, la pagina di Chromium tolta, una guida tolta con la sua copia (le coppie contro l'atteso).
-Ogni sonda deve dare il rosso col proprio nome, e solo quello.
+pagina di Chromium senza l'indice, con un collegamento rotto e senza la guida al C, la pagina di Chromium tolta, una guida
+generale senza la riga di che cosa contiene e la riga su un progetto, una guida tolta con la sua copia (le coppie contro
+l'atteso). Ogni sonda deve dare il rosso col proprio nome, e solo quello; il numero delle sonde è dichiarato (SONDE_ATTESE).
 
 Che cosa NON guarda: che il testo della copia sia quello del sorgente parola per parola, né l'aspetto della pagina (lo
 guarda un occhio, nel cancello d'usabilità); i blocchi di codice rientrati di quattro spazi e le tabelle senza la riga
 d'intestazione (le guide non ne hanno: se ne nascesse una, il conteggio del sorgente la mancherebbe, e la differenza
-sarebbe un rosso da leggere).
+sarebbe un rosso da leggere); il testo della riga di che cosa contiene; una voce di CONTENUTO per una guida che l'unità non
+ha (nell'indice non compare: la base non ha la guida dell'estesa).
 
-Uscite: 0 verde, 1 rosso, 2 fermo (manca `unita-file.txt`, nessuna guida, una sonda che non si accende).
+Uscite: 0 verde, 1 rosso, 2 fermo (manca `unita-file.txt`, nessuna guida, una sonda che non si accende, un numero di sonde
+diverso da quello dichiarato).
 """
 import html.parser
 import posixpath
@@ -39,6 +45,10 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 INDICE = "guide/indice.html"
 BENVENUTO = "chromium/benvenuto.html"
+# I collegamenti della pagina di Chromium oltre all'indice, da chromium/: la guida dell'unità e la guida al C.
+BENVENUTO_ALTRI = {"guide/README.html", "guide/progetti/GUIDA-C.html"}
+# Le sonde false in coda, quante ne dichiara questo file: una che sparisce dall'elenco è un fermo, non un verde più corto.
+SONDE_ATTESE = 16
 # Le coppie guida e copia attese per variante, misurate sulle unità costruite (base 24, estesa 49). Una guida nuova o tolta
 # cambia questo numero nello stesso commit.
 COPPIE = {"base": 24, "estesa": 49}
@@ -57,14 +67,28 @@ class Lettore(html.parser.HTMLParser):
         super().__init__()
         self.conti = {"table": 0, "pre": 0}
         self.collegamenti = []
+        # Le voci di un elenco: per ogni <li> il primo collegamento e se porta la riga di che cosa contiene.
+        self.voci = []
+        self.nella_voce = False
 
     def handle_starttag(self, tag, attrs):
         if tag in self.conti:
             self.conti[tag] += 1
+        if tag == "li":
+            self.voci.append([None, False])
+            self.nella_voce = True
         if tag == "a":
             for k, v in attrs:
                 if k == "href" and v:
                     self.collegamenti.append(v)
+                    if self.nella_voce and self.voci[-1][0] is None:
+                        self.voci[-1][0] = v
+        if tag == "span" and self.nella_voce and "contiene" in (dict(attrs).get("class") or "").split():
+            self.voci[-1][1] = True
+
+    def handle_endtag(self, tag):
+        if tag == "li":
+            self.nella_voce = False
 
 
 def leggi_html(testo):
@@ -72,6 +96,19 @@ def leggi_html(testo):
     p.feed(testo)
     p.close()
     return {"tabelle": p.conti["table"], "codice": p.conti["pre"]}, p.collegamenti
+
+
+def voci_dell_indice(testo):
+    """Le voci dell'indice: (la copia che collegano, da guide/; se portano la riga di che cosa contiene)."""
+    p = Lettore()
+    p.feed(testo)
+    p.close()
+    return [(posixpath.normpath(posixpath.join("guide", u)) if u else None, c) for u, c in p.voci]
+
+
+def relativo(u):
+    """Un collegamento che porta a un file dell'unità: non un indirizzo con lo schema (https:, chrome:) né un'ancora."""
+    return not (re.match(r"[a-z][a-z0-9+.-]*:", u) or u.startswith("#"))
 
 
 def conta_md(testo):
@@ -114,7 +151,7 @@ def giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti, varian
         s = conta_md(sorgenti[g])
         h, link = leggi_html(pagine[c])
         for u in link:
-            if re.match(r"[a-z][a-z0-9+.-]*:", u) or u.startswith("#"):
+            if not relativo(u):
                 continue
             if posixpath.normpath(posixpath.join(posixpath.dirname(c), u)) not in esistenti:
                 difetti.append(f"collegamento a un file che non c'è: {c} → {u}")
@@ -134,12 +171,33 @@ def giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti, varian
         for u in sorted(portati):
             if u not in esistenti:
                 difetti.append(f"collegamento dell'indice a un file che non c'è: {u}")
+        # La riga di che cosa contiene (CONTENUTO del generatore) e le guide generali, appaiate nei due versi: ogni guida
+        # generale la porta, e la porta solo una guida generale. Generale come la conta il generatore: README.md e i .md
+        # direttamente sotto progetti/. Una copia che l'indice non collega ha già il suo difetto, e qui non si conta.
+        generali = {copia_di(g): g for g in guide if g.count("/") <= 1}
+        voci = voci_dell_indice(indice)
+        collegate = {u for u, _ in voci if u}
+        con_riga = {u for u, c in voci if c and u}
+        for c, g in sorted(generali.items()):
+            if c in collegate and c not in con_riga:
+                difetti.append(f"guida generale senza la riga di che cosa contiene, nell'indice: {g}")
+        for u in sorted(con_riga - set(generali)):
+            difetti.append(f"riga di che cosa contiene su una voce che non è una guida generale, nell'indice: {u}")
     if benvenuto is None:
         difetti.append(f"manca la pagina di Chromium: {BENVENUTO}")
     else:
         _, link = leggi_html(benvenuto)
-        if INDICE not in {posixpath.normpath(posixpath.join("chromium", u)) for u in link}:
+        portati = {posixpath.normpath(posixpath.join("chromium", u)) for u in link if relativo(u)}
+        if INDICE not in portati:
             difetti.append(f"la pagina di Chromium non collega l'indice: {BENVENUTO}")
+        # Gli altri collegamenti della pagina: ognuno a un file dell'elenco, e appaiati nei due versi con quelli dichiarati.
+        for u in sorted(portati):
+            if u not in esistenti:
+                difetti.append(f"collegamento della pagina di Chromium a un file che non c'è: {u}")
+        for u in sorted(portati - BENVENUTO_ALTRI - {INDICE}):
+            difetti.append(f"collegamento della pagina di Chromium che non è fra quelli dichiarati: {u}")
+        for u in sorted(BENVENUTO_ALTRI - portati):
+            difetti.append(f"collegamento dichiarato che la pagina di Chromium non ha: {u}")
     return difetti
 
 
@@ -176,6 +234,11 @@ def main():
             tot[k] += s[k]
     print(f"nei sorgenti: tabelle {tot['tabelle']}, blocchi di codice {tot['codice']}")
 
+    generali = [g for g in guide if g.count("/") <= 1]
+    con_riga = [u for u, c in voci_dell_indice(indice or "") if c and u]
+    portati = sorted({posixpath.normpath(posixpath.join("chromium", u)) for u in leggi_html(benvenuto or "")[1] if relativo(u)})
+    print(f"guide generali: {len(generali)}; voci dell'indice con la riga di che cosa contiene: {len(con_riga)}; "
+          f"collegamenti della pagina di Chromium: {len(portati)} ({' '.join(portati)})")
     difetti = giudica(guide, copie, sorgenti, pagine, indice, benvenuto, esistenti, variante)
     for d in difetti:
         print(f"ROSSO: {d}")
@@ -207,9 +270,25 @@ def main():
                                f"collegamento a un file che non c'è: {cs} → non-c-e.html"),
         "indice senza una copia": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag, indice=tolta_dall_indice),
                                    f"copia che l'indice non collega: {cs}"),
+        # L'indice tolto dalla pagina e al suo posto un file che non c'è e che non è dichiarato: i tre difetti insieme.
         "Chromium senza l'indice": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
                                          benvenuto=(benvenuto or "").replace("indice.html", "altro.html")),
-                                    f"la pagina di Chromium non collega l'indice: {BENVENUTO}"),
+                                    [f"la pagina di Chromium non collega l'indice: {BENVENUTO}",
+                                     "collegamento della pagina di Chromium a un file che non c'è: guide/altro.html",
+                                     "collegamento della pagina di Chromium che non è fra quelli dichiarati: guide/altro.html"]),
+        "Chromium con un collegamento rotto": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
+                                                    benvenuto=(benvenuto or "").replace("</ul>", '<li><a href="../guide/non-c-e.html">x</a></li></ul>', 1)),
+                                               ["collegamento della pagina di Chromium a un file che non c'è: guide/non-c-e.html",
+                                                "collegamento della pagina di Chromium che non è fra quelli dichiarati: guide/non-c-e.html"]),
+        "Chromium senza la guida al C": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
+                                              benvenuto=(benvenuto or "").replace('href="../guide/progetti/GUIDA-C.html"', 'href="#"', 1)),
+                                         "collegamento dichiarato che la pagina di Chromium non ha: guide/progetti/GUIDA-C.html"),
+        "indice senza la riga di una guida generale": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
+                                                            indice=re.sub(r'<span class="contiene">.*?</span>', "", indice or "", count=1)),
+                                                       "guida generale senza la riga di che cosa contiene, nell'indice: "),
+        "riga di che cosa contiene su un progetto": (dict(guide=guide, copie=copie, sorgenti=sorgenti, pagine=pag,
+                                                          indice=re.sub(r'(LEGGIMI\.html">[^<]*</a>)', r'\1<span class="contiene">x</span>', indice or "", count=1)),
+                                                     "riga di che cosa contiene su una voce che non è una guida generale, nell'indice: guide/progetti/"),
         # Un recinto in più in coda: i blocchi interi restano quanti erano (la divisione per due), il recinto resta aperto.
         "recinto non chiuso": (dict(guide=guide, copie=copie, sorgenti={**sorgenti, scelta: sorgenti[scelta] + "\n```\n"}, pagine=pag),
                                f"recinto di codice non chiuso nel sorgente: {scelta}"),
@@ -223,9 +302,11 @@ def main():
         # La guida esce dal perimetro con la sua copia: sorgente e copia scendono insieme, e solo l'atteso lo vede. Il difetto
         # atteso si riconosce senza i numeri: se il dato vero e' gia' fuori dall'atteso, la sonda non e' misurabile (togliere
         # una guida potrebbe ritrovare l'atteso per caso) e l'esito resta il rosso del dato vero.
+        # Se la voce della guida delle sonde ha nell'indice la riga di che cosa contiene, la riga resta: anche quel difetto.
         "guida tolta con la sua copia": (dict(guide=[g for g in guide if g != scelta], copie=[c for c in copie if c != cs],
                                               sorgenti=sorgenti, pagine=pag),
-                                         "guide nostre "),
+                                         ["guide nostre "] + ([f"riga di che cosa contiene su una voce che non è una guida generale, nell'indice: {cs}"]
+                                                              if (cs, True) in voci_dell_indice(indice or "") else [])),
     }
     spente = []
     for nome, (dati, atteso) in sonde.items():
@@ -243,9 +324,11 @@ def main():
         print(f"sonda «{nome}» su {scelta}: {'ACCESA' if acceso else 'SPENTA'} ({'; '.join(nuovi) or 'nessun difetto nuovo'})")
         if not acceso:
             spente.append(nome)
-    print(f"sonde: {len(sonde) - len(spente)} non spente su {len(sonde)}")
+    print(f"sonde: {len(sonde) - len(spente)} non spente su {len(sonde)}, dichiarate {SONDE_ATTESE}")
     if spente:
         fermo(f"sonde che non si accendono: {', '.join(spente)}")
+    if len(sonde) != SONDE_ATTESE:
+        fermo(f"sonde nell'elenco {len(sonde)}, dichiarate {SONDE_ATTESE}")
     if difetti:
         print(f"difetti: {len(difetti)}")
         print("ESITO: ROSSO")
