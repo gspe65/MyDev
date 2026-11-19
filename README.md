@@ -23,7 +23,7 @@ Per costruire l'unità:
 
 - Windows 10 o 11 x64, con Windows PowerShell 5.1 e `tar.exe` in `System32` (ci sono già).
 - Git.
-- La rete, la prima volta: il deposito dei componenti pesa circa 1,1 GB per la base e 1,2 GB per l'estesa. L'unità costruita occupa circa 2,7 GB, l'estesa 3,3 GB.
+- La rete, la prima volta: il deposito dei componenti pesa circa 1,2 GB per la base e 1,3 GB per l'estesa. L'unità costruita occupa circa 2,7 GB, l'estesa 3,3 GB.
 
 Per le prove:
 
