@@ -39,6 +39,7 @@
         "gdb": "gdb-ponte",
         "program": "${fileDirname}/programma-gcc.exe",
         "cwd": "${fileDirname}",
+        "internalConsoleOptions": "openOnSessionStart",
         "preLaunchTask": "Compila con gcc"
       },
       {
@@ -47,6 +48,7 @@
         "request": "launch",
         "program": "${fileDirname}/programma-clang.exe",
         "cwd": "${fileDirname}",
+        "internalConsoleOptions": "openOnSessionStart",
         "preLaunchTask": "Compila con clang"
       }
     ]

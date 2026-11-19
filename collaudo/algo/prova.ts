@@ -37,14 +37,14 @@ const PROFILI: Record<string, Profilo> = {
     daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/LICENZA-ALGODESIGN.txt": "LICENZA-ALGODESIGN.txt", "extension/icona.png": "icona.png", "extension/readme.md": "README.md", "extension/dist/pagina.css": "src/web/pagina.css" },
     immagini: ["extension/icona.png"],
     nucleo: true,
-    prove: 17,
+    prove: 20,
   },
   "estensione-c": {
     pacchetto: ["[Content_Types].xml", "extension.vsixmanifest", "extension/LICENSE.txt", "extension/dist/extension.cjs", "extension/dist/terminale.cjs", "extension/package.json", "extension/readme.md"],
     daiSorgenti: { "extension/package.json": "package.json", "extension/LICENSE.txt": "LICENSE", "extension/readme.md": "README.md" },
     immagini: [],
     nucleo: false,
-    prove: 16,
+    prove: 19,
   },
 };
 const PROFILO = PROFILI[NOME_DELLA_VOCE] ?? fermo(`nessun profilo per la voce ${NOME_DELLA_VOCE}: ${Object.keys(PROFILI).join(", ")}`);
@@ -56,6 +56,18 @@ const PERCORSO_ASSOLUTO = /(?<![A-Za-z])[A-Za-z]:[\\/]/;
 /** Stringhe che nel pacchetto non devono esserci: il nome e la struttura di questo repository (come le conta il controllo di confine),
  *  e il motore con cui si costruisce. */
 const VIETATE = [/my[-_\s]*dev/i, /ricetta[\\/]/, /estratto[\\/]/, /collaudo[\\/]/, /bun:/, /Bun\./];
+/** Il lessico del metodo di lavoro, che un pacchetto pubblicato non deve portare (nemmeno in un commento di un foglio di stile):
+ *  cercato in OGNI voce del pacchetto, immagini comprese, senza distinguere maiuscole e minuscole. Le tre parole si compongono da
+ *  due pezzi: scritte intere in questo file, che è pubblico, sarebbero esse stesse il lessico che il controllo della privacy cerca. */
+// La stessa forma della specie del controllo della privacy (plurale, «con» e «col», chi prova), perché due rilevatori della stessa
+// specie contino allo stesso modo: il più stretto lascerebbe passare nel pacchetto ciò che l'altro segnala nell'albero.
+const RIL = ["ril", "iev"].join("");
+const VALUT = ["valut", "ator"].join("");
+const LESSICO = [
+  new RegExp(`\\b${RIL}[oi]\\b`, "i"),
+  new RegExp(`\\b${VALUT}[ei]\\b`, "i"),
+  new RegExp(`\\bgiro\\s+co[ln]\\s+(?:il\\s+|l'|un\\s+|gli\\s+|due\\s+|tre\\s+)?(?:${VALUT}|utent|alunn)`, "i"),
+];
 
 const cartella = mkdtempSync(join(tmpdir(), "algo  release-"));
 process.on("exit", () => rmSync(cartella, { recursive: true, force: true }));
@@ -111,7 +123,11 @@ prova("tsc sulla prova", tipi.exitCode === 0, `${tipi.stdout.toString()}${tipi.s
 
 // --- La voce della ricetta, e da lì il repository e l'etichetta.
 type Voce = { nome: string; stato: string; fonte: string; file: string; byte: number; sha256: string; versione: string; estensione: string; commit: string };
-const voce = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === NOME_DELLA_VOCE && v.stato === "release") ?? fermo(`in ricetta/componenti.json non c'è la voce ${NOME_DELLA_VOCE} con stato release`);
+const vocePresa = (JSON.parse(readFileSync(join(RADICE, "ricetta", "componenti.json"), "utf8")) as { nostri: Voce[] }).nostri.find((v) => v.nome === NOME_DELLA_VOCE) ?? fermo(`in ricetta/componenti.json non c'è la voce ${NOME_DELLA_VOCE}`);
+// Una voce allo stato «artefatto» (il pacchetto di una corsa senza release) non ha un file di release da riscaricare: la prova
+// non si può fare, ed è un FERMO col motivo, non un verde e non un rosso.
+if (vocePresa.stato !== "release") fermo(`la voce ${NOME_DELLA_VOCE} è allo stato «${vocePresa.stato}» (${vocePresa.fonte}): non c'è un file di release da provare`);
+const voce = vocePresa;
 const fonte = /^https:\/\/github\.com\/([^/]+\/[^/]+)\/releases\/download\/([^/]+)\/([^/]+)$/.exec(voce.fonte) ?? fermo(`la fonte non è un file di una release di GitHub: ${voce.fonte}`);
 const [, repository, etichetta, nomeDelFile] = fonte as unknown as [string, string, string, string];
 if (nomeDelFile !== voce.file) fermo(`la fonte nomina ${nomeDelFile}, la voce ${voce.file}`);
@@ -137,8 +153,11 @@ const sorgenti = new Map<string, Uint8Array>();
 for (const f of new Set(Object.values(DAI_SORGENTI))) sorgenti.set(f, await scarica(`https://raw.githubusercontent.com/${repository}/${voce.commit}/${f}`));
 // Il nucleo, solo per il profilo che lo porta: il file della conformità e la sua licenza, dallo zip del deposito.
 const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; dal_commit?: { sha256: string } };
-// Il file del nucleo in uso: costruito dai sorgenti all'etichetta finché c'è `dal_commit` (il pacchetto 0.0.3 porta quello), se no
-// il file della release. La licenza dello zip è la stessa dei sorgenti all'etichetta (misurato, byte per byte).
+// Il file del nucleo atteso nel pacchetto: quello costruito dal commit (`dal_commit` di pacchetto.json, il contratto 1.1 che il
+// pacchetto della voce porta) quando pacchetto.json lo dichiara; se il campo non c'è, il file della release. Il secondo ramo non si
+// annuncia: tolto `dal_commit`, il confronto passa al file della release senza dirlo, e il pacchetto della voce, che porta quello
+// costruito dal commit, diventa un rosso su extension/dist/libreria.cjs. La licenza dello zip è la stessa dei sorgenti all'etichetta
+// (misurato, byte per byte).
 const improntaDelNucleo = nucleo.dal_commit?.sha256 ?? nucleo.file.sha256;
 let licenzaDelNucleo: Uint8Array = new Uint8Array();
 if (PROFILO.nucleo) {
@@ -152,6 +171,7 @@ if (PROFILO.nucleo) {
 // --- Il verdetto sul pacchetto: una funzione sola, per il vero e per le mutazioni. Vuoto è verde; ogni motivo nomina la voce.
 // Uno zip che non si legge è un rosso col suo motivo, come ogni altro: una politica sola.
 const colpiIn = (testo: string): string[] => [PERCORSO_ASSOLUTO, ...VIETATE].flatMap((rx) => rx.exec(testo)?.[0] ?? []);
+const lessicoIn = (testo: string): string[] => LESSICO.flatMap((rx) => rx.exec(testo)?.[0] ?? []);
 type Attesa = { byte: number; sha256: string };
 function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa): string[] {
   const motivi: string[] = [];
@@ -178,11 +198,13 @@ function motiviDellaRelease(pacchetto: Uint8Array, attesa: Attesa): string[] {
   }
   // Ogni voce tranne le immagini, confrontate qui sopra per contenuto: anche le voci in più.
   for (const [v, d] of voci) if (!PROFILO.immagini.includes(v)) for (const c of colpiIn(Buffer.from(d).toString("utf8"))) motivi.push(`${v}: ${c}`);
+  // Il lessico del metodo in ogni voce, anche nelle immagini (lette byte per byte come latin1: nessun byte si perde).
+  for (const [v, d] of voci) for (const c of lessicoIn(Buffer.from(d).toString(PROFILO.immagini.includes(v) ? "latin1" : "utf8"))) motivi.push(`${v}: lessico del metodo «${c}»`);
   return motivi;
 }
 const motiviVeri = motiviDellaRelease(release, voce);
 console.log(`motivi sul file della release: ${motiviVeri.length}`);
-prova(`il file della release: byte e impronta della voce, le voci attese nei due versi, i file del repository all'etichetta,${PROFILO.nucleo ? " il nucleo e la sua licenza," : ""} nessun percorso assoluto né stringa vietata`, motiviVeri.length === 0, motiviVeri.join("; "));
+prova(`il file della release: byte e impronta della voce, le voci attese nei due versi, i file del repository all'etichetta,${PROFILO.nucleo ? " il nucleo e la sua licenza," : ""} nessun percorso assoluto né stringa vietata né lessico del metodo`, motiviVeri.length === 0, motiviVeri.join("; "));
 
 // --- Il lettore dello zip contro il `tar` di System32, SUL FILE DELLA RELEASE: stesso elenco nei due versi, stessi byte.
 const tar = join(process.env.SystemRoot ?? fermo("manca SystemRoot"), "System32", "tar.exe");
@@ -206,8 +228,12 @@ const identificativo = `${manifesto.publisher}.${manifesto.name}`.toLowerCase();
 console.log(`manifesto: ${manifesto.publisher}.${manifesto.name} ${manifesto.version}; nella voce ${voce.estensione} ${voce.versione}`);
 prova("il manifesto ha la versione e l'identificativo della voce", manifesto.version === voce.versione && identificativo === voce.estensione, `${identificativo} ${manifesto.version}`);
 
-// --- L'attestazione, sul file riscaricato: il soggetto è quel file, il repository è quello della fonte, il commit quello della voce.
-type Verifica = { verificationResult?: { statement?: { subject?: { digest?: { sha256?: string } }[] }; signature?: { certificate?: { sourceRepositoryURI?: string; sourceRepositoryDigest?: string; runInvocationURI?: string; sourceRepositoryRef?: string } } } }[];
+// --- L'attestazione, sul file riscaricato: il soggetto è quel file, il repository è quello della fonte, il commit quello della voce,
+// il riferimento è l'etichetta della fonte e il workflow quello del pacchetto (i campi del certificato come li scrive
+// `gh attestation verify --format json`: misurati sull'attestazione della release v0.0.8 di AlgoDesign-VSCode).
+type Certificato = { sourceRepositoryURI?: string; sourceRepositoryDigest?: string; runInvocationURI?: string; sourceRepositoryRef?: string; buildConfigURI?: string; buildSignerURI?: string };
+type Verifica = { verificationResult?: { statement?: { subject?: { digest?: { sha256?: string } }[] }; signature?: { certificate?: Certificato } } }[];
+const WORKFLOW = ".github/workflows/pacchetto.yml";
 const gh = Bun.which("gh") ?? fermo("gh non c'è: serve per verificare l'attestazione");
 function attestazione(file: string): { uscita: number; testo: string; verifiche: Verifica } {
   const p = Bun.spawnSync([gh, "attestation", "verify", file, "-R", repository, "--format", "json"], { stdout: "pipe", stderr: "pipe" });
@@ -222,14 +248,49 @@ function attestazione(file: string): { uscita: number; testo: string; verifiche:
 }
 const a = attestazione(fileRelease);
 if (a.uscita !== 0 && /could not|network|dial tcp|timeout/i.test(a.testo) && !/no attestations|404/i.test(a.testo)) fermo(`attestazione non verificabile:\n${a.testo.slice(0, 800)}`);
-const certificati = a.verifiche.map((v) => v.verificationResult?.signature?.certificate ?? {});
-const soggetti = a.verifiche.flatMap((v) => v.verificationResult?.statement?.subject ?? []).map((s) => s.digest?.sha256);
-for (const c of certificati) console.log(`attestazione: repository ${c.sourceRepositoryURI}, commit ${c.sourceRepositoryDigest}, riferimento ${c.sourceRepositoryRef}, corsa ${c.runInvocationURI}`);
+/** Il verdetto sull'attestazione: una funzione sola, per il vero e per le mutazioni del JSON. Vuoto è verde; ogni motivo nomina il campo. */
+function motiviDellAttestazione(verifiche: Verifica, improntaDelFile: string): string[] {
+  const motivi: string[] = [];
+  const certificati = verifiche.map((v) => v.verificationResult?.signature?.certificate ?? {});
+  const soggetti = verifiche.flatMap((v) => v.verificationResult?.statement?.subject ?? []).map((s) => s.digest?.sha256);
+  if (certificati.length === 0) motivi.push("nessuna attestazione");
+  if (!soggetti.includes(improntaDelFile)) motivi.push(`il soggetto non è il file (${improntaDelFile.slice(0, 12)})`);
+  const workflow = `https://github.com/${repository}/${WORKFLOW}@refs/tags/${etichetta}`;
+  for (const c of certificati) {
+    if (c.sourceRepositoryURI !== `https://github.com/${repository}`) motivi.push(`sourceRepositoryURI ${c.sourceRepositoryURI}`);
+    if (c.sourceRepositoryDigest !== voce.commit) motivi.push(`sourceRepositoryDigest ${c.sourceRepositoryDigest}`);
+    if (c.sourceRepositoryRef !== `refs/tags/${etichetta}`) motivi.push(`sourceRepositoryRef ${c.sourceRepositoryRef}, attesa refs/tags/${etichetta}`);
+    if (c.buildConfigURI !== workflow) motivi.push(`buildConfigURI ${c.buildConfigURI}, atteso ${workflow}`);
+    if (c.buildSignerURI !== workflow) motivi.push(`buildSignerURI ${c.buildSignerURI}, atteso ${workflow}`);
+    if (!/\/actions\/runs\/\d+\//.test(c.runInvocationURI ?? "")) motivi.push(`runInvocationURI ${c.runInvocationURI}`);
+  }
+  return motivi;
+}
+for (const v of a.verifiche) {
+  const c = v.verificationResult?.signature?.certificate ?? {};
+  console.log(`attestazione: repository ${c.sourceRepositoryURI}, commit ${c.sourceRepositoryDigest}, riferimento ${c.sourceRepositoryRef}, workflow ${c.buildConfigURI}, firmato da ${c.buildSignerURI}, corsa ${c.runInvocationURI}`);
+}
+const motiviAttestazione = a.uscita === 0 ? motiviDellAttestazione(a.verifiche, impronta(release)) : [`uscita ${a.uscita}: ${a.testo.slice(0, 500)}`];
 prova(
-  "l'attestazione del file riscaricato: il soggetto è il file, repository e commit sono quelli della voce, c'è la corsa",
-  a.uscita === 0 && certificati.length > 0 && soggetti.includes(impronta(release)) && certificati.every((c) => c.sourceRepositoryURI === `https://github.com/${repository}` && c.sourceRepositoryDigest === voce.commit && /\/actions\/runs\/\d+\//.test(c.runInvocationURI ?? "")),
-  `uscita ${a.uscita}: ${a.testo.slice(0, 500)}`,
+  `l'attestazione del file riscaricato: il soggetto è il file, repository e commit sono quelli della voce, il riferimento è l'etichetta, il workflow è ${WORKFLOW}, c'è la corsa`,
+  motiviAttestazione.length === 0,
+  motiviAttestazione.join("; "),
 );
+// Le mutazioni del JSON dell'attestazione, sul JSON vero: un'altra etichetta, un altro workflow. Ognuna col suo motivo e lei sola.
+function mutazioneDellAttestazione(nome: string, cambia: (c: Certificato) => number, attesi: (c: Certificato) => string[]): void {
+  const copia = JSON.parse(JSON.stringify(a.verifiche)) as Verifica;
+  const certificati = copia.map((v) => v.verificationResult?.signature?.certificate ?? {});
+  const toccate = certificati.reduce((s, c) => s + cambia(c), 0);
+  const motivi = motiviDellAttestazione(copia, impronta(release));
+  const previsti = certificati.flatMap(attesi);
+  console.log(`  ${nome}: toccate ${toccate}, motivi ${motivi.length}: ${motivi.join("; ")}`);
+  prova(`mutazione: ${nome}`, a.uscita === 0 && toccate > 0 && motivi.length === previsti.length && previsti.every((x, i) => motivi[i] === x), `uscita ${a.uscita}; toccate ${toccate}; motivi: ${motivi.join("; ")}`);
+}
+const ALTRA_ETICHETTA = "refs/tags/v0.0.0";
+mutazioneDellAttestazione("l'attestazione di un'altra etichetta", (c) => (c.sourceRepositoryRef = ALTRA_ETICHETTA, 1), () => [`sourceRepositoryRef ${ALTRA_ETICHETTA}, attesa refs/tags/${etichetta}`]);
+const altroWorkflow = `https://github.com/${repository}/.github/workflows/altro.yml@refs/tags/${etichetta}`;
+const workflowAtteso = `https://github.com/${repository}/${WORKFLOW}@refs/tags/${etichetta}`;
+mutazioneDellAttestazione("l'attestazione di un altro workflow", (c) => ((c.buildConfigURI = altroWorkflow), (c.buildSignerURI = altroWorkflow), 1), () => [`buildConfigURI ${altroWorkflow}, atteso ${workflowAtteso}`, `buildSignerURI ${altroWorkflow}, atteso ${workflowAtteso}`]);
 
 // --- Le mutazioni del verdetto, ognuna col suo motivo e lei sola; e quante voci ha toccato.
 function zipDi(voci: ReadonlyMap<string, Uint8Array>): Buffer {
@@ -295,6 +356,14 @@ if (PROFILO.nucleo) {
 }
 const vietato = ricomposto((m) => (m.set(EXTRA, new TextEncoder().encode(String.raw`module.exports = "C:\MyDev";`)), 1));
 mutazione("una voce in più con un percorso assoluto e il nome del progetto", vietato.zip, vietato.toccate, attesaDi(vietato.zip), [`voce in più: ${EXTRA}`, `${EXTRA}: C:\\`, `${EXTRA}: MyDev`]);
+// Il lessico del metodo in una voce attesa e non legata a un file del repository, nelle forme che un rilevatore stretto perde: il
+// plurale con l'iniziale maiuscola, la parola tutta maiuscola, «col» con due spazi e chi prova. L'atteso è il testo che ciascun
+// ramo deve catturare.
+const CON_LESSICO = "extension/dist/extension.cjs";
+const comeScritte = [`${RIL.charAt(0).toUpperCase()}${RIL.slice(1)}i`, `${VALUT}e`.toUpperCase(), "GIRO  COL  UTENTE"];
+const catturate = [comeScritte[0]!, comeScritte[1]!, "GIRO  COL  UTENT"];
+const lessico = ricomposto((m) => (m.has(CON_LESSICO) ? (m.set(CON_LESSICO, Buffer.concat([m.get(CON_LESSICO)!, Buffer.from(`\n// ${comeScritte.join(", ")}\n`)])), 1) : 0));
+mutazione("il lessico del metodo in una voce", lessico.zip, lessico.toccate, attesaDi(lessico.zip), catturate.map((c) => `${CON_LESSICO}: lessico del metodo «${c}»`));
 // Sul file vero, contro la voce vera. L'impronta: un bit dell'ora della prima testata locale, che nessun lettore usa, a byte uguali.
 if (Buffer.from(release.subarray(0, 4)).readUInt32LE(0) !== 0x04034b50) fermo("il file della release non comincia con una testata locale");
 const conAltraImpronta = Buffer.from(release);

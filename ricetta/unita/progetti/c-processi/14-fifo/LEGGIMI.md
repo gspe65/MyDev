@@ -6,6 +6,8 @@ Crea una FIFO sul disco e la usa per far parlare due processi. A differenza dell
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-processi/14-fifo`
+
 ```bash
 make
 ./fifo.exe
@@ -25,14 +27,14 @@ ho creato la FIFO 'mio_tubo'. Guardala con:  ls -l mio_tubo
 
 ## Prova tu
 
-**La prova che vale la pena fare** e' con due terminali. In uno:
+**La prova che vale la pena fare** è con due terminali. In uno:
 
 ```bash
 mkfifo tubo
 cat tubo
 ```
 
-`cat` resta li' fermo. Nell'altro terminale:
+`cat` resta lì fermo. Nell'altro terminale:
 
 ```bash
 echo "ciao dall'altro terminale" > tubo

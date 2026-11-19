@@ -8,8 +8,10 @@ Tre rilevatori:
 - R1, per nome: una voce al primo livello delle quattro radici, nuova o cambiata, che porta un nome degli strumenti;
 - R2, voci nuove al primo livello delle quattro radici, ammesse solo per nome (AMMESSE);
 - R3, registro dell'utente: una chiave o un valore nuovi o cambiati che portano un nome degli strumenti o la radice dell'unita'.
-  Le chiavi di RUMORE sono di Explorer e portano il nome di ogni finestra: lì il nome e' ammesso; fra queste, quelle in cui
-  la finestra «Salva con nome» di Windows ricorda la cartella mostrata (Shell\\BagMRU e Bags, ComDlg32), anche con la radice.
+  Le chiavi di RUMORE sono di Explorer e portano il nome di ogni finestra: lì il nome e' ammesso; fra queste, quella in cui
+  la finestra «Salva con nome» di Windows ricorda la cartella mostrata (Shell\\BagMRU, la sola misurata con la radice),
+  anche con la radice. Bags e ComDlg32 non sono ammesse: con un nome o la radice sono un colpo, da leggere e, se rumore,
+  da ammettere con la sua misura.
   Le scritture di Chromium in Software\\Chromium sono dichiarate (CHROMIUM_CHIAVI, CHROMIUM_VALORI): si stampano e non
   decidono, salvo un valore che nomini la radice (cercata con lo stesso riconoscitore dei colpi: in chiaro, ROT13, hex:);
   ogni altra chiave o valore sotto Software\\Chromium e' un colpo.
@@ -55,10 +57,12 @@ RUMORE = [
     # Windows annota ogni programma avviato col suo identificativo (Chromium: «Chromium.<impronta>.chromium.Default»).
     r"\\CurrentVersion\\Search\\JumplistData$",
     # La finestra «Salva con nome» di Windows (quella che l'estensione dei flowchart apre, nello scenario dello studente)
-    # ricorda la cartella mostrata, la sua vista e gli ultimi file salvati per estensione, come ogni finestra di Explorer:
-    # le voci portano i nomi delle cartelle, quindi la radice (misurato: BagMRU\2\0\5 :: "9").
-    r"\\Windows\\Shell\\(BagMRU|Bags)(\\|$)",
-    r"\\Explorer\\ComDlg32\\(OpenSavePidlMRU|LastVisitedPidlMRU|CIDSizeMRU)(\\|$)",
+    # ricorda la cartella mostrata come ogni finestra di Explorer: le voci di BagMRU portano i nomi delle cartelle, quindi
+    # la radice (misurato nel gate con le finestre su una base mai aperta: BagMRU\2\0\5 :: "9", R3 con la radice). Solo
+    # BagMRU: Bags (la vista) e ComDlg32 (OpenSavePidlMRU, LastVisitedPidlMRU, CIDSizeMRU) cambiano nei gate (misurato fra
+    # le altre chiavi, senza nomi ne' radice) ma non sono mai state misurate con un nome o la radice: ammetterle a priori
+    # spegnerebbe R3 su di loro senza una misura.
+    r"\\Windows\\Shell\\BagMRU(\\|$)",
 ]
 # Le scritture di Chromium nel registro, fisse nel suo codice e senza un'opzione che le spenga: dichiarate, ammesse
 # per chiave e, alla radice, per nome del valore; un valore che nomina la radice dell'unita' resta un colpo. Ogni altra
@@ -266,6 +270,9 @@ def confronta(lavoro, a, b, con_sonde):
             # La stessa radice nei byte di un valore hex: (UTF-16), come la scrive il registro: il riconoscitore dei colpi.
             casi.append(("R3 Chromium dichiarata con la radice in hex", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"',
                          "hex(1):" + ",".join(f"{c:02x}" for c in ("C:\\" + RADICE[0] + "\\x").encode("utf-16-le")))]), {}))
+            # Le chiavi della finestra di dialogo non ammesse (solo BagMRU e' rumore misurato): con la radice sono un colpo.
+            casi.append(("R3 ComDlg32 con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\\c", '"0"', "C:\\" + RADICE[0] + "\\progetti")]), {}))
+            casi.append(("R3 Shell\\Bags con la radice", ([], [], [], [("HKEY_CURRENT_USER\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\1\\Shell", '"x"', "C:\\" + RADICE[0] + "\\progetti")]), {}))
         for nome, (a1, a2, a3, a4), val in casi:
             if rosso(giudica(a1, a2, a3, a4, val)):
                 accese += 1
@@ -277,8 +284,8 @@ def confronta(lavoro, a, b, con_sonde):
         bag = ("HKEY_CURRENT_USER\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\2\\0\\5", '"9"', "C:\\" + (RADICE[0] if RADICE else "x") + "\\progetti")
         ammessa = not rosso(giudica([], ["TEMP\\01234567-89ab-cdef-0123-456789abcdef.tmp"], nuove_ch, [("HKEY_CURRENT_USER\\X\\Explorer\\UserAssist\\Y", '"IFPbqvhz.rkr"', "1"), bag, ("HKEY_CURRENT_USER\\Software\\Sconosciuta", "z", "1"), ("HKEY_CURRENT_USER\\Software\\Chromium\\PreferenceMACs\\Default", '"homepage"', '"ABC"')], valori_ch))
         catena, di = sonde_della_catena(lavoro)
-        print(f"sonde: {accese} accese su {len(casi)}, attese 10; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
-        if accese != len(casi) or len(casi) != 10 or catena != di or not ammessa:
+        print(f"sonde: {accese} accese su {len(casi)}, attese 12; della catena {catena} su {di}; sonda ammessa per nome e dichiarata: {ammessa}")
+        if accese != len(casi) or len(casi) != 12 or catena != di or not ammessa:
             print("ESITO: FERMO")
             return 2
     if rosso(v):

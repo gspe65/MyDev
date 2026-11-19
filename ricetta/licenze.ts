@@ -8,10 +8,12 @@
 //
 // Che cosa NON guarda:
 // - che la licenza dichiarata da un pacchetto sia quella giusta: si riporta ciò che il pacchetto dichiara, coi file di licenza che ha alla
-//   radice; un testo più in fondo entra solo se è dichiarato in `TESTI_ALTROVE`, e una licenza con `AND` senza quella voce è un rosso;
+//   radice e sotto `vendor/` e `third_party/` (a ogni profondità); un testo in un'altra sottocartella entra solo se è dichiarato in
+//   `TESTI_ALTROVE`, e una licenza con `AND` senza un testo oltre la radice è un rosso;
 // - gli strumenti esterni: nome, licenza e fonte sono scritti qui a mano, e nessuno li confronta con la loro fonte;
 // - le librerie dell'interfaccia e del programma del progetto da cui viene il nucleo: non entrano qui, e il loro elenco è nel suo pacchetto;
-// - il contenuto del pacchetto dell'estensione, che oggi non porta testi di licenza;
+// - le estensioni dell'editor: ognuna si costruisce nel suo repository, che ne elenca le licenze; i testi che il loro pacchetto porta li
+//   confronta `collaudo/algo/prova.ts`;
 // - le varianti dei pacchetti per le altre piattaforme, che qui non si installano: l'elenco vale per Windows x64.
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -32,8 +34,26 @@ const ESTERNI = [
 /** I pacchetti che non portano un file di licenza: un altro che manchi è un rosso, non un'omissione. */
 const SENZA_TESTO = ["bun-types"];
 
-/** I testi che un pacchetto porta fuori dalla sua radice: la metà di una licenza composta, o la licenza di una libreria incorporata. */
-const TESTI_ALTROVE: Readonly<Record<string, readonly string[]>> = { typescript: ["vendor/vscode-jsonrpc/License.txt"] };
+/** I testi che un pacchetto porta fuori dalla sua radice e fuori da `vendor/` e `third_party/` (che si scandiscono da sé): la metà di una
+ *  licenza composta, o la licenza di una libreria incorporata altrove. Oggi nessuno. */
+const TESTI_ALTROVE: Readonly<Record<string, readonly string[]>> = {};
+/** Le cartelle delle librerie incorporate, scandite a ogni profondità in ogni pacchetto: un testo di licenza che c'è entra da sé. */
+const INCORPORATE = ["vendor", "third_party"];
+const NOME_DI_LICENZA = /^(licen[cs]e|copying|notice)/i;
+
+/** I testi di licenza sotto le cartelle delle librerie incorporate di un pacchetto, coi percorsi relativi al pacchetto, in ordine. */
+function testiIncorporati(cartella: string): string[] {
+  const trovati: string[] = [];
+  const scendi = (rel: string): void => {
+    for (const v of readdirSync(join(cartella, rel), { withFileTypes: true })) {
+      const figlio = `${rel}/${v.name}`;
+      if (v.isDirectory()) scendi(figlio);
+      else if (v.isFile() && NOME_DI_LICENZA.test(v.name)) trovati.push(figlio);
+    }
+  };
+  for (const c of INCORPORATE) if (existsSync(join(cartella, c))) scendi(c);
+  return trovati.sort();
+}
 
 const dipendenze = (JSON.parse(readFileSync(join(RADICE, "package.json"), "utf8")) as { devDependencies: Record<string, string> }).devDependencies;
 /** Le dipendenze dirette, tutte con la licenza in un file a parte alla radice del pacchetto. */
@@ -42,8 +62,8 @@ const senzaVersione = DIRETTE_DI_CONTROLLO.filter((n) => dipendenze[n] === undef
 if (senzaVersione.length > 0) fermo(`controlli positivi senza una dipendenza in package.json: ${senzaVersione.join(", ")}`);
 /**
  * Pacchetti veri e testi veri, che l'elenco deve contenere: un elenco che li perde è rotto, anche se i conteggi tornano. Le versioni vengono
- * da `package.json`. `*AS IS*`, con gli asterischi, è solo nel testo che `typescript` porta in una sottocartella: senza la voce in
- * `TESTI_ALTROVE` sparisce.
+ * da `package.json`. `*AS IS*`, con gli asterischi, è solo nel testo che `typescript` porta in `vendor/vscode-jsonrpc/`: senza la
+ * scansione di `vendor/` sparisce.
  */
 const CONTROLLI_POSITIVI = [...DIRETTE_DI_CONTROLLO.map((n) => `${n} ${dipendenze[n]}, licenza`), "Permission is hereby granted", "Attribution 4.0 International", "THE SOFTWARE IS PROVIDED *AS IS*"];
 
@@ -61,7 +81,7 @@ function pacchettiIn(nm: string, trovati: Map<string, Pacchetto>): void {
       const licenza = typeof j.license === "string" ? j.license : "non dichiarata";
       const r = j.repository as string | { url?: string } | undefined;
       const repository = (typeof r === "string" ? r : r?.url) ?? "repository non dichiarato";
-      const file = [...readdirSync(cartella, { withFileTypes: true }).filter((f) => f.isFile() && /^(licen[cs]e|copying|notice)/i.test(f.name)).map((f) => f.name).sort(), ...(TESTI_ALTROVE[j.name] ?? [])];
+      const file = [...readdirSync(cartella, { withFileTypes: true }).filter((f) => f.isFile() && NOME_DI_LICENZA.test(f.name)).map((f) => f.name).sort(), ...testiIncorporati(cartella), ...(TESTI_ALTROVE[j.name] ?? [])];
       trovati.set(`${j.name}@${j.version}`, { nome: j.name, versione: j.version, licenza, repository, file, cartella });
       const dentro = join(cartella, "node_modules");
       if (existsSync(dentro)) pacchettiIn(dentro, trovati);
@@ -114,7 +134,7 @@ function componi(): { testo: string; pacchetti: Pacchetto[]; senzaTesto: string[
     "",
     ...ESTERNI,
     "",
-    `I pacchetti di sviluppo: ${pacchetti.length}. Si usano per costruire e provare, e non entrano nel pacchetto dell'estensione`,
+    `I pacchetti di sviluppo: ${pacchetti.length}. Si usano per costruire e provare, e non entrano nell'unità`,
     "",
     ...righe,
     "",
@@ -156,8 +176,9 @@ if (altrePiattaforme.length === 0) difetti.push("controllo positivo: nessuna var
 const inPiu = senzaTesto.filter((n) => !SENZA_TESTO.includes(n));
 const nonPiu = SENZA_TESTO.filter((n) => !senzaTesto.includes(n));
 if (inPiu.length > 0 || nonPiu.length > 0) difetti.push(`senza file di licenza, diversi da quelli dichiarati: in più ${inPiu.join(", ")}; non più ${nonPiu.join(", ")}`);
-const composte = pacchetti.filter((p) => /\bAND\b/.test(p.licenza) && TESTI_ALTROVE[p.nome] === undefined).map((p) => `${p.nome} (${p.licenza})`);
-if (composte.length > 0) difetti.push(`una licenza composta, senza una voce in TESTI_ALTROVE: ${composte.join(", ")}`);
+// Una licenza composta vuole un testo oltre quello della radice: trovato sotto vendor/ o third_party/, o dichiarato in TESTI_ALTROVE.
+const composte = pacchetti.filter((p) => /\bAND\b/.test(p.licenza) && !p.file.some((f) => f.includes("/"))).map((p) => `${p.nome} (${p.licenza})`);
+if (composte.length > 0) difetti.push(`una licenza composta, senza un testo in vendor/ o third_party/ né una voce in TESTI_ALTROVE: ${composte.join(", ")}`);
 const persi = CONTROLLI_POSITIVI.filter((c) => !testo.includes(c));
 console.log(`controlli positivi: ${CONTROLLI_POSITIVI.length - persi.length}/${CONTROLLI_POSITIVI.length}`);
 if (persi.length > 0) difetti.push(`l'elenco ha perso: ${persi.join("; ")}`);

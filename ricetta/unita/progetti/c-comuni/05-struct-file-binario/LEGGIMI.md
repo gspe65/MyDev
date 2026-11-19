@@ -6,6 +6,8 @@ Salva tre record in un file binario e li rilegge. Mostra `sizeof` e la differenz
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-comuni/05-struct-file-binario`
+
 ```bash
 make
 ./studenti.exe
@@ -28,4 +30,4 @@ riletti 3 record:
 
 Guarda il file con `xxd studenti.dat`: riconosci i nomi in chiaro e i voti come numeri.
 
-Poi cambia `char nome[32]` in `char nome[16]`, ricompila e rilancia: la struct diventa piu' piccola. Se ora provi a rileggere un file scritto con la versione vecchia, esce spazzatura. E' il motivo per cui i formati binari vanno versionati.
+Poi cambia `char nome[32]` in `char nome[16]`, ricompila e rilancia: la struct diventa più piccola. Se ora provi a rileggere un file scritto con la versione vecchia, esce spazzatura. È il motivo per cui i formati binari vanno versionati.

@@ -35,7 +35,9 @@ import pathlib
 import sys
 import tempfile
 
-TITOLO = "MyDev - l'editor non e' piu' quello garantito"
+# I testi della finestra hanno gli accenti veri: il file si legge come UTF-8 (la codifica dei sorgenti di Python 3) e
+# MessageBoxW riceve le stringhe in UTF-16, senza passare da una code page.
+TITOLO = "MyDev - l'editor non è più quello garantito"
 
 
 def fermo(m):
@@ -126,7 +128,7 @@ def leggi_jsonc(testo):
         elif testo.startswith("/*", i):
             j = testo.find("*/", i + 2)
             if j < 0:
-                raise CommentoAperto(f"il commento aperto con /* alla riga {testo.count(chr(10), 0, i) + 1} non e' chiuso da */")
+                raise CommentoAperto(f"il commento aperto con /* alla riga {testo.count(chr(10), 0, i) + 1} non è chiuso da */")
             fuori.append(spazi(testo[i:j + 2]))
             i = j + 2
         elif c == "," and salta(testo, i + 1) < n and testo[salta(testo, i + 1)] in "}]":
@@ -157,9 +159,9 @@ def consentite_da_testo(testo):
     except json.JSONDecodeError as e:
         return Illeggibili(f"errore di scrittura alla riga {e.lineno}, colonna {e.colno}")
     except ValueError as e:
-        return Illeggibili(f"il testo non e' JSON: {e}")
+        return Illeggibili(f"il testo non è JSON: {e}")
     if not isinstance(imp, dict):
-        return Illeggibili("il testo non e' un oggetto tra parentesi graffe { }")
+        return Illeggibili("il testo non è un oggetto tra parentesi graffe { }")
     return imp.get("extensions.allowed")
 
 
@@ -171,7 +173,7 @@ def consentite(radice):
     try:
         testo = f.read_text(encoding="utf-8-sig")
     except UnicodeDecodeError:
-        return Illeggibili("il file non e' testo UTF-8")
+        return Illeggibili("il file non è testo UTF-8")
     except (OSError, ValueError) as e:
         return Illeggibili(f"il file non si apre: {e.__class__.__name__}")
     return consentite_da_testo(testo)
@@ -187,18 +189,18 @@ def giudica(dichiarato, viste, prodotto, ammesse):
         if k not in viste:
             d.append(f"manca l'estensione {k} {att[k]}")
         elif k not in att:
-            d.append(f"estensione in piu': {k} {viste[k]}")
+            d.append(f"estensione in più: {k} {viste[k]}")
         elif viste[k] != att[k]:
             d.append(f"estensione {k}: versione {viste[k]} invece di {att[k]}")
     if prodotto != dichiarato["prodotto"]:
-        d.append("vscodium\\resources\\app\\product.json e' cambiato" if prodotto else "manca vscodium\\resources\\app\\product.json")
+        d.append("vscodium\\resources\\app\\product.json è cambiato" if prodotto else "manca vscodium\\resources\\app\\product.json")
     if isinstance(ammesse, Illeggibili):
         d.append(f"le impostazioni dell'utente (vscodium\\data\\user-data\\User\\settings.json) non si leggono ({ammesse.motivo}): "
-                 "non si puo' controllare l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme")
+                 "non si può controllare l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme")
     elif ammesse is None:
-        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata tolta")
+        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, è stata tolta")
     elif ammesse != {k: [v] for k, v in att.items()}:
-        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, e' stata cambiata")
+        d.append("l'impostazione extensions.allowed, che blocca le installazioni fuori dall'insieme, è stata cambiata")
     return d
 
 
@@ -211,12 +213,12 @@ def confronta(radice):
 
 
 def testo_avviso(diff):
-    return ("L'editor di questa unita' non e' piu' quello che MyDev ha provato.\n\n"
-            "Che cosa e' cambiato:\n" + "\n".join(f"- {x}" for x in diff) + "\n\n"
-            "L'editor parte lo stesso, ma MyDev non garantisce piu' che l'unita' funzioni come e' stata provata.\n\n"
-            "Per tornare all'unita' garantita: disinstalla dal pannello Estensioni quelle aggiunte e rimetti i file cambiati, "
-            "oppure usa una copia nuova dell'unita' (scaricata di nuovo, o costruita dalla ricetta). "
-            "La guida, README.md nella cartella dell'unita', lo spiega nella sezione \"Le versioni\".")
+    return ("L'editor di questa unità non è più quello che MyDev ha provato.\n\n"
+            "Che cosa è cambiato:\n" + "\n".join(f"- {x}" for x in diff) + "\n\n"
+            "L'editor parte lo stesso, ma MyDev non garantisce più che l'unità funzioni come è stata provata.\n\n"
+            "Per tornare all'unità garantita: disinstalla dal pannello Estensioni quelle aggiunte e rimetti i file cambiati, "
+            "oppure usa una copia nuova dell'unità (scaricata di nuovo, o costruita dalla ricetta). "
+            "La guida, README.md nella cartella dell'unità, lo spiega nella sezione \"Le versioni\".")
 
 
 def avvio(radice):
@@ -310,7 +312,7 @@ def sonde_cartelle():
         ("cartelle: un package.json senza nome si conta come illeggibile", viste.get("(package.json illeggibile) senza-nome-1.0.0") == "?"),
         ("cartelle: un file accanto alle cartelle non e' un'estensione, e non ce ne sono altre", len(viste) == 4),
         ("cartelle: la cartella senza package.json e' un'estensione in piu' nel verdetto",
-         any("in piu': (cartella senza package.json) vuota-1.0.0" in x for x in verdetto)),
+         any("in più: (cartella senza package.json) vuota-1.0.0" in x for x in verdetto)),
         ("cartelle: .obsolete illeggibile, la cartella che segnava si conta", senza_obsolete.get("b.due") == "2.0.0"),
     ]
 
@@ -342,22 +344,22 @@ def sonde():
         ("impostazioni con commenti: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_commento)) == []),
         ("impostazioni con virgole finali: nessuna differenza", giudica(dich, dict(att), "abc", consentite_da_testo(con_virgole)) == []),
         ("// e /* dentro una stringa: non sono commenti", giudica(dich, dict(att), "abc", consentite_da_testo(con_stringa)) == []),
-        ("extensions.allowed tolta dal testo", len(tolta) == 1 and "e' stata tolta" in tolta[0]),
+        ("extensions.allowed tolta dal testo", len(tolta) == 1 and "è stata tolta" in tolta[0]),
         ("impostazioni illeggibili, con una frase diversa da tolta e la riga dell'errore",
          len(illeggibile) == 1 and "non si leggono (errore di scrittura alla riga 3, colonna 3)" in illeggibile[0] and illeggibile != tolta),
         ("errore dopo un commento di due righe: la riga e la colonna sono quelle del file",
          len(da_rotto_dopo) == 1 and "non si leggono (errore di scrittura alla riga 4, colonna 24)" in da_rotto_dopo[0]),
         ("impostazioni vuote: extensions.allowed tolta, non illeggibili",
-         len(da_vuoto) == 1 and "e' stata tolta" in da_vuoto[0]),
+         len(da_vuoto) == 1 and "è stata tolta" in da_vuoto[0]),
         ("impostazioni di soli commenti e spazi: extensions.allowed tolta, non illeggibili",
-         len(da_commenti) == 1 and "e' stata tolta" in da_commenti[0]),
+         len(da_commenti) == 1 and "è stata tolta" in da_commenti[0]),
         ("commento /* mai chiuso: illeggibili, col motivo e la riga",
-         len(da_aperto) == 1 and "non si leggono (il commento aperto con /* alla riga 3 non e' chiuso da */)" in da_aperto[0]),
+         len(da_aperto) == 1 and "non si leggono (il commento aperto con /* alla riga 3 non è chiuso da */)" in da_aperto[0]),
         ("intatta: nessuna differenza", giudica(dich, dict(att), "abc", amm) == []),
-        ("estensione in piu'", any("in piu': c.tre" in x for x in giudica(dich, {**att, "c.tre": "1"}, "abc", amm))),
+        ("estensione in piu'", any("in più: c.tre" in x for x in giudica(dich, {**att, "c.tre": "1"}, "abc", amm))),
         ("estensione mancante", any("manca l'estensione b.due" in x for x in giudica(dich, {"a.uno": "1.0.0"}, "abc", amm))),
         ("versione cambiata", any("b.due: versione 2.0.1" in x for x in giudica(dich, {"a.uno": "1.0.0", "b.due": "2.0.1"}, "abc", amm))),
-        ("product.json cambiato", any("product.json e' cambiato" in x for x in giudica(dich, dict(att), "abd", amm))),
+        ("product.json cambiato", any("product.json è cambiato" in x for x in giudica(dich, dict(att), "abd", amm))),
         ("product.json mancante", any("manca vscodium" in x for x in giudica(dich, dict(att), None, amm))),
         ("extensions.allowed tolta", any("extensions.allowed" in x and "tolta" in x for x in giudica(dich, dict(att), "abc", None))),
         ("extensions.allowed allargata", any("extensions.allowed" in x and "cambiata" in x for x in giudica(dich, dict(att), "abc", {**amm, "c.tre": ["1"]}))),
@@ -394,6 +396,6 @@ if __name__ == "__main__":
         print(f"FERMO: eccezione {e.__class__.__name__}: {e}")
         print("ESITO: FERMO")
         if not argomenti:  # all'avvio un controllo che non riesce non deve tacere
-            ctypes.windll.user32.MessageBoxW(None, testo_avviso([f"il controllo delle estensioni non e' riuscito ({e.__class__.__name__}: {e})"]),
+            ctypes.windll.user32.MessageBoxW(None, testo_avviso([f"il controllo delle estensioni non è riuscito ({e.__class__.__name__}: {e})"]),
                                              TITOLO, 0x0 | 0x30 | 0x10000 | 0x40000)
         sys.exit(2)

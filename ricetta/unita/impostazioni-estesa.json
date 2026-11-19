@@ -14,6 +14,7 @@
       "gdb": "gdb-ponte",
       "program": "${fileDirname}/../target/programma-rust.exe",
       "cwd": "${fileDirname}/..",
+      "internalConsoleOptions": "openOnSessionStart",
       "preLaunchTask": "Cargo: compila"
     }
   ],

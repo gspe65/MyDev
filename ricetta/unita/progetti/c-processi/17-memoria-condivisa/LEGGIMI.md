@@ -2,9 +2,11 @@
 
 **Compilatore:** **solo `gcc`**
 
-Dimostra la differenza fra memoria normale e memoria condivisa dopo una `fork`. E' il contraltare del progetto 07: i thread condividono tutto, i processi niente — a meno che tu non lo chieda esplicitamente.
+Dimostra la differenza fra memoria normale e memoria condivisa dopo una `fork`. È il contraltare del progetto 07: i thread condividono tutto, i processi niente — a meno che tu non lo chieda esplicitamente.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-processi/17-memoria-condivisa`
 
 ```bash
 make
@@ -23,6 +25,6 @@ make
 ## Prova tu
 
 Cambia `MAP_SHARED` in `MAP_PRIVATE` e ricompila.
-Ora anche `condiviso` resta 100: con `MAP_PRIVATE` ogni processo ha la sua copia, e le modifiche non escono da li'.
+Ora anche `condiviso` resta 100: con `MAP_PRIVATE` ogni processo ha la sua copia, e le modifiche non escono da lì.
 
 > L'IPC System V (`shmget`, `msgget`, `semget`) che trovi sui libri **non funziona** in questo ambiente: gli header ci sono ma le funzioni rispondono `Function not implemented`. Gli equivalenti POSIX usati qui (`mmap`, `sem_init`, `mkfifo`) funzionano tutti, e sono anche quelli consigliati oggi.

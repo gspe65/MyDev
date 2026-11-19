@@ -1,4 +1,4 @@
-# S-E1, passo 11: la finestra "Salva con nome" di Windows aperta dall'editor dell'unita'. La trova fra quelle dei processi
+# S-E1, passo 7 ("Salva"): la finestra "Salva con nome" di Windows aperta dall'editor dell'unita'. La trova fra quelle dei processi
 # dell'unita', ne legge con UI Automation titolo, nome del file e cartella, la fotografa (PrintWindow: solo quella finestra,
 # mai lo schermo) e preme "Salva" con Invio, come lo studente (o con le altre due vie qui sotto).
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File dialogo.ps1 -Unita <radice> -Uscita <file.json> -Foto <file.png> [-Attesa 30]
@@ -9,7 +9,9 @@
 # Button. I tasti partono SOLO se la finestra davanti e' quella di dialogo (il messaggio al pulsante anche dietro), e "premuto"
 # vuol dire che la finestra si e' chiusa (vedi sotto le tre vie); se no la finestra si chiude ("Annulla") e l'esito lo dice.
 #
-# Uscite: 0 premuto (finestra chiusa da "Salva"), 2 non si e' potuto (nessuna finestra, non davanti, non chiusa). Solo ASCII: PowerShell 5.1 legge un .ps1 senza BOM
+# Uscite: 0 premuto (finestra chiusa da "Salva"), 2 non si e' potuto (nessuna finestra, non davanti, non chiusa, la finestra
+# a misura zero, un'eccezione). Con ogni uscita il JSON d'esito c'e', col motivo: su un'eccezione anche "eccezione", e la
+# cartella del JSON si crea se manca. Solo ASCII: PowerShell 5.1 legge un .ps1 senza BOM
 # come ANSI. Che cosa NON guarda: le finestre di altri processi; il contenuto della cartella mostrata.
 param(
     [Parameter(Mandatory = $true)][string]$Unita,
@@ -18,6 +20,11 @@ param(
     [int]$Attesa = 30
 )
 $ErrorActionPreference = 'Stop'
+$esito = [ordered]@{ trovato = $false; premuto = $false }
+$d = $null
+# Tutto il lavoro dentro il try (il corpo non e' rientrato): un'eccezione non gestita uscirebbe 1, senza JSON, e S-E1
+# leggerebbe un rosso dove non si e' potuto misurare.
+try {
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
 Add-Type -AssemblyName System.Drawing
@@ -58,9 +65,7 @@ function Elemento($el, [string]$classe, [string]$id) {
     return $el.FindFirst([Windows.Automation.TreeScope]::Descendants, $c)
 }
 
-$esito = [ordered]@{ trovato = $false; premuto = $false }
 $t = Get-Date
-$d = $null
 while (((Get-Date) - $t).TotalSeconds -lt $Attesa) {
     $d = Dialogo (Pid-Unita)
     if ($null -ne $d) { break }
@@ -84,24 +89,33 @@ if ($null -ne $d) {
     $h = [IntPtr]$d.Current.NativeWindowHandle
     $r = New-Object SE1.D+RECT
     [void][SE1.D]::GetWindowRect($h, [ref]$r)
-    $img = New-Object System.Drawing.Bitmap ($r.Right - $r.Left), ($r.Bottom - $r.Top)
-    $g = [System.Drawing.Graphics]::FromImage($img)
-    $dc = $g.GetHdc()
-    [void][SE1.D]::PrintWindow($h, $dc, 2)
-    $g.ReleaseHdc($dc)
-    $img.Save($Foto, [System.Drawing.Imaging.ImageFormat]::Png)
-    $g.Dispose(); $img.Dispose()
+    # La guardia sulle misure: una finestra chiusa fra il ritrovamento e la foto ha il rettangolo a zero, e una Bitmap di
+    # misura zero solleva "Parametro non valido" (misurato). Allora niente foto e niente tasti: non si e' potuto (uscita 2).
+    $larghezza = $r.Right - $r.Left
+    $altezza = $r.Bottom - $r.Top
+    $esito.misura = "${larghezza}x${altezza}"
+    $misuraBuona = $larghezza -gt 0 -and $altezza -gt 0
+    if (-not $misuraBuona) { $esito.motivo = "la finestra di dialogo ha misura $($esito.misura) (chiusa o non disegnata): nessuna foto, nessun tasto" }
+    else {
+        $img = New-Object System.Drawing.Bitmap $larghezza, $altezza
+        $g = [System.Drawing.Graphics]::FromImage($img)
+        $dc = $g.GetHdc()
+        [void][SE1.D]::PrintWindow($h, $dc, 2)
+        $g.ReleaseHdc($dc)
+        $img.Save($Foto, [System.Drawing.Imaging.ImageFormat]::Png)
+        $g.Dispose(); $img.Dispose()
+    }
     # "Salva", solo con la finestra di dialogo davanti, e premuto vuol dire CHIUSA: misurato, Invio mandato con la finestra
     # davanti puo' non arrivare al pulsante (la seconda finestra della sessione restava aperta, col nome nel campo, e la misura
     # contava "premuto"). Tre vie in fila, ciascuna verificata dalla chiusura: Invio, Alt+S (la lettera sottolineata di "Salva"),
     # e il messaggio BM_CLICK al pulsante. L'esito dice quale. Le due vie da tastiera solo con la finestra davanti; il messaggio
     # no: misurato di notte, senza nessuno al PC, il primo piano resta alla barra delle applicazioni e nessuna finestra nuova
-    # viene davanti (gate FERMO al passo 11), mentre BM_CLICK mandato con PostMessage a una "Salva con nome" vera
+    # viene davanti (gate FERMO al passo di "Salva", il 7 dello scenario a 12 passi), mentre BM_CLICK mandato con PostMessage a una "Salva con nome" vera
     # DIETRO la chiude e salva (4 su 4). PostMessage e non SendMessage: una seconda domanda di Windows ("Sostituire?") terrebbe
     # SendMessage appeso. La pressione di UI Automation qui non c'e': il pulsante e' un Pane e risponde "Pattern non supportato".
     $chiusa = { -not [SE1.D]::IsWindow($h) -or -not [SE1.D]::IsWindowVisible($h) }
     foreach ($via in @('{ENTER}', '%s', 'messaggio')) {
-        if (& $chiusa) { break }
+        if (-not $misuraBuona -or (& $chiusa)) { break }
         [SE1.D]::keybd_event(0x12, 0, 0, 0); [SE1.D]::keybd_event(0x12, 0, 2, 0)
         [void][SE1.D]::SetForegroundWindow($h)
         Start-Sleep -Milliseconds 600
@@ -131,3 +145,18 @@ if ($null -ne $d) {
 else { $esito.motivo = "nessuna finestra di dialogo dell'unita' in $Attesa s" }
 [IO.File]::WriteAllText($Uscita, ($esito | ConvertTo-Json -Depth 4), $Utf8)
 if ($esito.premuto) { exit 0 } else { exit 2 }
+}
+catch {
+    # Un'eccezione: non si e' potuto. "premuto" resta quello che era (la finestra puo' essersi chiusa da "Salva" prima),
+    # "eccezione" dice che la misura non e' finita; la finestra ancora aperta si chiude ("Annulla").
+    $esito.eccezione = "$($_.Exception.Message) (riga $($_.InvocationInfo.ScriptLineNumber))"
+    $esito.motivo = $(if ($esito.Contains('motivo')) { $esito.motivo + '; ' } else { '' }) + "eccezione: $($esito.eccezione)"
+    if ($null -ne $d) { try { $d.GetCurrentPattern([Windows.Automation.WindowPattern]::Pattern).Close() } catch { } }
+    try {
+        $cartellaUscita = [IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($Uscita))
+        if ($cartellaUscita) { [void][IO.Directory]::CreateDirectory($cartellaUscita) }
+        [IO.File]::WriteAllText($Uscita, ($esito | ConvertTo-Json -Depth 4), (New-Object Text.UTF8Encoding($false)))
+    }
+    catch { [Console]::Error.WriteLine("esito non scritto: $($_.Exception.Message)") }
+    exit 2
+}

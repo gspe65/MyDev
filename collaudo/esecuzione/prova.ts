@@ -26,11 +26,13 @@
 // Una differenza dichiarata ha anche la sua forma, per esecutore: il genere dell'esito e i suoi tratti che non cambiano da una
 // corsa all'altra («senza esito: uscita 1, ZeroDivisionError», «senza esito: non finito in 10 s», «differenza: output diverso dalla
 // riga 1; error atteso …, ottenuto nessuno»). Un esito non verde di un'altra forma nello slot dichiarato è rosso, con la forma
-// attesa e quella osservata. Una forma che cambiasse fra due corse si dichiara non fissata, col perché, e si conta a parte.
+// attesa e quella osservata. Una forma che cambiasse fra due corse si dichiara non fissata, col perché, e si conta a parte: il
+// numero delle forme non fissate è una costante (`FORME_NON_FISSATE`), e un numero diverso è rosso.
 //
 // Gli esiti sono `ESITI_ATTESI`, i casi per 6 esecutori: `DA_UN_PROGRAMMA` vengono da un programma compilato ed eseguito, gli altri
 // (i casi dei file con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del
-// caso. Le costanti sono controllate a ogni corsa e i numeri si stampano (all'etichetta v1.0.0: 1506, 1392 e 114).
+// caso. Le costanti sono controllate a ogni corsa, contro il corpus al riferimento dell'inventario del nucleo (la voce `commit`
+// di `ricetta/nucleo/inventario.json`, che lo dichiara), e i numeri si stampano: 1506, 1392 e 114.
 //
 // Il motore dell'editor che genera ha un tempo massimo: oltre, il motore si ferma e la prova è rossa, con il suo nome.
 //
@@ -51,7 +53,7 @@ import { availableParallelism, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fermo, fermoSeEtichettaSpostata, git, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, riferimentoDi, rosso } from "../../ricetta/nucleo/comune";
 
-/** I denominatori, dichiarati prima della corsa e confrontati con ciò che si misura. Cambiare etichetta è rimisurarli. */
+/** I denominatori, dichiarati prima della corsa e confrontati con ciò che si misura. Cambiare il riferimento del nucleo è rimisurarli. */
 const FILE_ATTESI = 192;
 const CASI_DEL_PROGRAMMA = 213;
 const CASI_DI_FUNZIONI = 38;
@@ -63,7 +65,9 @@ const ESITI_ATTESI = (CASI_DEL_PROGRAMMA + CASI_DI_FUNZIONI) * ESECUTORI.length;
 const DA_UN_PROGRAMMA = ESITI_ATTESI - CASI_CON_ERRORE_STATICO * ESECUTORI.length;
 const SECONDI_DI_UN_PROGRAMMA = 10;
 const SECONDI_DEL_MOTORE = 300;
-const PROVE_ATTESE = 13;
+/** Gli slot delle differenze dichiarate con una forma non fissata: oggi nessuno, ogni forma è scritta. */
+const FORME_NON_FISSATE = 0;
+const PROVE_ATTESE = 16;
 
 type Specie = "unita" | "generatore" | "linguaggio";
 type Esecutore = (typeof ESECUTORI)[number];
@@ -637,6 +641,34 @@ const senzaUno = new Map(esiti);
 senzaUno.delete(verde);
 const s4 = giudica(senzaUno, previste, DICHIARATE).rossi.filter((r) => !vero.rossi.includes(r));
 prova("sonda: una dichiarata che non avviene e un esito che manca sono rossi", s3.length === 1 && s3[0]!.includes("dichiarata e non avvenuta") && s4.length === 1 && s4[0]!.includes("mancante"), `${s3.join(" | ")} || ${s4.join(" | ")}`);
+
+// --- Le forme non fissate contro la loro costante; e i due rami della tabella delle forme che le sonde qui sopra non toccano.
+// Le tabelle alterate si inventano (il fatto cercato è la deviazione), gli esiti sono quelli veri della dichiarata della sonda
+// della forma: slot non verdi, con le forme del Python e del C scritte per compilatore.
+const voceSonde = DICHIARATE[idForma] ?? fermo(`la dichiarata delle sonde delle forme non c'è: ${idForma}`);
+const nonFissateFuori = (g: Giudizio): boolean => g.formeNonFissate.length !== FORME_NON_FISSATE;
+const conNonFissata = giudica(esiti, previste, { ...DICHIARATE, [idForma]: { ...voceSonde, forme: { tutti: { nonFissata: "sonda" } } } });
+console.log(`      forme non fissate: dichiarate ${FORME_NON_FISSATE}, contate ${vero.formeNonFissate.length}; con una dichiarata non fissata in più ${conNonFissata.formeNonFissate.length}`);
+prova(`le forme non fissate sono quelle dichiarate (${FORME_NON_FISSATE}), e una dichiarata non fissata in più le fa diverse`, !nonFissateFuori(vero) && nonFissateFuori(conNonFissata),
+  `contate ${vero.formeNonFissate.length} [${vero.formeNonFissate.join(", ")}], dichiarate ${FORME_NON_FISSATE}; con la sonda ${conNonFissata.formeNonFissate.length}`);
+
+// Una forma per un esecutore che la voce non ha: la stessa dichiarata ristretta al Python, con le forme del C ancora scritte.
+const SOLO_PYTHON: readonly Esecutore[] = ["python it", "python en"];
+const orfane = (Object.keys(voceSonde.forme) as (keyof Forme)[]).filter((c) => !SOLO_PYTHON.some((x) => chiaviDi(x).includes(c)));
+if (orfane.length === 0) fermo(`la sonda della forma orfana vuole una forma del C in ${idForma}`);
+const s7 = giudica(esiti, previste, { ...DICHIARATE, [idForma]: { ...voceSonde, esecutori: SOLO_PYTHON } }).rossi.filter((r) => r.startsWith("ROSSO forma per un esecutore che la voce non ha"));
+prova(`sonda: una forma per un esecutore che la voce non ha è rossa e nomina la voce e la chiave (${orfane.join(", ")})`,
+  s7.length === orfane.length && orfane.every((c, i) => s7[i] === `ROSSO forma per un esecutore che la voce non ha: ${idForma}, ${c}`), s7.join(" | ") || "nessuna riga");
+if (s7[0] !== undefined) console.log(`      come si legge: ${s7[0]}`);
+
+// Una dichiarata senza la forma per un suo esecutore: la stessa dichiarata, senza la forma del Python.
+const slotPython = SOLO_PYTHON.map((x) => `${idForma}|${x}`);
+for (const k of slotPython) if (["verde", "non compila", undefined].includes(esiti.get(k)?.genere)) fermo(`la sonda della forma mancante vuole uno slot non verde: ${k} è ${esiti.get(k)?.genere ?? "assente"}`);
+const senzaPython = Object.fromEntries(Object.entries(voceSonde.forme).filter(([c]) => !chiaviDi("python it").includes(c as keyof Forme))) as Forme;
+const s8 = giudica(esiti, previste, { ...DICHIARATE, [idForma]: { ...voceSonde, forme: senzaPython } }).rossi.filter((r) => !vero.rossi.includes(r));
+prova("sonda: una dichiarata senza la forma per un suo esecutore è rossa e nomina lo slot, con la forma osservata",
+  s8.length === slotPython.length && slotPython.every((k, i) => s8[i]!.startsWith(`ROSSO dichiarata senza forma attesa (${voceSonde.specie}): ${nomina(k)}: osservata «`)), s8.join(" | ") || "nessuna riga");
+if (s8[0] !== undefined) console.log(`      come si legge: ${s8[0]}`);
 
 console.log(`prove: ${fatte}/${PROVE_ATTESE}, fallite ${fallite.length}`);
 if (fatte !== PROVE_ATTESE) {

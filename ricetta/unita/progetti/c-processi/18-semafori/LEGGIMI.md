@@ -2,9 +2,11 @@
 
 **Compilatore:** **solo `gcc`**
 
-Due processi aumentano lo stesso contatore in memoria condivisa, prima senza protezione e poi con un semaforo. E' il gemello del progetto 07: stesso problema, stessa soluzione, ma con i processi.
+Due processi aumentano lo stesso contatore in memoria condivisa, prima senza protezione e poi con un semaforo. È il gemello del progetto 07: stesso problema, stessa soluzione, ma con i processi.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-processi/18-semafori`
 
 ```bash
 make
@@ -27,8 +29,8 @@ make
 
 ## Prova tu
 
-Il numero della prima prova e' **diverso ogni volta**: lancia il programma cinque volte di fila e guardalo cambiare. Non e' un errore casuale del computer: e' il momento esatto in cui i due processi si sovrappongono, che dipende da mille cose.
+Il numero della prima prova è **diverso ogni volta**: lancia il programma cinque volte di fila e guardalo cambiare. Non è un errore casuale del computer: è il momento esatto in cui i due processi si sovrappongono, che dipende da mille cose.
 
 Apri affiancati questo `main.c` e quello del progetto 07: `sem_wait` sta esattamente dove sta `pthread_mutex_lock`.
 
-> Puo' capitare che anche la prova senza semaforo dia il numero giusto: vuol dire solo che stavolta i due processi non si sono pestati i piedi. Rilancia: un programma che funziona *a volte* e' rotto.
+> Può capitare che anche la prova senza semaforo dia il numero giusto: vuol dire solo che stavolta i due processi non si sono pestati i piedi. Rilancia: un programma che funziona *a volte* è rotto.

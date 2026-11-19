@@ -2,9 +2,11 @@
 
 **Compilatore:** **solo `gcc`**
 
-Il figlio si trasforma nel comando `date`. E' la seconda meta' del meccanismo con cui una shell esegue i comandi: prima `fork`, poi `exec`.
+Il figlio si trasforma nel comando `date`. È la seconda metà del meccanismo con cui una shell esegue i comandi: prima `fork`, poi `exec`.
 
 ## Comandi
+
+Dal terminale, nella cartella del progetto: `cd c-processi/12-exec`
 
 ```bash
 make
@@ -23,6 +25,6 @@ oggi e' il 06/09/1999
 
 ## Prova tu
 
-Aggiungi una `printf` **subito dopo** la `execlp`, prima della `perror`. Ricompila e rilancia: quella riga non compare mai, perche' se exec riesce il codice che la contiene non esiste piu'.
+Aggiungi una `printf` **subito dopo** la `execlp`, prima della `perror`. Ricompila e rilancia: quella riga non compare mai, perché se exec riesce il codice che la contiene non esiste più.
 
 Poi cambia `"date"` in `"comando_inventato"`: ora exec fallisce, la `perror` viene eseguita e il figlio esce con 127.

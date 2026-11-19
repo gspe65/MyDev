@@ -13,7 +13,7 @@ Atteso «senza»: H.264, H.265, AAC: tutte le domande «no» e nessuna decodific
 Atteso «ufficiale» (controllo positivo): H.264 decodifica e canPlayType non vuoto; VP9, AV1, Opus decodifica.
 Che cosa NON guarda: altri formati (MP3, Theora, FLAC...); la decodifica in hardware; i contenuti cifrati.
 Uscite: 0 VERDE, 1 ROSSO, 2 FERMO (nessun esito dalla pagina, Chromium assente, profilo già esistente, campioni
-diversi dalle impronte).
+diversi dalle impronte, un esito illeggibile o senza i suoi campi, un'altra eccezione: mai il rosso di un traceback).
 """
 import argparse
 import hashlib
@@ -250,4 +250,14 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Un esito troncato o senza «programma» e «risultati», un campione che non si legge: non si è potuto misurare, come in
+    # collaudo/unita/guide.py.
+    try:
+        uscita = main()
+    except SystemExit:
+        raise
+    except Exception as x:  # noqa: BLE001
+        print(f"FERMO: eccezione: {x!r}")
+        print("ESITO: FERMO")
+        uscita = 2
+    sys.exit(uscita)

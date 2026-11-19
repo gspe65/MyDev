@@ -9,7 +9,8 @@ scrive nella cartella `guide` dell'unità, che non deve esistere.
 
 Il convertitore è `markdown-it-py` del Python dell'unità: CommonMark con le tabelle, l'HTML nei sorgenti scritto come testo.
 Un nome di guida scritto come codice (`progetti/GUIDA-C.md`) diventa un collegamento alla sua copia, e così il nome di un
-progetto (`01-ciao`, sotto un titolo `c-comuni/`) porta alla copia del suo `LEGGIMI.md`. La pagina non chiede
+progetto (`01-ciao`, sotto un titolo `c-comuni/`) porta alla copia del suo `LEGGIMI.md`; un collegamento del sorgente a
+una guida nostra (`[01-ciao](c-comuni/01-ciao/LEGGIMI.md)`) porta alla sua copia `.html`. La pagina non chiede
 nulla alla rete: lo stile è nel file.
 
 Uscite: 0 verde, 1 rosso (una guida che non si legge come UTF-8, nessuna guida trovata), 2 fermo (la cartella delle copie
@@ -22,6 +23,7 @@ pagina lo dice).
 import argparse
 import html
 import posixpath
+import re
 import sys
 from pathlib import Path
 
@@ -67,7 +69,17 @@ STILE = """
   th { background: var(--riquadro); }
   blockquote { margin: .8rem 0; padding: 0 1rem; color: var(--tenue); border-left: 4px solid var(--bordo); }
   .piede { color: var(--tenue); font-size: .92rem; margin-top: 2.5rem; border-top: 1px solid var(--bordo); padding-top: .8rem; }
+  .contiene { display: block; }
+  .percorso { display: block; color: var(--tenue); font-size: .82rem; overflow-wrap: anywhere; }
 """
+
+# Nell'indice, la riga che dice che cosa contiene ogni guida generale; i LEGGIMI dei progetti non ne hanno.
+CONTENUTO = {
+    "README.md": "l'unità: che cosa avviare, l'editor, le guide, i dati",
+    "progetti/GUIDA-C.md": "il C da zero, i due compilatori, i processi e i thread, la mappa dei progetti",
+    "progetti/Avvio-C.md": "i comandi essenziali in breve",
+    "progetti/GUIDA-ESTESA.md": "Rust, git e gh, nell'unità estesa",
+}
 
 
 def pagina(titolo, corpo, indietro, piede):
@@ -143,8 +155,23 @@ def main():
                 gruppo = nomi[0].rstrip("/") if nomi else None
             if t.type != "inline" or not t.children:
                 continue
+            # Un collegamento scritto nel sorgente a una guida nostra (`[01-ciao](c-comuni/01-ciao/LEGGIMI.md)`) porta alla
+            # sua copia; il codice dentro un collegamento resta com'è, senza un secondo collegamento.
+            in_collegamento = 0
             for c in t.children:
-                if c.type != "code_inline":
+                if c.type == "link_open":
+                    in_collegamento += 1
+                    href = c.attrGet("href") or ""
+                    percorso, diesis, ancora = href.partition("#")
+                    if percorso and not re.match(r"[a-zA-Z][a-zA-Z0-9+.-]*:", percorso) and not percorso.startswith("/"):
+                        meta = posixpath.normpath(posixpath.join(cartella, percorso))
+                        if meta in note:
+                            c.attrSet("href", posixpath.relpath(copia_di(meta), qui) + diesis + ancora)
+                    continue
+                if c.type == "link_close":
+                    in_collegamento -= 1
+                    continue
+                if c.type != "code_inline" or in_collegamento:
                     continue
                 nome = c.content.replace("\\", "/")
                 candidati = [nome, "progetti/" + nome]
@@ -181,8 +208,9 @@ def main():
     righe = ["<h1>Le guide di MyDev</h1>\n", "<h2>Le guide</h2>\n<ul>\n"]
     for r in generali:
         nome = "MyDev: la guida dell'unità" if r == "README.md" else titoli[r]
-        righe.append(f'<li><a href="{html.escape(copia_di(r)[len("guide/"):])}">{html.escape(nome)}</a> '
-                     f"<code>{html.escape(r)}</code></li>\n")
+        contiene = f'<span class="contiene">{html.escape(CONTENUTO[r])}</span>' if r in CONTENUTO else ""
+        righe.append(f'<li><a href="{html.escape(copia_di(r)[len("guide/"):])}">{html.escape(nome)}</a>{contiene}'
+                     f'<span class="percorso"><code>{html.escape(r)}</code></span></li>\n')
     righe.append("</ul>\n")
     gruppo = None
     for r in rels:
@@ -195,8 +223,8 @@ def main():
             righe.append(f"<h2>I progetti in <code>progetti/{html.escape(g)}</code></h2>\n<ul>\n")
             gruppo = g
         cartella = posixpath.dirname(r)[len("progetti/") :]
-        righe.append(f'<li><a href="{html.escape(copia_di(r)[len("guide/"):])}">{html.escape(titoli[r])}</a> '
-                     f"<code>{html.escape(cartella)}</code></li>\n")
+        righe.append(f'<li><a href="{html.escape(copia_di(r)[len("guide/"):])}">{html.escape(titoli[r])}</a>'
+                     f'<span class="percorso"><code>{html.escape(cartella)}</code></span></li>\n')
     if gruppo is not None:
         righe.append("</ul>\n")
     piede = ("Le pagine di questa cartella sono copie delle guide <code>.md</code> dell'unità, fatte quando l'unità è stata "

@@ -6,6 +6,8 @@ Il programma si duplica. Il figlio si presenta ed esce con il valore 7, il padre
 
 ## Comandi
 
+Dal terminale, nella cartella del progetto: `cd c-processi/10-fork`
+
 ```bash
 make
 ./fork.exe
@@ -30,6 +32,6 @@ Togli il primo `fflush(stdout)` e rilancia mandando l'output in un file:
 cat uscita.txt
 ```
 
-Vedrai la prima riga **due volte**: il figlio ha ereditato il buffer ancora pieno e lo ha stampato anche lui. Sullo schermo non succede, perche' li' il buffer si svuota a ogni a-capo.
+Vedrai la prima riga **due volte**: il figlio ha ereditato il buffer ancora pieno e lo ha stampato anche lui. Sullo schermo non succede, perché lì il buffer si svuota a ogni a-capo.
 
-> Se provi a compilarlo con `make CC=clang` ottieni `fatal error: 'sys/wait.h' file not found`. Non e' un errore tuo: quella funzione su Windows non c'e'.
+> Se provi a compilarlo con `make CC=clang` ottieni `fatal error: 'sys/wait.h' file not found`. Non è un errore tuo: quella funzione su Windows non c'è.
