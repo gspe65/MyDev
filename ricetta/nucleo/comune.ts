@@ -5,8 +5,8 @@
 // Un'eccezione non catturata è un fermo anch'essa: lo fa questo file, per ogni script che lo importa.
 //
 // L'etichetta che non è più al commit dell'inventario è un rosso per la ricetta, che custodisce quel legame, e un fermo per
-// le prove a valle, che senza quel commit non possono misurare. Mai un verde. Senza etichetta (il contratto dal commit) il commit
-// dell'inventario è il riferimento: se nel repository non c'è più, è un fermo per tutti.
+// le prove a valle, che senza quel commit non possono misurare. Mai un verde. Il nucleo entra solo da un'etichetta: un inventario
+// senza etichetta è un rosso per tutti (il riferimento per commit, che c'era fino alla release del contratto 1.1, è tolto).
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
@@ -21,14 +21,11 @@ export const ESTRATTO = join(import.meta.dir, "estratto");
 export const FORMA = "sha256 dei byte conservati dal repository (git show <commit>:<file>)";
 
 export type VoceDelFile = { percorso: string; sha256: string };
-/**
- * Il riferimento del nucleo è un'etichetta di AlgoDesign, che dà il commit. Senza `etichetta` il riferimento è il `commit`
- * stesso, scritto per intero: un'eccezione dichiarata (il contratto 1.1 dal commit, fino alla release che lo porta).
- */
-export type Inventario = { etichetta?: string; commit: string; forma: string; file: VoceDelFile[] };
+/** Il riferimento del nucleo è un'etichetta di AlgoDesign, che dà il commit, scritto accanto per intero. */
+export type Inventario = { etichetta: string; commit: string; forma: string; file: VoceDelFile[] };
 
-/** Il riferimento come si legge in una riga: l'etichetta, o il commit quando l'etichetta non c'è. */
-export const riferimentoDi = (i: { etichetta?: string; commit: string }): string => (i.etichetta !== undefined ? i.etichetta : `commit ${i.commit}`);
+/** Il riferimento come si legge in una riga: l'etichetta e il suo commit. */
+export const riferimentoDi = (i: { etichetta: string; commit: string }): string => `${i.etichetta} (commit ${i.commit})`;
 
 /** Non si è potuto misurare. */
 export function fermo(motivo: string): never {
@@ -70,25 +67,9 @@ export function commitDellEtichetta(repo: string, etichetta: string): string {
   return p.stdout.toString().trim();
 }
 
-/**
- * Un commit scritto per intero, che c'è nel repository. Un'abbreviazione o un nome di ramo sono un fermo: si muovono, o
- * possono diventare ambigui. Un commit che non c'è (una storia riscritta di là) è un fermo: non si può misurare.
- */
-export function commitPresente(repo: string, commit: string): string {
-  if (!/^[0-9a-f]{40}$/.test(commit)) fermo(`il commit non è scritto per intero: ${commit}`);
-  const p = Bun.spawnSync(["git", "-C", repo, "rev-parse", "--verify", "-q", `${commit}^{commit}`], { stdout: "pipe", stderr: "pipe" });
-  if (p.exitCode !== 0 || p.stdout.toString().trim() !== commit) fermo(`il commit non c'è: ${commit}, in ${repo}`);
-  return commit;
-}
-
-/** Il commit del riferimento dell'inventario: quello dell'etichetta, o il commit stesso quando l'etichetta non c'è. */
-export function commitDelRiferimento(repo: string, i: { etichetta?: string; commit: string }): string {
-  return i.etichetta !== undefined ? commitDellEtichetta(repo, i.etichetta) : commitPresente(repo, i.commit);
-}
-
-/** Per le prove a valle: se l'etichetta non è più al commit dell'inventario, o il commit non c'è più, non si può misurare. */
+/** Per le prove a valle: se l'etichetta non è più al commit dell'inventario, non si può misurare. */
 export function fermoSeEtichettaSpostata(repo: string, inventario: Inventario): void {
-  if (commitDelRiferimento(repo, inventario) !== inventario.commit) fermo(`l'etichetta ${inventario.etichetta} non è più al commit dell'inventario`);
+  if (commitDellEtichetta(repo, inventario.etichetta) !== inventario.commit) fermo(`l'etichetta ${inventario.etichetta} non è più al commit dell'inventario`);
 }
 
 export const impronta = (byte: Uint8Array): string => createHash("sha256").update(byte).digest("hex");
@@ -99,9 +80,11 @@ export const improntaDellInsieme = (voci: VoceDelFile[]): string =>
 
 export function leggiInventario(percorso: string): Inventario {
   if (!existsSync(percorso)) fermo(`l'inventario non c'è: ${percorso}`);
-  const i = JSON.parse(readFileSync(percorso, "utf8")) as Inventario;
+  const i = JSON.parse(readFileSync(percorso, "utf8")) as Partial<Inventario>;
   if ((i.etichetta !== undefined && typeof i.etichetta !== "string") || typeof i.commit !== "string" || !Array.isArray(i.file)) fermo(`inventario malformato: ${percorso}`);
-  return i;
+  // Il riferimento per commit è tolto: senza etichetta la ricetta non torna, per tutti gli script.
+  if (i.etichetta === undefined) rosso(`l'inventario non ha l'etichetta (commit ${i.commit}): il nucleo entra solo da un'etichetta di AlgoDesign`);
+  return i as Inventario;
 }
 
 /** Una voce dello zip, letta dall'indice in coda al file: non dipende da quale `tar` c'è sulla macchina. */

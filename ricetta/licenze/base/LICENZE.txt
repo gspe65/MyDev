@@ -86,12 +86,12 @@ browser/chromium 157.0.8103.38-1.1
     sorgente: https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/5c85ff666b3434d9323b83437f910ad8431ab7c9.tar.gz [senza impronta: il server genera l archivio al volo; sorgenti.ps1 lo ammette solo per nome e ne verifica l interezza]
     sorgente: https://codeload.github.com/gspe65/chromium-senza-codec/tar.gz/25693ae36f5cd173c1896c52a0c0e5f5e98c9beb [sha256 816df5e2fd58e4177ac693e287f2bc707e2fd5fc31ecc01884317ba98e707265]
     sorgente: https://codeload.github.com/ungoogled-software/ungoogled-chromium/tar.gz/de09e0c70c6bc1ac83d4ecdfd0e82c7e250c9a3c [sha256 96126ab76549e78468e06b6508b37bd3f9b975673d438692e69d3e95ec5494e2]
-algodesign/algodesign 1.0.0
+algodesign/algodesign 1.0.1
     licenza: MIT AND CC-BY-4.0
     dichiarata dal pacchetto: MIT per il codice, CC per i documenti
     testo: algodesign/LICENSE [89da8d56baab98cb] MIT
     testo: algodesign/LICENSE-DOCS [9ba9550ad48438d0] CC-BY-4.0
-    testo: algodesign/LICENZE-DI-TERZE-PARTI.txt [e7704a6b6030bfbe] 0BSD, Apache-2.0, BSD, CC0-1.0, ISC, LLVM-exception, MIT, MPL-2.0, Zlib
+    testo: algodesign/LICENZE-DI-TERZE-PARTI.txt [8817ca09b1f436ed] 0BSD, Apache-2.0, BSD, CC0-1.0, ISC, LLVM-exception, MIT, MPL-2.0, Zlib
     testo: licenze/MYDEV-LICENSE-DOCS.txt [9ba9550ad48438d0] CC-BY-4.0
 toolchain/llvm-mingw 20260826-ucrt (clang 23.1.0)
     licenza: Apache-2.0 WITH LLVM-exception AND GPL-2.0-only AND GPL-3.0-or-later AND LGPL-2.1-or-later AND ZPL-2.1 AND PSF-2.0 AND MIT

@@ -6,8 +6,8 @@
 //   byte per byte;
 // - lo stesso pacchetto eseguito in un contesto senza Node (`node:vm` coi soli `module` ed `exports`), come in una pagina: gli stessi
 //   esiti, tutti;
-// - il file della release che le estensioni già distribuite portano (contratto 1.0, dallo zip del deposito): `genera` uguale ai
-//   sorgenti di adesso;
+// - il pacchetto provato è il file della release all'etichetta dell'inventario: byte per byte quello dello zip del deposito, che la
+//   costruzione ha appena verificato con le due impronte di pacchetto.json;
 // - l'appaiamento, sull'ottenuto: i codici delle segnalazioni sono quelli di `controlla` (errori e avvisi), file per file e lingua per
 //   lingua, nei due versi; i bollini del disegno sono i blocchi delle segnalazioni, nei due versi, col segno e i codici.
 //
@@ -27,7 +27,10 @@
 //   che portano devono stare fra gli errori e gli avvisi dello stesso file;
 // - i rifiuti di `apri`, le eccezioni, «fuori tappa» e «non ancora»: il corpus non li produce, quindi qui quei rami si contano e non si
 //   esercitano. Li provano altrove, con casi fatti a mano, la prova della libreria e la logica dell'estensione;
-// - un percorso verso l'adattatore costruito a run time: il parser e la spia leggono il testo del file.
+// - un percorso verso l'adattatore costruito a run time: il parser e la spia leggono il testo del file;
+// - il file della release di un'etichetta precedente (il contratto 1.0 della `v1.0.0`, che porta il pacchetto di prova dell'estensione
+//   nella versione pubblicata prima della 1.0.1): il suo `genera` uguale ai sorgenti si è provato fino all'etichetta `v1.0.1`, e qui
+//   non si prova più.
 
 import { appendFileSync, copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -35,15 +38,15 @@ import { join } from "node:path";
 import { differenzeDegliElenchi, fermo, fermoSeEtichettaSpostata, git, impronta, INVENTARIO, leggiInventario, RADICE, repoDelNucleo, riferimentoDi, vocedelloZip } from "../../ricetta/nucleo/comune";
 
 /** I denominatori, dichiarati prima della corsa e confrontati con ciò che si misura. Cambiare riferimento è rimisurarli. */
-const PROVE_ATTESE = 47;
+const PROVE_ATTESE = 48;
 const FILE_ATTESI = 192;
 const LINGUAGGI = ["pseudocodice", "python", "c", "accademico", "typescript"];
 const LINGUE = ["it", "en"];
 const COMBINAZIONI_ATTESE = FILE_ATTESI * LINGUAGGI.length * LINGUE.length;
 /** Gli esiti per motivo: se tutto venisse rifiutato allo stesso modo le differenze sarebbero zero, e il verde falso. */
 const MOTIVI_ATTESI: Record<string, number> = { testo: 1456, "non-ci-sta": 274, "errori-statici": 190, "fuori-tappa": 0, "non-ancora": 0, "apri rifiuta": 0, eccezione: 0 };
-/** Il contratto 1.1, misurato sul commit 3ac5e07 (gli stessi numeri che AlgoDesign dichiara per le sue prove). Due disegni per
- *  funzione e lingua: senza e coi bollini. */
+/** Il contratto 1.1, misurato all'etichetta dell'inventario (gli stessi numeri che AlgoDesign dichiara per le sue prove). Due disegni
+ *  per funzione e lingua: senza e coi bollini. */
 const FUNZIONI_ATTESE = 335;
 const DISEGNI_ATTESI = FUNZIONI_ATTESE * LINGUE.length * 2;
 const ELENCHI_ATTESI = FILE_ATTESI * LINGUE.length;
@@ -108,13 +111,16 @@ if (!existsSync(PACCHETTO)) fermo(`il pacchetto non c'è:\n${costruzione.testo}`
 const tipi = esegui([tsc, "-p", join(QUI, "tsconfig.json")]);
 prova("tsc sulla prova e sugli attesi", tipi.uscita === 0, tipi.testo);
 
-// Il file della release, dallo zip che la costruzione ha appena verificato nel deposito.
+// Il file della release, dallo zip che la costruzione ha appena verificato nel deposito: il pacchetto in uso deve essere lui.
 if (!existsSync(ZIP_DELLA_RELEASE)) fermo(`manca lo zip della release nel deposito: ${ZIP_DELLA_RELEASE}`);
 const fileDellaRelease = vocedelloZip(readFileSync(ZIP_DELLA_RELEASE), DESCRIZIONE.file.percorso) ?? fermo(`il file non è nello zip della release: ${DESCRIZIONE.file.percorso}`);
-const PACCHETTO_DELLA_RELEASE = join(cartella, "release.cjs");
-writeFileSync(PACCHETTO_DELLA_RELEASE, fileDellaRelease);
-console.log(`file della release: ${fileDellaRelease.length} byte, impronta ${impronta(fileDellaRelease).slice(0, 12)}; pacchetto in uso: ${readFileSync(PACCHETTO).length} byte, impronta ${impronta(readFileSync(PACCHETTO)).slice(0, 12)}`);
+const pacchettoInUso = readFileSync(PACCHETTO);
+console.log(`file della release: ${fileDellaRelease.length} byte, impronta ${impronta(fileDellaRelease).slice(0, 12)}; pacchetto in uso: ${pacchettoInUso.length} byte, impronta ${impronta(pacchettoInUso).slice(0, 12)}`);
 prova("il file della release, dallo zip del deposito, ha l'impronta dichiarata", impronta(fileDellaRelease) === DESCRIZIONE.file.sha256, impronta(fileDellaRelease));
+/** Il verdetto dell'identità, attraversato dal dato vero e dalla sonda. */
+const eIlFileDellaRelease = (pacchetto: Buffer): boolean => Buffer.compare(pacchetto, fileDellaRelease) === 0;
+prova("il pacchetto provato è il file della release, byte per byte", eIlFileDellaRelease(pacchettoInUso), `${pacchettoInUso.length} contro ${fileDellaRelease.length} byte`);
+prova("sonda: il pacchetto con un byte in più non è il file della release", !eIlFileDellaRelease(Buffer.concat([pacchettoInUso, Buffer.from("\n")])));
 
 // --- Il corpus, al commit fissato. L'elenco di git è il riscontro indipendente di ciò che i due lati enumerano dal disco.
 const SOTTO = "app/casi/";
@@ -163,7 +169,6 @@ const ottenutoD = leggiDisegno(latoVero.disegno);
 const latoSenzaNode = latoOttenuto(PACCHETTO, "senza-node", "vm", true);
 const senzaNode = leggiEsiti(latoSenzaNode.genera);
 const senzaNodeD = leggiDisegno(latoSenzaNode.disegno);
-const release = leggiEsiti(latoOttenuto(PACCHETTO_DELLA_RELEASE, "release", "require", false).genera);
 
 // --- Il confronto: gli elementi nei due versi, e ogni combinazione come oggetto intero. Il conteggio sta accanto.
 type Confronto = { soloAttesi: string[]; soloOttenuto: string[]; diverse: string[] };
@@ -223,12 +228,10 @@ const { motivi, scarti } = motiviDi(attesi);
 console.log(`esiti per motivo: ${Object.entries(motivi).map(([m, n]) => `${m} ${n}`).join(", ")}; somma ${Object.values(motivi).reduce((a, b) => a + b, 0)}`);
 prova("gli esiti per motivo sono quelli dichiarati", scarti.length === 0, scarti.map((m) => `${m}: ${motivi[m]} contro ${MOTIVI_ATTESI[m]}`).join("; "));
 
-// Gli altri due lati di `genera`: lo stesso pacchetto senza Node, e il file della release che le estensioni distribuite portano.
+// L'altro lato di `genera`: lo stesso pacchetto senza Node.
 const conSenzaNode = confronta(attesi, senzaNode);
-const conRelease = confronta(attesi, release);
-console.log(`genera senza Node: ${Object.keys(senzaNode).length} combinazioni, differenze ${conSenzaNode.diverse.length}; file della release: ${Object.keys(release).length} combinazioni, differenze ${conRelease.diverse.length}`);
+console.log(`genera senza Node: ${Object.keys(senzaNode).length} combinazioni, differenze ${conSenzaNode.diverse.length}`);
 prova("senza Node, genera: nessuna combinazione da una parte e zero differenze", identici(conSenzaNode), comeSiLegge(conSenzaNode, attesi, senzaNode));
-prova("il file della release (contratto 1.0), genera: nessuna combinazione da una parte e zero differenze coi sorgenti di adesso", identici(conRelease), comeSiLegge(conRelease, attesi, release));
 
 // Le sonde false dei due verdetti che le mutazioni non attraversano. Qui il fatto cercato è la deviazione: inventarle è corretto.
 const chiavi = Object.keys(attesi);
