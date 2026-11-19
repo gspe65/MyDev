@@ -2836,19 +2836,19 @@
       "nome": "estensione-c",
       "percorso": "",
       "gruppo": "estensioni",
-      "fonte": "https://github.com/gspe65/C-Run-VSCode/actions/runs/44363034407",
-      "file": "C-Run-0.0.6.vsix",
-      "byte": 12003,
-      "sha256": "eb05cfd47eaacf84ee4853ddaff8f129a8cc3624403309d57a18995554d19d60",
-      "versione": "0.0.6",
+      "fonte": "https://github.com/gspe65/C-Run-VSCode/releases/download/v0.1.0/C-Run-0.1.0.vsix",
+      "file": "C-Run-0.1.0.vsix",
+      "byte": 12561,
+      "sha256": "9cbaf4e72638bd7ab4af5a50e841d8f134cf98b00d834c00b5e00366f1049dbe",
+      "versione": "0.1.0",
       "estensione": "gilan65.c-run",
-      "commit": "9fa8fa9c24f939de2343db1d28b702296cf2f74a",
+      "commit": "d86090dcf9f491fb23af1812c6288caa16a75980",
       "destinazioni": [
         "vscodium/data/extensions"
       ],
-      "stato": "artefatto",
+      "stato": "release",
       "licenza": "MIT",
-      "motivo": "L'estensione per i programmi C, nella versione di prova: Compila ed esegui e Passo passo sul file .c aperto (il Makefile se c'e', se no il file da solo con clang; il passo passo con clang e lldb-dap nel terminale integrato). I sorgenti sono nel suo repository (percorso vuoto qui). Il pacchetto e' quello costruito una volta dalla corsa delle sue Actions all'etichetta v0.0.6 (questo commit) e attestato da quella corsa; provato con l'editor su Windows e Ubuntu, senza la prova su macOS (la macchina non c'era) e quindi senza una release: il file si mette nel deposito dall'artefatto della corsa, con questa impronta. La prova del file della release (collaudo/algo/prova.ts --voce estensione-c) si fa quando la voce torna a una release."
+      "motivo": "L'estensione per i programmi C: Compila ed esegui e Passo passo sul file .c aperto (il Makefile se c'e', se no il file da solo con clang; il passo passo con clang e lldb-dap nel terminale integrato). I sorgenti sono nel suo repository (percorso vuoto qui); il pacchetto lo costruiscono, lo provano con l'editor e lo attestano le sue Actions all'etichetta del commit dichiarato, e la nota della release dice su quali sistemi; collaudo/algo/prova.ts --voce estensione-c lega il file della release alla voce, all'attestazione e ai sorgenti all'etichetta."
     },
     {
       "nome": "licenze",
