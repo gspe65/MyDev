@@ -31,4 +31,4 @@ Nessuno: `std::thread` e `Mutex` fanno il lavoro che in C fanno `pthread_create`
 
 Per vederla davvero serve `unsafe`, e il progetto 18 la fa accadere con i processi: mettili a confronto.
 
-> L'ordine in cui i thread finiscono cambia a ogni esecuzione, ed e' normale: nessuno garantisce chi arriva prima.
+> L'ordine in cui i thread finiscono cambia a ogni esecuzione, ed è normale: nessuno garantisce chi arriva prima.

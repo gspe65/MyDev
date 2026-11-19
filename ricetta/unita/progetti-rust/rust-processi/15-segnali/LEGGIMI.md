@@ -27,9 +27,9 @@ tre interruzioni, esco con calma.
 
 ## Dove sta l'`unsafe`
 
-Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. La parte piu' pericolosa non e' una chiamata: e' la struct `Sigaction`. Il compilatore non conosce quella del sistema, e la dichiarazione scritta qui deve avere gli stessi campi agli stessi posti, o il gestore non parte, senza messaggi. E' stata misurata su questa piattaforma, con `offsetof` del C. Anche il numero di `SIGUSR1` cambia da un sistema all'altro.
+Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. La parte più pericolosa non è una chiamata: è la struct `Sigaction`. Il compilatore non conosce quella del sistema, e la dichiarazione scritta qui deve avere gli stessi campi agli stessi posti, o il gestore non parte, senza messaggi. È stata misurata su questa piattaforma, con `offsetof` del C. Anche il numero di `SIGUSR1` cambia da un sistema all'altro.
 
-Il gestore gira nel mezzo di qualunque altra istruzione: dentro non si puo' usare quasi niente, nemmeno `println!`, che potrebbe trovare chiuso il lucchetto dello schermo.
+Il gestore gira nel mezzo di qualunque altra istruzione: dentro non si può usare quasi niente, nemmeno `println!`, che potrebbe trovare chiuso il lucchetto dello schermo.
 
 ## Prova tu
 
@@ -40,4 +40,4 @@ kill -INT 1140     # come un Ctrl+C
 kill -USR1 1140
 ```
 
-Poi prova `kill -KILL 1140`: quello **non** e' catturabile, e il programma muore all'istante.
+Poi prova `kill -KILL 1140`: quello **non** è catturabile, e il programma muore all'istante.

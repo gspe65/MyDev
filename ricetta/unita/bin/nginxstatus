@@ -4,5 +4,5 @@
 : "${MYDEV:=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 export MYDEV
 tasklist.exe //fi "imagename eq nginx.exe" 2>/dev/null | grep -q "nginx.exe" \
-  && echo "Nginx e' in esecuzione." \
-  || echo "Nginx non e' in esecuzione."
+  && echo "Nginx è in esecuzione." \
+  || echo "Nginx non è in esecuzione."

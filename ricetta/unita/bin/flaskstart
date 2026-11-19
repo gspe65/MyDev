@@ -6,7 +6,7 @@ PROJ="$MYDEV/progetti/flask-hello"
 PIDFILE="$MYDEV/bin/.flask.pid"
 
 if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
-    echo "Flask e' gia' in esecuzione (PID $(cat "$PIDFILE"))."
+    echo "Flask è già in esecuzione (PID $(cat "$PIDFILE"))."
     exit 1
 fi
 

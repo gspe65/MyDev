@@ -2,7 +2,7 @@
 
 **Compilatore:** `cargo`
 
-Stampa una riga ed esce. Se questo funziona, l'ambiente e' a posto.
+Stampa una riga ed esce. Se questo funziona, l'ambiente è a posto.
 
 ## Comandi
 

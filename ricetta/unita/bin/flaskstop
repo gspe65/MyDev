@@ -12,6 +12,6 @@ if kill -0 "$PID" 2>/dev/null; then
     rm -f "$PIDFILE"
     echo "Flask fermato (PID $PID)."
 else
-    echo "Flask non e' in esecuzione (processo $PID non trovato)."
+    echo "Flask non è in esecuzione (processo $PID non trovato)."
     rm -f "$PIDFILE"
 fi

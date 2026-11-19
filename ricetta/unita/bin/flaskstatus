@@ -3,13 +3,13 @@
 export MYDEV
 PIDFILE="$MYDEV/bin/.flask.pid"
 if [ ! -f "$PIDFILE" ]; then
-    echo "Flask non e' in esecuzione (nessun file PID)."
+    echo "Flask non è in esecuzione (nessun file PID)."
     exit 1
 fi
 PID=$(cat "$PIDFILE")
 if kill -0 "$PID" 2>/dev/null; then
-    echo "Flask e' in esecuzione (PID $PID)."
+    echo "Flask è in esecuzione (PID $PID)."
 else
-    echo "Flask non e' in esecuzione (processo $PID non trovato)."
+    echo "Flask non è in esecuzione (processo $PID non trovato)."
     rm -f "$PIDFILE"
 fi

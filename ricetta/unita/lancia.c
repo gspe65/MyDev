@@ -42,7 +42,7 @@ static void componi(wchar_t *dove, const wchar_t *formato, ...) {
     int n = _vsnwprintf(dove, MASSIMO, formato, a);
     va_end(a);
     if (n < 0 || n >= MASSIMO) {
-        avvisa(L"Il percorso della cartella e' troppo lungo.");
+        avvisa(L"Il percorso della cartella è troppo lungo.");
         ExitProcess(2);
     }
 }
@@ -53,7 +53,7 @@ static void imposta(const wchar_t *nome, const wchar_t *formato, ...) {
     int n = _vsnwprintf(appoggio, MASSIMO, formato, a);
     va_end(a);
     if (n < 0 || n >= MASSIMO) {
-        avvisa(L"Il percorso della cartella e' troppo lungo.");
+        avvisa(L"Il percorso della cartella è troppo lungo.");
         ExitProcess(2);
     }
     SetEnvironmentVariableW(nome, appoggio);

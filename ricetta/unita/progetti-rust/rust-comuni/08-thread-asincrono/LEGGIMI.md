@@ -27,8 +27,8 @@ Nessuno: la libreria standard ha thread, pause e lucchetti.
 ## Prova tu
 
 Sposta `lavoro.join().unwrap();` subito dopo `thread::spawn`. Ricompila.
-La barra non si muove piu': il programma e' tornato **sincrono**, si blocca ad aspettare e riprende solo alla fine.
+La barra non si muove più: il programma è tornato **sincrono**, si blocca ad aspettare e riprende solo alla fine.
 
 Il progetto 19 fa la stessa cosa con i **processi**.
 
-> `\r` riporta il cursore a inizio riga senza andare a capo: e' cosi' che si riscrive la stessa riga. Se mandi l'output in un file vedrai tutte le righe intermedie, perche' nei file `\r` non cancella niente.
+> `\r` riporta il cursore a inizio riga senza andare a capo: è così che si riscrive la stessa riga. Se mandi l'output in un file vedrai tutte le righe intermedie, perché nei file `\r` non cancella niente.

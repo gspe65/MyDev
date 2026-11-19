@@ -2,7 +2,7 @@
 
 **Compilatore:** `cargo`
 
-Il figlio si trasforma nel comando `date`. E' la seconda meta' del meccanismo con cui una shell esegue i comandi: prima `fork`, poi `exec`.
+Il figlio si trasforma nel comando `date`. È la seconda metà del meccanismo con cui una shell esegue i comandi: prima `fork`, poi `exec`.
 
 ## Comandi
 
@@ -22,10 +22,10 @@ oggi e' il 06/09/1999
 
 ## Dove sta l'`unsafe`
 
-Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. `execlp` e' la piu' delicata: prende un numero variabile di argomenti, e nessuno controlla il NULL finale. Se lo togli il programma compila lo stesso, e `execlp` continua a leggere memoria a caso.
+Nel blocco `unsafe extern "C"` in cima e in ogni chiamata. `execlp` è la più delicata: prende un numero variabile di argomenti, e nessuno controlla il NULL finale. Se lo togli il programma compila lo stesso, e `execlp` continua a leggere memoria a caso.
 
 ## Prova tu
 
-Aggiungi una `println!` **subito dopo** il blocco della `execlp`, prima della `eprintln!`. Ricompila e rilancia: quella riga non compare mai, perche' se exec riesce il codice che la contiene non esiste piu'.
+Aggiungi una `println!` **subito dopo** il blocco della `execlp`, prima della `eprintln!`. Ricompila e rilancia: quella riga non compare mai, perché se exec riesce il codice che la contiene non esiste più.
 
 Poi cambia `c"date"` in `c"comando_inventato"`, tutte e due le volte: ora exec fallisce, la `eprintln!` viene eseguita e il figlio esce con 127.

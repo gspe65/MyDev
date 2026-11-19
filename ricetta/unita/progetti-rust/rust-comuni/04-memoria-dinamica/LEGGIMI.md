@@ -20,7 +20,7 @@ memoria restituita.
 
 ## Dove sta l'`unsafe`
 
-Nessuno, ed e' il punto: dentro il `Vec` ci sono proprio una `malloc` e una `realloc`, ma chi lo usa non puo' sbagliarle.
+Nessuno, ed è il punto: dentro il `Vec` ci sono proprio una `malloc` e una `realloc`, ma chi lo usa non può sbagliarle.
 
 ## Prova tu
 

@@ -2,7 +2,7 @@
 
 **Compilatore:** `cargo`
 
-Tre figli con durate diverse. Il padre non si blocca ad aspettarli: continua a lavorare e li raccoglie man mano che finiscono. E' il gemello del progetto 08, con i processi al posto dei thread.
+Tre figli con durate diverse. Il padre non si blocca ad aspettarli: continua a lavorare e li raccoglie man mano che finiscono. È il gemello del progetto 08, con i processi al posto dei thread.
 
 ## Comandi
 
@@ -36,6 +36,6 @@ Nel blocco `unsafe extern "C"` in cima e nelle chiamate a `fork`, `waitpid`, `sl
 
 ## Prova tu
 
-Guarda l'ordine: finisce prima il figlio **1**, che dorme un secondo, anche se e' stato creato per secondo.
+Guarda l'ordine: finisce prima il figlio **1**, che dorme un secondo, anche se è stato creato per secondo.
 
-Ora togli `WNOHANG` (metti `0` al suo posto) e rilancia: il padre si blocca sul primo figlio e le righe "giro N" spariscono. Il programma e' tornato **sincrono**.
+Ora togli `WNOHANG` (metti `0` al suo posto) e rilancia: il padre si blocca sul primo figlio e le righe "giro N" spariscono. Il programma è tornato **sincrono**.
