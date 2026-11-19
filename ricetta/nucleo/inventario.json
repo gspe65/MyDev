@@ -1,5 +1,6 @@
 {
-  "commit": "3ac5e07913b35debf0229afa724b9aa9ad07f997",
+  "etichetta": "v1.0.1",
+  "commit": "b0ede265f528358c7222601e0e7efefe0f825713",
   "forma": "sha256 dei byte conservati dal repository (git show <commit>:<file>)",
   "file": [
     {
@@ -144,7 +145,7 @@
     },
     {
       "percorso": "app/entrypoint/index.ts",
-      "sha256": "1afdf0bf11ab02bc70407a11ab001947d6eecc52523a4dbc01060a1f5956cc17"
+      "sha256": "6642bf76dfc25f242cbe273645558027a66ec9b213cd41348a1990e2a4df3eff"
     },
     {
       "percorso": "app/i18n/codici.ts",
@@ -152,11 +153,11 @@
     },
     {
       "percorso": "app/i18n/en.ts",
-      "sha256": "5587855d5672596f0f82a30a4a0a429f7f2f2ddab8cd118f8867159792c84c42"
+      "sha256": "f5114a8d54c4b73442c2b926905776cc97f744b6dc8fc8118f77fe0a6a6a7687"
     },
     {
       "percorso": "app/i18n/it.ts",
-      "sha256": "e4bbab631f42b58a23e0bcd07b274cac4ea7afab9f7c8f03d65c2fe8b0cf9f18"
+      "sha256": "167dd3c45ba8e2b71cfbafa051ffee6842afe6871e9e510d9ff6efa9b5f9746b"
     },
     {
       "percorso": "app/i18n/lingue.ts",

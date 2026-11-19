@@ -152,13 +152,13 @@ console.log(`file della release riscaricato: ${release.length} byte, impronta ${
 const sorgenti = new Map<string, Uint8Array>();
 for (const f of new Set(Object.values(DAI_SORGENTI))) sorgenti.set(f, await scarica(`https://raw.githubusercontent.com/${repository}/${voce.commit}/${f}`));
 // Il nucleo, solo per il profilo che lo porta: il file della conformità e la sua licenza, dallo zip del deposito.
-const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; dal_commit?: { sha256: string } };
-// Il file del nucleo atteso nel pacchetto: quello costruito dal commit (`dal_commit` di pacchetto.json, il contratto 1.1 che il
-// pacchetto della voce porta) quando pacchetto.json lo dichiara; se il campo non c'è, il file della release. Il secondo ramo non si
-// annuncia: tolto `dal_commit`, il confronto passa al file della release senza dirlo, e il pacchetto della voce, che porta quello
-// costruito dal commit, diventa un rosso su extension/dist/libreria.cjs. La licenza dello zip è la stessa dei sorgenti all'etichetta
-// (misurato, byte per byte).
-const improntaDelNucleo = nucleo.dal_commit?.sha256 ?? nucleo.file.sha256;
+const nucleo = JSON.parse(readFileSync(join(RADICE, "ricetta", "nucleo", "pacchetto.json"), "utf8")) as { etichetta: string; zip: { nome: string; sha256: string }; file: { percorso: string; sha256: string }; dal_commit?: unknown };
+// Il file del nucleo atteso nel pacchetto: il file della release di AlgoDesign che pacchetto.json dichiara, l'unico che la conformità
+// prova. Il pacchetto costruito dal commit è tolto: una descrizione che lo porta ancora è un fermo, non un altro atteso. La licenza
+// dello zip è la stessa dei sorgenti all'etichetta (misurato, byte per byte).
+if (nucleo.dal_commit !== undefined) fermo("ricetta/nucleo/pacchetto.json porta ancora dal_commit: il pacchetto costruito dal commit è tolto (bun ricetta/nucleo/pacchetto.ts lo dice rosso)");
+const improntaDelNucleo = nucleo.file.sha256;
+console.log(`nucleo atteso nel pacchetto: il file della release ${nucleo.etichetta} di AlgoDesign, ${improntaDelNucleo.slice(0, 12)}`);
 let licenzaDelNucleo: Uint8Array = new Uint8Array();
 if (PROFILO.nucleo) {
   const zipDelNucleo = join(RADICE, "ricetta", "nucleo", "scaricato", nucleo.zip.nome);

@@ -133,6 +133,7 @@ export function disegna(progetto: Progetto, idDellaFunzione: string, lingua: Lin
   if (!Object.hasOwn(LINGUE, lingua)) throw new Error(`lingua sconosciuta: ${lingua}`);
   const { colori = "tenue", modo = "colori", fondoDeiCicli = false, trasparente = false, id, errori, ...forme } = opzioni;
   if (!Object.hasOwn(tavolozzeDellaCarta, colori)) throw new Error(`insieme di colori sconosciuto: ${colori}`);
+  if (!Object.hasOwn(MODI, modo)) throw new Error(`modo di colore sconosciuto: ${modo}`);
   // Una forma lasciata `undefined` resta quella predefinita.
   const scelte = Object.fromEntries(Object.entries(forme).filter(([, v]) => v !== undefined)) as Partial<OpzioniDelDisegno>;
   const d = disegnoDellaFunzione(progetto, funzione, misura, lingua, { ...opzioniPredefinite, ...scelte });
@@ -149,6 +150,9 @@ export function disegna(progetto: Progetto, idDellaFunzione: string, lingua: Lin
   });
   return { svg, larghezza: d.larghezza, altezza: d.altezza };
 }
+
+/** I modi dell'SVG: senza questo controllo un modo scritto male darebbe in silenzio il bianco e nero. */
+const MODI: Readonly<Record<ModoDiColore, true>> = { colori: true, grigi: true, "bianco-e-nero": true };
 
 /** L'`id` del programma principale: i comandi dell'app nominano i parametri da lì (qui non servono). */
 const principaleDi = (p: Progetto) => p.functions.find((f) => f.kind === "main")?.id ?? "";

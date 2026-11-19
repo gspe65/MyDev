@@ -98,18 +98,18 @@
     {
       "nome": "algodesign/algodesign",
       "gruppo": "algodesign",
-      "fonte": "https://github.com/gilan65/AlgoDesign/releases/download/v1.0.0/AlgoDesign-1.0.0-windows-x64.zip",
-      "file": "AlgoDesign-1.0.0-windows-x64.zip",
-      "byte": 3556913,
-      "sha256": "36ca034dfd39f6f1f0957d75be9fc4d28487c3346aeb2dd4d936898b453b6c55",
-      "versione": "1.0.0",
+      "fonte": "https://github.com/gilan65/AlgoDesign/releases/download/v1.0.1/AlgoDesign-1.0.1-windows-x64.zip",
+      "file": "AlgoDesign-1.0.1-windows-x64.zip",
+      "byte": 3573711,
+      "sha256": "c012a4acb1b6f72958e77f306e9c5c9adfe5f9c94f71c307e60be8ed18cca9fd",
+      "versione": "1.0.1",
       "licenza": "MIT per il codice, CC per i documenti",
       "modo": "zip",
-      "radice": "AlgoDesign-1.0.0/",
+      "radice": "AlgoDesign-1.0.1/",
       "destinazioni": [
         "algodesign"
       ],
-      "motivo": "La release su cui il nucleo e le prove sono fissati, con la sua impronta pubblicata."
+      "motivo": "La release su cui il nucleo e le prove sono fissati (il contratto 1.1 della libreria viene dal file del nucleo della stessa release), con la sua impronta pubblicata."
     },
     {
       "nome": "toolchain/llvm-mingw",
