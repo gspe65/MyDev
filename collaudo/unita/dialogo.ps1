@@ -12,7 +12,10 @@
 # Uscite: 0 premuto (finestra chiusa da "Salva"), 2 non si e' potuto (nessuna finestra, non davanti, non chiusa, la finestra
 # a misura zero, un'eccezione). Con ogni uscita il JSON d'esito c'e', col motivo: su un'eccezione anche "eccezione", e la
 # cartella del JSON si crea se manca. Solo ASCII: PowerShell 5.1 legge un .ps1 senza BOM
-# come ANSI. Che cosa NON guarda: le finestre di altri processi; il contenuto della cartella mostrata.
+# come ANSI. Che cosa NON guarda: le finestre di altri processi; il contenuto della cartella mostrata. Senza finestre (le
+# sonde dei gestori di se1.py, con -Attesa 0) si percorrono solo l'esito senza finestra e il gestore dell'eccezione su una
+# cartella del JSON che manca: i rami con una finestra trovata (la misura zero, la foto, le tre vie per "Salva", un'eccezione
+# dopo il ritrovamento) non si percorrono senza una finestra "Salva con nome" vera.
 param(
     [Parameter(Mandatory = $true)][string]$Unita,
     [Parameter(Mandatory = $true)][string]$Uscita,
