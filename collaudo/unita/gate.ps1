@@ -28,7 +28,7 @@
 # il repository del nucleo, come la costruzione), A13 Chromium dal lanciatore col profilo nell'unita' e la pagina dell'unita'
 # all'avvio, con un controllo negativo senza lanciatore, e la pagina dei codec sul suo chrome.exe (con le finestre), E1 lo scenario S-E1 dello studente nell'editor
 # dell'unita', dalla pagina del flowchart al punto d'arresto, col suo controllo positivo, e l'editor che dal lanciatore si apre
-# sulla cartella progetti (con le finestre), E6 le guide
+# sulla cartella progetti (con le finestre; sempre la sonda del suo verdetto, e1-sonda.ps1), E6 le guide
 # leggibili (ogni guida .md nostra con la sua copia HTML in guide, tabelle e blocchi di codice uguali, l'indice e la pagina
 # di Chromium che lo collega, con le sonde del verdetto).
 #
@@ -81,7 +81,7 @@ function Passo([string]$clausola, [string]$nome, [string]$exe, [string]$argoment
     [IO.File]::WriteAllText((Join-Path $Lav "$nome.log"), $r.Testo, $Utf8)
     foreach ($riga in ($r.Testo -split "`r?`n")) {
         # Il rientro non nasconde un rosso: alcune prove lo elencano con due spazi davanti.
-        if ($riga -match '^\s*(ESITO|FERMO|ROSSO|NON COMPILA|FAIL|DIVERSO|differenze|sonda ROTTA|SONDA SPENTA|tipi: |esiti: |SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili)') { Scrivi "    $riga" }
+        if ($riga -match '^\s*(ESITO|FERMO|ROSSO|NON COMPILA|FAIL|DIVERSO|differenze|sonda ROTTA|SONDA SPENTA|tipi: |esiti: |SENZA|file nell|errori|sonde|file letti|file con un colpo|denominatore|grezzi|R[123] |controlli rossi|eseguibili|casi: |casi decisi)') { Scrivi "    $riga" }
     }
     Annota $clausola $nome $r.Uscita
     return $r
@@ -224,7 +224,8 @@ function Avviso-Dal-Lanciatore([string]$finta) {
 
 # --- E1, l'editor dal lanciatore sulla cartella progetti. L'editor scrive lo stato di una cartella aperta in
 # workspaceStorage\<id>\workspace.json, con la cartella come indirizzo file:///. Le tre funzioni le usa il gate e le chiama
-# anche la sonda senza finestre (le estrae da questo file), su una copia finta della sola cartella workspaceStorage.
+# anche e1-sonda.ps1, accanto a questo file (le estrae da qui), su copie finte della sola cartella workspaceStorage: il gate
+# la esegue come passo E1 anche senza -Finestre.
 function NominaProgetti([string]$testo, [string]$radice) {
     $m = [regex]::Match($testo, '"folder"\s*:\s*"file:///([^"]+)"')
     if (-not $m.Success) { return $false }
@@ -449,7 +450,7 @@ try {
             foreach ($giro in @(@{ Nome = 'se1'; Arg = ''; Cosa = 'S-E1 dalla pagina al punto d''arresto' }, @{ Nome = 'se1-controllo'; Arg = ' --controllo'; Cosa = 'S-E1 controllo positivo: col pacchetto della 0.2.0 rosso al passo 3' })) {
                 $r = Lancia $Py ($Se1 + $giro.Arg) $Ambiente
                 [IO.File]::WriteAllText((Join-Path $Lav ($giro.Nome + '.log')), $r.Testo, $Utf8)
-                foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo|impostazioni del debug|barra di stato|sonde del giudice)') { Scrivi "    $riga" } }
+                foreach ($riga in ($r.Testo -split "`r?`n")) { if ($riga -match '^(PASS|FAIL|ROSSO|FERMO|ESITO|passi dello|la finestra di Windows|controllo positivo|il \.algo|impostazioni del debug|configurazioni di lancio|barra di stato|sonde del giudice)') { Scrivi "    $riga" } }
                 Annota 'E1' $giro.Cosa $r.Uscita
                 Chiudi-Tutto
             }
@@ -534,6 +535,9 @@ try {
     $null = Passo 'A9' 'insieme-sonde' $Py ($Ins + ' --sonde')
     # --- A7: le sonde dello script della lingua dell'unita' (il verdetto sulla cache e la forma dei percorsi).
     $null = Passo 'A7' 'lingua-sonde' $Py ('-I -B "' + (Join-Path $Rad 'vscodium\lingua.py') + '" --sonde')
+    # --- E1: la sonda del verdetto dell'editor dal lanciatore sulla cartella progetti, senza finestre: le tre funzioni del
+    # passo, estratte da gate.ps1 nella copia del kit, su copie finte di workspaceStorage nella cartella temporanea del PC.
+    $null = Passo 'E1' 'e1-sonda' $Ps (Script51 'e1-sonda.ps1' '')
     # --- E6: le guide leggibili. Le guide e le copie sono quelle di unita-file.txt (la costruzione), le sonde nello script.
     $null = Passo 'E6' 'guide' $Py ('-X utf8 -B "' + (Join-Path $Kit 'guide.py') + '" "' + $Rad + '"')
 
@@ -593,7 +597,7 @@ try {
 
     # --- L'esito.
     $Tot = $script:Passi.Count
-    $Attesi = if ($Finestre) { 38 } else { 21 }
+    $Attesi = if ($Finestre) { 39 } else { 22 }
     if ($Estesa) { if ($Finestre) { $Attesi += 4 } else { $Attesi += 1 } }
     Scrivi "denominatore: passi $Tot, attesi $Attesi"
     if ($Tot -ne $Attesi) { Fermo "passi eseguiti $Tot, attesi $Attesi" }

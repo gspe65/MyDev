@@ -16,7 +16,7 @@ Con --controllo: la stessa corsa col pacchetto della 0.2.0 (`algo-codice-0.0.1.v
 dalla voce della ricetta all'etichetta) al posto dell'estensione dell'unità, spenta: deve essere rossa al passo 3 (nessuna pagina).
 Il verde del controllo è quel rosso, e nessun altro.
 
-La regola «un solo triangolo di esecuzione visibile in ogni momento» (dalla prova con l'utente): la sonda legge all'inizio le
+La regola «un solo triangolo di esecuzione visibile in ogni momento» (dell'interfaccia dello studente): la sonda legge all'inizio le
 impostazioni EFFETTIVE delle cinque chiavi `debug.*` che la servono (CHIAVI_DEBUG: valore, valore dell'utente e da dove viene), e
 il giudice le confronta con la ricetta (`ricetta/unita/vscodium/data/user-data/User/settings.json`): il valore effettivo e quello
 delle impostazioni dell'utente uguali alla ricetta, e le chiavi `debug.*` della ricetta appaiate nei due versi a CHIAVI_DEBUG. Poi
@@ -24,14 +24,25 @@ la barra di stato dell'estensione per il C, col comando `c-run.statoDellaBarra` 
 e un solo triangolo (le icone di TRIANGOLI contate in tutte le voci), col programma fermo al punto d'arresto nessuna voce. Senza
 il comando (un'estensione più vecchia) quel punto è un fermo: né verde né rosso.
 
+La console di debug di F5: con `debug.internalConsoleOptions` a `neverOpen` (serve al passo passo), l'uscita del programma, che
+col gdb e con lldb-dap arriva solo nella console di debug, resterebbe nascosta; per questo ogni configurazione di lancio di quei
+debugger porta `internalConsoleOptions` a `openOnSessionStart`. La sonda legge le configurazioni di lancio EFFETTIVE (nome, tipo,
+`internalConsoleOptions`); il giudice vuole `openOnSessionStart` in ogni configurazione di tipo TIPI_CON_LA_CONSOLE, e appaia nei
+due versi i nomi effettivi con quelli della ricetta (`launch` di settings.json e, sull'estesa, il `debug` di
+`ricetta/unita/impostazioni-estesa.json`, che la costruzione vi fonde): una configurazione in più o in meno è rossa. L'estesa si
+riconosce come fa il gate: `programmi/Git/cmd/git.exe` nell'unità.
+
 Il verdetto è una funzione sola (`giudica`), attraversata dal dato vero e dalle sonde del giudice in coda, una per ramo, su un
-esito finto verde alterato in un punto: ogni sonda deve dare il suo rosso o il suo fermo, e solo quello. Con --sonde solo le
-sonde, con --rileggi il verdetto su un esito già scritto: nessuna finestra in tutti e due.
+esito finto verde alterato in un punto: ogni sonda deve dare il suo rosso o il suo fermo, e solo quello. Il verdetto si calcola
+per intero anche quando un punto è un fermo (la finestra di dialogo che non si è chiusa non nasconde un rosso delle impostazioni),
+e il rosso batte il fermo. Il numero delle sonde è dichiarato (SONDE_ATTESE): uno diverso è un fermo. Con --sonde solo le sonde,
+con l'uscita del loro esito; con --rileggi il verdetto su un esito già scritto: nessuna finestra in tutti e due.
 
 Uscite: 0 verde, 1 rosso, 2 fermo (non si è potuto misurare: l'editor non ha scritto gli esiti, la finestra di dialogo non si è
 chiusa con «Salva» o dialogo.ps1 si è fermato su un'eccezione o non ha scritto il suo esito, la cartella del flowchart c'era già,
-il pacchetto della 0.2.0 non si scarica, le impostazioni o la barra di stato non lette, il comando della barra che non c'è, un
-esito illeggibile o un'altra eccezione, una sonda del giudice che non si accende).
+il pacchetto della 0.2.0 non si scarica, le impostazioni, le configurazioni di lancio o la barra di stato non lette, il comando
+della barra che non c'è, un esito illeggibile o un'altra eccezione, una sonda del giudice che non si accende o non misurabile,
+un numero di sonde diverso da quello dichiarato). Con le sonde, l'esito finto verde che il giudice dice rosso è un rosso.
 
 Che cosa NON guarda: i passi 1–2 (il doppio clic sul lanciatore, la cartella `flowchart`): l'editor parte con la cartella
 `progetti` dagli argomenti, come lo apre il lanciatore; che il lanciatore lo apra lì lo prova E1 nell'apertura 1 del gate, e il
@@ -49,6 +60,7 @@ import subprocess
 import sys
 import urllib.request
 import zipfile
+from collections import Counter
 from pathlib import Path
 
 a = argparse.ArgumentParser()
@@ -78,6 +90,13 @@ CHIAVI_DEBUG = ["debug.internalConsoleOptions", "debug.openDebug", "debug.showIn
                 "debug.terminal.clearBeforeReusing"]
 TRIANGOLI = ["$(play)", "$(run)", "$(debug-start)", "$(debug-continue)", "$(triangle-right)"]
 MOMENTI = {"conIlFile": "col file .c aperto", "alPuntoDArresto": "al punto d'arresto"}
+# La console di debug di F5: i tipi di debugger la cui uscita del programma va solo lì, e il valore che la apre.
+IMPOSTAZIONI_ESTESA = Path("ricetta") / "unita" / "impostazioni-estesa.json"
+TIPI_CON_LA_CONSOLE = ["gdb", "lldb-dap", "lldb", "cppdbg"]
+CONSOLE_ALL_AVVIO = "openOnSessionStart"
+ESTESA = (UNITA / "programmi" / "Git" / "cmd" / "git.exe").exists()
+# Le sonde del giudice, quante ne dichiara questo file: una che sparisce dall'elenco è un fermo.
+SONDE_ATTESE = 27
 
 
 def fermo(m):
@@ -166,6 +185,15 @@ def attese_del_debug():
     return {k: v for k, v in ricetta.items() if k.startswith("debug.")}
 
 
+def lancio_della_ricetta():
+    """Le configurazioni di lancio della ricetta, come la sonda le scrive (nome, tipo, internalConsoleOptions): quelle di
+    settings.json e, sull'estesa, quelle che la costruzione vi aggiunge da impostazioni-estesa.json."""
+    voci = list(json.loads((REPO / IMPOSTAZIONI).read_text(encoding="utf-8"))["launch"]["configurations"])
+    if ESTESA:
+        voci += json.loads((REPO / IMPOSTAZIONI_ESTESA).read_text(encoding="utf-8"))["debug"]
+    return [{"nome": v.get("name"), "tipo": v.get("type"), "internalConsoleOptions": v.get("internalConsoleOptions")} for v in voci]
+
+
 def algo_intatto(e):
     return e.get("algoPrima") is not None and e.get("algoPrima") == e.get("algoDopo")
 
@@ -192,36 +220,58 @@ def controllo_giusto(fatti):
     return [x["n"] for x in fatti] == ["1-2", 3] and fatti[0]["riuscito"] and not fatti[1]["riuscito"] and fatti[1]["visto"].get("vista", {}).get("tipo") != "pagina"
 
 
-def giudica(e, attese):
-    """Il verdetto, uguale per il dato vero e per le sonde: (rossi, fermi), ciascuno con la sua frase."""
+def giudica(e, attese, lancio):
+    """Il verdetto, uguale per il dato vero e per le sonde: (rossi, fermi), ciascuno con la sua frase. Si calcola per intero:
+    un fermo dello scenario toglie solo i verdetti che dallo scenario dipendono, non quelli indipendenti."""
     rossi, fermi = [], []
     fatti = e.get("passi", [])
     ultimo = fatti[-1] if fatti else None
     dialogo = dialogo_di(fatti)
-    # Al passo 7 la finestra di Windows: se dialogo.ps1 non ha potuto misurare, l'esito del passo non dice nulla.
+    # Al passo 7 la finestra di Windows: se dialogo.ps1 non ha potuto misurare, l'esito dei passi non dice nulla (fermo), e i
+    # verdetti sui passi, sulla finestra e sulla riga del salvataggio non si danno; gli altri sì.
+    scenario_misurato = True
     if ultimo is not None and ultimo["n"] == 7 and not ultimo["riuscito"]:
         scritto = ultimo["visto"].get("dialogo")
         if scritto is None:
-            return [], [f"dialogo.ps1 non ha scritto il suo esito (uscita {ultimo['visto'].get('uscitaDialogo')})"]
-        if scritto.get("eccezione"):
-            return [], [f"dialogo.ps1 si è fermato su un'eccezione: {scritto['eccezione']}"]
-        if scritto.get("trovato") and not scritto.get("premuto"):
-            return [], [f"la finestra di dialogo non si è chiusa con «Salva»: {scritto.get('motivo')}"]
+            fermi.append(f"dialogo.ps1 non ha scritto il suo esito (uscita {ultimo['visto'].get('uscitaDialogo')})")
+        elif scritto.get("eccezione"):
+            fermi.append(f"dialogo.ps1 si è fermato su un'eccezione: {scritto['eccezione']}")
+        elif scritto.get("trovato") and not scritto.get("premuto"):
+            fermi.append(f"la finestra di dialogo non si è chiusa con «Salva»: {scritto.get('motivo')}")
+        scenario_misurato = not fermi
     passi_completi = [x["n"] for x in fatti] == PASSI and all(x["riuscito"] for x in fatti)
-    if not passi_completi:
-        rossi.append("non tutti i passi sono riusciti, nell'ordine dello scenario")
-    cartella_attesa = str(UNITA / "progetti" / "flowchart")
-    if dialogo.get("titolo") != TITOLO_DELLA_FINESTRA or dialogo.get("nome") != NOME_PROPOSTO or (dialogo.get("cartella") or "").lower() != cartella_attesa.lower():
-        rossi.append("la finestra «Salva con nome» non propone la cartella del flowchart col nome atteso")
-    riga = next((x["visto"].get("riga") for x in fatti if x["n"] == 7), None)
-    if riga != RIGA_SALVATO:
-        rossi.append(f"la pagina non dice dove ha salvato: {riga!r}")
+    if scenario_misurato:
+        if not passi_completi:
+            rossi.append("non tutti i passi sono riusciti, nell'ordine dello scenario")
+        cartella_attesa = str(UNITA / "progetti" / "flowchart")
+        if dialogo.get("titolo") != TITOLO_DELLA_FINESTRA or dialogo.get("nome") != NOME_PROPOSTO or (dialogo.get("cartella") or "").lower() != cartella_attesa.lower():
+            rossi.append("la finestra «Salva con nome» non propone la cartella del flowchart col nome atteso")
+        riga = next((x["visto"].get("riga") for x in fatti if x["n"] == 7), None)
+        if riga != RIGA_SALVATO:
+            rossi.append(f"la pagina non dice dove ha salvato: {riga!r}")
+        # I passi dello scenario: i numeri coperti dai passi fatti, contro il limite di passi dello scenario (TETTO).
+        numeri = numeri_dei_passi(fatti)
+        if len(numeri) > TETTO or len(numeri) != 12:
+            rossi.append(f"passi {len(numeri)}: attesi i 12 dello scenario, entro {TETTO}")
     if not algo_intatto(e):
         rossi.append("errore critico: il .algo è stato modificato")
-    # I passi dello scenario: i numeri coperti dai passi fatti, contro il tetto (RU-08).
-    numeri = numeri_dei_passi(fatti)
-    if len(numeri) > TETTO or len(numeri) != 12:
-        rossi.append(f"passi {len(numeri)}: attesi i 12 dello scenario, entro {TETTO}")
+
+    # Le configurazioni di lancio effettive: i nomi appaiati alla ricetta nei due versi (anche un nome ripetuto conta),
+    # poi la console di debug all'avvio in ogni configurazione dei debugger che scrivono solo lì.
+    effettive = e.get("configurazioni")
+    if not isinstance(effettive, list):
+        fermi.append(f"la sonda non ha letto le configurazioni di lancio (un esito di una sonda più vecchia?): {e.get('erroreConfigurazioni')}")
+    else:
+        nomi_effettivi = Counter(c.get("nome") for c in effettive)
+        nomi_ricetta = Counter(c.get("nome") for c in lancio)
+        for n in sorted(nomi_effettivi - nomi_ricetta, key=str):
+            rossi.append(f"configurazione di lancio in più rispetto alla ricetta: {n}")
+        for n in sorted(nomi_ricetta - nomi_effettivi, key=str):
+            rossi.append(f"configurazione di lancio della ricetta che l'editor non ha: {n}")
+        for c in effettive:
+            if c.get("tipo") in TIPI_CON_LA_CONSOLE and c.get("internalConsoleOptions") != CONSOLE_ALL_AVVIO:
+                rossi.append(f"configurazione di lancio che non apre la console di debug all'avvio: {c.get('nome')} (tipo {c.get('tipo')}), "
+                             f"internalConsoleOptions {c.get('internalConsoleOptions')!r}, atteso {CONSOLE_ALL_AVVIO!r}")
 
     # Le impostazioni del debug: le chiavi della ricetta e quelle del collaudo nei due versi, poi ogni valore letto.
     for k in sorted(set(attese) - set(CHIAVI_DEBUG)):
@@ -273,24 +323,42 @@ def uscita_di(rossi, fermi):
     return 1 if rossi else 2 if fermi else 0
 
 
-def esito_finto_verde(attese):
-    """Un esito come lo scrive la sonda, che il giudice deve dire verde: la base delle sonde del giudice."""
+def esito_finto_verde(attese, lancio):
+    """Un esito come lo scrive la sonda, che il giudice deve dire verde: la base delle sonde del giudice. Le configurazioni di
+    lancio sono quelle della ricetta: se la ricetta stessa non apre la console, la base è già rossa e le sonde lo dicono."""
     passi = [{"n": n, "gesto": "finto", "visto": {}, "riuscito": True} for n in PASSI]
     passi[PASSI.index(7)]["visto"] = {"dialogo": {"trovato": True, "premuto": True, "titolo": TITOLO_DELLA_FINESTRA, "nome": NOME_PROPOSTO,
                                                   "cartella": str(UNITA / "progetti" / "flowchart")}, "uscitaDialogo": 0, "riga": RIGA_SALVATO}
     return {"passi": passi, "algoPrima": "QQ==", "algoDopo": "QQ==", "estensioni": {"gilan65.c-run": "0.0.5"},
             "impostazioni": {k: {"valore": attese.get(k), "origine": "utente", "utente": attese.get(k)} for k in CHIAVI_DEBUG},
+            "configurazioni": [dict(c) for c in lancio],
             "barra": {"conIlFile": {"disponibile": True, "voci": [f"$(play) Compila ed esegui {NOME_PROPOSTO}", f"$(bug) Passo passo {NOME_PROPOSTO}"]},
                       "alPuntoDArresto": {"disponibile": True, "voci": []}}}
 
 
-def sonde_del_giudice(attese):
+def sonde_del_giudice(attese, lancio):
     """Lo stesso verdetto su un esito finto verde alterato in un punto: ogni sonda deve far nascere il suo rosso o il suo
-    fermo (per inizio di frase) e nessun altro, con l'uscita attesa. Torna i nomi delle sonde spente."""
+    fermo (per inizio di frase) e nessun altro, con l'uscita attesa. Torna (rossi, fermi) delle sonde: rosso l'esito finto
+    verde che il giudice dice rosso; fermo l'esito finto verde che è un fermo, una sonda spenta o non misurabile, un numero di
+    sonde diverso da SONDE_ATTESE."""
+    esito_rossi, esito_fermi = [], []
+
     def muta(cambia, attese_sonda=None):
-        e = esito_finto_verde(attese)
+        e = esito_finto_verde(attese, lancio)
         cambia(e)
         return e, (attese if attese_sonda is None else attese_sonda)
+
+    # Le configurazioni dei debugger con la console, dalla ricetta: la prima e l'ultima sono i bersagli di due sonde.
+    console = [c["nome"] for c in lancio if c["tipo"] in TIPI_CON_LA_CONSOLE]
+    if not console:
+        esito_fermi.append("la ricetta non ha configurazioni di lancio dei debugger con la console: le loro sonde non si misurano")
+        console = ["(nessuna)"]
+
+    def configurazione(e, nome, cambia):
+        toccate = [c for c in e["configurazioni"] if c["nome"] == nome]
+        for c in toccate:
+            cambia(c)
+        return len(toccate)
 
     def ultimo_fallito(e):
         e["passi"][-1]["riuscito"] = False
@@ -350,16 +418,37 @@ def sonde_del_giudice(attese):
                                                 ("fermo", "la barra di stato dell'estensione per il C non si legge al punto")]),
         "la barra non letta": (muta(lambda e: e.update(barra={})), [("fermo", "la sonda non ha letto la barra di stato col file"),
                                                                   ("fermo", "la sonda non ha letto la barra di stato al punto")]),
+        # Il verdetto per intero: la finestra che non si chiude è un fermo, ma non nasconde un rosso indipendente.
+        "la finestra non premuta e un'impostazione diversa": (
+            muta(lambda e: (fino_al_7(e, {"trovato": True, "premuto": False, "motivo": "sonda"}), imposta(e, "debug.openDebug", "valore", "openOnSessionStart"))),
+            [("fermo", "la finestra di dialogo non si è chiusa"), ("rosso", "impostazione effettiva diversa dalla ricetta: debug.openDebug")]),
+        # La console di debug di F5 e le configurazioni di lancio appaiate alla ricetta.
+        "configurazione senza internalConsoleOptions": (
+            muta(lambda e: configurazione(e, console[0], lambda c: c.pop("internalConsoleOptions", None))),
+            [("rosso", f"configurazione di lancio che non apre la console di debug all'avvio: {console[0]} ")]),
+        "configurazione con internalConsoleOptions diverso": (
+            muta(lambda e: configurazione(e, console[-1], lambda c: c.update(internalConsoleOptions="neverOpen"))),
+            [("rosso", f"configurazione di lancio che non apre la console di debug all'avvio: {console[-1]} ")]),
+        "una configurazione di lancio in più": (
+            muta(lambda e: e["configurazioni"].append({"nome": "Sonda del collaudo", "tipo": "node", "internalConsoleOptions": None})),
+            [("rosso", "configurazione di lancio in più rispetto alla ricetta: Sonda del collaudo")]),
+        "una configurazione di lancio mancante": (
+            muta(lambda e: e.update(configurazioni=[c for c in e["configurazioni"] if c["nome"] != lancio[-1]["nome"]])),
+            [("rosso", f"configurazione di lancio della ricetta che l'editor non ha: {lancio[-1]['nome']}")]),
+        "configurazioni non lette": (muta(lambda e: e.pop("configurazioni")), [("fermo", "la sonda non ha letto le configurazioni di lancio")]),
     }
-    base_r, base_f = giudica(esito_finto_verde(attese), attese)
-    for x in base_r + base_f:
-        print(f"sonde del giudice: l'esito finto verde non è verde: {x}")
+    base_r, base_f = giudica(esito_finto_verde(attese, lancio), attese, lancio)
+    for x in base_r:
+        esito_rossi.append(f"l'esito finto verde è rosso: {x}")
+    for x in base_f:
+        esito_fermi.append(f"l'esito finto verde è un fermo: {x}")
     spente = []
     for nome, ((e, att), attesi) in sonde.items():
-        rossi, fermi = giudica(e, att)
+        rossi, fermi = giudica(e, att, lancio)
         nuovi = [("rosso", x) for x in rossi if x not in base_r] + [("fermo", x) for x in fermi if x not in base_f]
         if all(any(t == s and x.startswith(p) for s, x in [("rosso", y) for y in base_r] + [("fermo", y) for y in base_f]) for t, p in attesi):
             print(f"sonde del giudice: «{nome}» NON MISURABILE, l'esito finto ha già il suo difetto")
+            esito_fermi.append(f"sonda non misurabile: {nome}")
             continue
         uscita_attesa = 1 if any(t == "rosso" for t, _ in attesi) else 2
         acceso = (all(any(t == s and x.startswith(p) for s, x in nuovi) for t, p in attesi)
@@ -367,12 +456,19 @@ def sonde_del_giudice(attese):
                   and uscita_di(rossi, fermi) == uscita_attesa)
         if not acceso:
             spente.append(nome)
+            esito_fermi.append(f"sonda spenta: {nome}")
             print(f"sonde del giudice: «{nome}» SPENTA: {nuovi or 'nessun difetto nuovo'}, uscita {uscita_di(rossi, fermi)}")
-    print(f"sonde del giudice: {len(sonde) - len(spente)} accese su {len(sonde)}")
-    return spente
+    print(f"sonde del giudice: {len(sonde) - len(spente)} accese su {len(sonde)}, dichiarate {SONDE_ATTESE}")
+    if len(sonde) != SONDE_ATTESE:
+        esito_fermi.append(f"sonde nell'elenco {len(sonde)}, dichiarate {SONDE_ATTESE}")
+    for x in esito_rossi:
+        print(f"sonde del giudice: ROSSO: {x}")
+    for x in esito_fermi:
+        print(f"sonde del giudice: FERMO: {x}")
+    return esito_rossi, esito_fermi
 
 
-def racconta(e, attese):
+def racconta(e, attese, lancio):
     """Ciò che la sonda ha visto, per chi legge il registro del gate."""
     fatti = e.get("passi", [])
     dialogo = dialogo_di(fatti)
@@ -384,6 +480,11 @@ def racconta(e, attese):
     for k in CHIAVI_DEBUG:
         letta = lette.get(k) if isinstance(lette.get(k), dict) else {}
         print(f"impostazioni del debug: {k} = {letta.get('valore')!r} (da {letta.get('origine')}; dell'utente {letta.get('utente')!r}), nella ricetta {attese.get(k)!r}")
+    effettive = e.get("configurazioni")
+    print(f"configurazioni di lancio: variante {'estesa' if ESTESA else 'base'}; nella ricetta {len(lancio)} "
+          f"({', '.join(str(c['nome']) for c in lancio)}); effettive {len(effettive) if isinstance(effettive, list) else 'non lette'}")
+    for c in effettive if isinstance(effettive, list) else []:
+        print(f"configurazioni di lancio: {c.get('nome')} (tipo {c.get('tipo')}), internalConsoleOptions {c.get('internalConsoleOptions')!r}")
     for momento, nome in MOMENTI.items():
         b = (e.get("barra") or {}).get(momento)
         if not isinstance(b, dict):
@@ -397,10 +498,12 @@ def racconta(e, attese):
 
 def main():
     attese = attese_del_debug()
+    lancio = lancio_della_ricetta()
     if o.sonde:
-        spente = sonde_del_giudice(attese)
-        print("ESITO: FERMO (sonde del giudice spente)" if spente else "ESITO: VERDE (sonde del giudice)")
-        sys.exit(2 if spente else 0)
+        print(f"configurazioni di lancio: variante {'estesa' if ESTESA else 'base'}; nella ricetta {len(lancio)} ({', '.join(str(c['nome']) for c in lancio)})")
+        sonde_r, sonde_f = sonde_del_giudice(attese, lancio)
+        print({0: "ESITO: VERDE (sonde del giudice)", 1: "ESITO: ROSSO (sonde del giudice)", 2: "ESITO: FERMO (sonde del giudice)"}[uscita_di(sonde_r, sonde_f)])
+        sys.exit(uscita_di(sonde_r, sonde_f))
     if o.rileggi:
         uscita = Path(o.rileggi)
         print(f"rilettura: {uscita}")
@@ -423,15 +526,16 @@ def main():
         print("ESITO: VERDE (il controllo positivo è rosso dove deve)" if giusto else "ESITO: ROSSO (il controllo positivo non è rosso al passo 3: la prova non discrimina)")
         sys.exit(0 if giusto else 1)
 
-    racconta(e, attese)
-    rossi, fermi = giudica(e, attese)
-    spente = sonde_del_giudice(attese)
+    racconta(e, attese, lancio)
+    rossi, fermi = giudica(e, attese, lancio)
+    # Le sonde del giudice entrano nell'insieme: il rosso (di qualunque parte) batte il fermo.
+    sonde_r, sonde_f = sonde_del_giudice(attese, lancio)
+    rossi += [f"sonde del giudice: {x}" for x in sonde_r]
+    fermi += [f"sonde del giudice: {x}" for x in sonde_f]
     for r in rossi:
         print(f"ROSSO: {r}")
     for f in fermi:
         print(f"FERMO: {f}")
-    if spente:
-        fermo(f"sonde del giudice che non si accendono: {', '.join(spente)}")
     print({0: "ESITO: VERDE", 1: "ESITO: ROSSO", 2: "ESITO: FERMO"}[uscita_di(rossi, fermi)])
     sys.exit(uscita_di(rossi, fermi))
 

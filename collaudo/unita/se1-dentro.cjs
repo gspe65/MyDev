@@ -12,6 +12,10 @@
 // comando c-run.statoDellaBarra (dalla 0.0.5) in due momenti: col .c salvato e aperto, e col programma fermo al punto
 // d'arresto. Se il comando non c'è lo scrive («disponibile» falso): il giudice ne fa un fermo.
 //
+// Per la console di debug di F5 legge le configurazioni di lancio EFFETTIVE (launch.configurations: nome, tipo e
+// internalConsoleOptions di ciascuna); il giudice le appaia alla ricetta e vuole la console aperta all'avvio dove il debugger
+// scrive l'uscita del programma solo lì.
+//
 // Che cosa NON guarda: i passi 1–2 (lanciatore, cartella `flowchart`): l'editor parte con la cartella `progetti` dagli
 // argomenti, come dal lanciatore, e il lanciatore lo provano le aperture del gate; i pixel dello schermo (la foto della finestra di dialogo si guarda a
 // occhio); il clic sul margine come gesto del puntatore; la barra di stato come la disegna l'editor (il comando dice le voci
@@ -94,6 +98,12 @@ function impostazioni() {
   }
   return lette;
 }
+/** Le configurazioni di lancio effettive (quelle che F5 offre): nome, tipo e internalConsoleOptions; null se non sono un elenco. */
+function configurazioni() {
+  const c = vscode.workspace.getConfiguration("launch").get("configurations");
+  if (!Array.isArray(c)) return null;
+  return c.map((x) => ({ nome: x?.name ?? null, tipo: x?.type ?? null, internalConsoleOptions: x?.internalConsoleOptions ?? null }));
+}
 /** Le voci della barra di stato dell'estensione per il C, dal suo comando di prova; «disponibile» falso se il comando non c'è. */
 async function barra() {
   await vscode.extensions.getExtension("gilan65.c-run")?.activate();
@@ -119,6 +129,13 @@ exports.run = async () => {
   } catch (x) {
     e.impostazioni = null;
     e.erroreImpostazioni = String(x);
+  }
+  try {
+    e.configurazioni = configurazioni();
+    if (e.configurazioni === null) e.erroreConfigurazioni = "launch.configurations non è un elenco";
+  } catch (x) {
+    e.configurazioni = null;
+    e.erroreConfigurazioni = String(x);
   }
   e.barra = {};
   e.algoPrima = readFileSync(SE1_ALGO).toString("base64");

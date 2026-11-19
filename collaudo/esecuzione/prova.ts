@@ -31,8 +31,8 @@
 //
 // Gli esiti sono `ESITI_ATTESI`, i casi per 6 esecutori: `DA_UN_PROGRAMMA` vengono da un programma compilato ed eseguito, gli altri
 // (i casi dei file con un errore statico, per 6) non eseguono nulla, perché li decide il controllo di AlgoDesign contro l'atteso del
-// caso. Le costanti sono controllate a ogni corsa, contro il corpus al riferimento dell'inventario del nucleo (oggi il commit
-// 3ac5e07, non un'etichetta), e i numeri si stampano: 1506, 1392 e 114.
+// caso. Le costanti sono controllate a ogni corsa, contro il corpus al riferimento dell'inventario del nucleo (la voce `commit`
+// di `ricetta/nucleo/inventario.json`, che lo dichiara), e i numeri si stampano: 1506, 1392 e 114.
 //
 // Il motore dell'editor che genera ha un tempo massimo: oltre, il motore si ferma e la prova è rossa, con il suo nome.
 //
