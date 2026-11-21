@@ -268,6 +268,8 @@ try {
     Copy-Item -Path (Join-Path $Qui '*') -Destination $Kit
     $Verifica = Join-Path (Split-Path -Parent (Split-Path -Parent $Qui)) 'ricetta\verifica.ps1'
     Copy-Item -LiteralPath $Verifica -Destination $Kit
+    # La verifica carica il motore generico accanto a se'.
+    Copy-Item -LiteralPath (Join-Path (Split-Path -Parent $Verifica) 'motore.ps1') -Destination $Kit
     # L'unita' estesa si riconosce come fa il lanciatore: la base non sa dell'aggiunta.
     $Estesa = Test-Path -LiteralPath (Join-Path $Rad 'programmi\Git\cmd\git.exe')
     if ($Estesa) { Copy-Item -LiteralPath (Join-Path (Split-Path -Parent (Split-Path -Parent $Qui)) 'ricetta\componenti-estesa.json') -Destination $Kit }

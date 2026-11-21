@@ -84,7 +84,9 @@ def tabella_di(provenienza):
 def leggi_commit(repo, commit):
     """{percorso relativo alla cartella del corso: byte conservati}, dal solo commit (mai l'albero di lavoro)."""
     def git(*a, **k):
-        r = subprocess.run(["git", "-C", str(repo), *a], capture_output=True, **k)
+        # safe.directory: il repository del corso puo' stare su un altro PC, in una cartella di rete d'altro proprietario;
+        # qui si leggono solo oggetti del commit (ls-tree, cat-file), nulla si scrive.
+        r = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(repo), *a], capture_output=True, **k)
         if r.returncode != 0:
             fermo(f"git {a[0]}: {r.stderr.decode('utf-8', 'replace').strip()}")
         return r.stdout
@@ -178,7 +180,7 @@ def scrivi(repo, commit):
     if mancano:
         fermo(f"esclusi assenti dal commit: {mancano}")
     tenuti = {rel: b for rel, b in file.items() if rel not in ESCLUSI}
-    pieno = subprocess.run(["git", "-C", str(repo), "rev-parse", commit + "^{commit}"], capture_output=True, text=True).stdout.strip()
+    pieno = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(repo), "rev-parse", commit + "^{commit}"], capture_output=True, text=True).stdout.strip()
     righe = []
     for rel in sorted(tenuti):
         n, s, b = impronte(tenuti[rel])
