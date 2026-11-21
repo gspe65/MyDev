@@ -2697,6 +2697,16 @@
       "motivo": "Traduce fra i percorsi Windows dell'estensione e quelli /c/... del gdb di MSYS: senza, un punto messo dall'editor non si aggancia."
     },
     {
+      "nome": "lldb-dap-ponte",
+      "percorso": "ricetta/unita/lldb-dap-ponte.c",
+      "destinazioni": [
+        "bin/lldb-dap.exe"
+      ],
+      "stato": "compilato",
+      "licenza": "MIT",
+      "motivo": "lldb crea all'avvio la cartella dei simboli di Windows (lldb\\symstore) nella cartella locale dei dati dell'utente, ricavata da USERPROFILE, e nessuna impostazione lo evita: il ponte, primo nel PATH, lancia lldb-dap con USERPROFILE nella home dell'unita' e rimette al programma seguito passo passo quello vero. Vale per F5 e per il Passo passo dell'estensione per il C."
+    },
+    {
       "nome": "lanciatore",
       "percorso": "ricetta/unita/lancia.c",
       "eseguibili": [
