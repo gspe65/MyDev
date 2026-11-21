@@ -53,7 +53,7 @@ Set-StrictMode -Version 2
 
 # ===== I dati di MyDev =====
 
-$Numero = '0.3.0'
+$Numero = '0.3.1'
 # File che cambiano a ogni costruzione: stanno nell'elenco dell'unita' senza impronta.
 $Variabili = @(
     'msys64/var/log/pacman.log',
