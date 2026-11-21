@@ -46,7 +46,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2
 
-$Numero = '0.2.0'
+$Numero = '0.3.0'
 # File che cambiano a ogni costruzione: stanno nell'elenco dell'unita' senza impronta.
 $Variabili = @(
     'msys64/var/log/pacman.log',
