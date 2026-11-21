@@ -48,6 +48,8 @@
         "request": "launch",
         "program": "${fileDirname}/programma-clang.exe",
         "cwd": "${fileDirname}",
+        "debugAdapterEnv": { "USERPROFILE": "${env:MYDEV_RADICE}\\home" },
+        "env": { "USERPROFILE": "${env:USERPROFILE}" },
         "internalConsoleOptions": "openOnSessionStart",
         "preLaunchTask": "Compila con clang"
       }
