@@ -2,13 +2,13 @@
 
 Un ambiente di sviluppo portabile per Windows, pensato per i laboratori scolastici e per i PC di casa: si copia su disco o su una chiavetta e non richiede diritti di amministratore. Contiene VSCodium, i compilatori C `gcc` e `clang` con il debugger, Python, l'ambiente POSIX di MSYS2, Neovim, Nginx, AlgoDesign e il browser Chromium, costruito senza i codec coperti da brevetti. La variante **estesa** aggiunge Rust, `git`, `gh` e il codice di un corso sui puntatori.
 
-Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'ambiente stesso: il costruttore scarica ogni componente dalla sua fonte originale, alla versione fissata, e ne confronta l'impronta. La versione pubblicata è la `0.3.0`: è l'etichetta `v0.3.0` di questo repository, con la sua pagina fra le release. La release non contiene file: l'unità si costruisce con la ricetta, come spiegato qui sotto, e i pacchetti delle due estensioni il costruttore li scarica, con la loro impronta, dalle release dei loro repository.
+Il repository versiona la **ricetta** con cui si costruisce l'ambiente, non l'ambiente stesso: il costruttore scarica ogni componente dalla sua fonte originale, alla versione fissata, e ne confronta l'impronta. La versione pubblicata è la `0.3.1`: è l'etichetta `v0.3.1` di questo repository, con la sua pagina fra le release. La release non contiene file: l'unità si costruisce con la ricetta, come spiegato qui sotto, e i pacchetti delle due estensioni il costruttore li scarica, con la loro impronta, dalle release dei loro repository.
 
 ## Che cosa c'è
 
 | Cartella | Contenuto |
 |---|---|
-| `ricetta/` | Il costruttore e la verifica dell'unità, l'elenco dei componenti con versione, fonte e impronta (`componenti.json`, e `componenti-estesa.json` per l'aggiunta dell'estesa), l'indice delle licenze e il comando dei sorgenti |
+| `ricetta/` | Il costruttore e la verifica dell'unità (`costruisci.ps1` e `verifica.ps1`, la ricetta di MyDev, sopra `motore.ps1`, il motore generico che non sa nulla di MyDev e che un altro progetto può riusare), l'elenco dei componenti con versione, fonte e impronta (`componenti.json`, e `componenti-estesa.json` per l'aggiunta dell'estesa), l'indice delle licenze e il comando dei sorgenti |
 | `ricetta/unita/` | I file nostri che entrano nell'unità: il lanciatore, i comandi di `bin`, le impostazioni dell'editor e di Chromium, i progetti di esempio, le guide e, per l'estesa, la copia del codice del corso sui puntatori |
 | `ricetta/puntatori/` | L'inventario di quella copia e la prova che la confronta con il commit da cui viene |
 | `ricetta/nucleo/` | Prende il nucleo di AlgoDesign dal file di una release fissata, lo verifica per impronta e dichiara la versione del contratto |
