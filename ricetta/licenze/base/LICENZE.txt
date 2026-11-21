@@ -1106,6 +1106,9 @@ msys/zstd 1.5.7-1
 nostro/gdb-ponte
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
+nostro/lldb-dap-ponte
+    licenza: MIT
+    testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
 nostro/lanciatore
     licenza: MIT
     testo: licenze/MYDEV-LICENSE.txt [89da8d56baab98cb] MIT
